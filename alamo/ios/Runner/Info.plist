@@ -45,5 +45,32 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>uy.edu.utec.alamo</string>
+        </array>
+    </dict>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.934172637590-s0nnqvpom0d8punm11rj17v49frl7soi</string>
+        </array>
+    </dict>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>Editor</string>
+        </array>
+    </dict>
+</array>
 </dict>
 </plist>
