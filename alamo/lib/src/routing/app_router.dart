@@ -1,7 +1,6 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_form_type.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/routing/go_router_refresh_stream.dart';
 import 'package:alamo/src/routing/not_found_screen.dart';
@@ -57,15 +56,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               child: AccountScreen(),
             ),
           ),
-          GoRoute(
-            path: 'signIn',
-            name: AppRoute.signIn.name,
-            pageBuilder: (context, state) => const MaterialPage(
-              fullscreenDialog: true,
-              child: HomeScreen(),
-            ),
-          ),
         ],
+      ),
+      GoRoute(
+        path: '/signIn',
+        name: AppRoute.signIn.name,
+        builder: (context, state) => const SignInScreen(),
       ),
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),

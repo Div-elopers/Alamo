@@ -23,18 +23,18 @@ class AccountScreen extends ConsumerWidget {
     final state = ref.watch(accountScreenControllerProvider);
     return Scaffold(
       appBar: AppBar(
-        title: state.isLoading ? const CircularProgressIndicator() : Text('Account'.hardcoded),
+        title: state.isLoading ? const CircularProgressIndicator() : Text('Cuenta'.hardcoded),
         actions: [
           ActionTextButton(
-            text: 'Logout'.hardcoded,
+            text: 'Cerrar sesión'.hardcoded,
             onPressed: state.isLoading
                 ? null
                 : () async {
                     final logout = await showAlertDialog(
                       context: context,
-                      title: 'Are you sure?'.hardcoded,
-                      cancelActionText: 'Cancel'.hardcoded,
-                      defaultActionText: 'Logout'.hardcoded,
+                      title: 'Estás seguro?'.hardcoded,
+                      cancelActionText: 'Cancelar'.hardcoded,
+                      defaultActionText: 'Cerrar sesión'.hardcoded,
                     );
                     if (logout == true) {
                       ref.read(accountScreenControllerProvider.notifier).signOut();
@@ -102,11 +102,11 @@ class EmailVerificationWidget extends ConsumerWidget {
                       if (success && context.mounted) {
                         showAlertDialog(
                           context: context,
-                          title: "Sent - now check your email".hardcoded,
+                          title: "Enviado - revisa tu casilla de correo".hardcoded,
                         );
                       }
                     },
-              child: Text("Verify email".hardcoded))
+              child: Text("Verificar correo".hardcoded))
         ],
       );
     } else {
@@ -115,7 +115,7 @@ class EmailVerificationWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            "Verified".hardcoded,
+            "Verificado".hardcoded,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green.shade600),
           ),
           gapW8,

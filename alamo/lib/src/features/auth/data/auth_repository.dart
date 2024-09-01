@@ -14,23 +14,47 @@ class AuthRepository {
   AuthRepository(this._auth);
   final FirebaseAuth _auth;
 
-  Future<void> signInWithEmailAndPassword(String email, String password) {
-    return _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<UserCredential?> signInWithEmailAndPassword(String email, String password) async {
+    try {
+      return _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      developer.log('User creation failed: ${e.message}');
+      rethrow;
+    } catch (e) {
+      developer.log('An unexpected error occurred: $e');
+      rethrow;
+    }
   }
 
   Future<void> createUserWithEmailAndPassword(String email, String password) {
-    return _auth.createUserWithEmailAndPassword(email: email, password: password);
+    try {
+      return _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      developer.log('User creation failed: ${e.message}');
+      rethrow;
+    } catch (e) {
+      developer.log('An unexpected error occurred: $e');
+      rethrow;
+    }
   }
 
   Future<dynamic> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
 
       return await _auth.signInWithCredential(credential);

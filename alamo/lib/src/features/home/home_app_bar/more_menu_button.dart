@@ -16,7 +16,6 @@ class MoreMenuButton extends StatelessWidget {
 
   // * Keys for testing using find.byKey()
   static const signInKey = Key('menuSignIn');
-  static const ordersKey = Key('menuOrders');
   static const accountKey = Key('menuAccount');
 
   @override
@@ -29,20 +28,20 @@ class MoreMenuButton extends StatelessWidget {
         return <PopupMenuEntry<PopupMenuOption>>[
           if (user != null) ...[
             PopupMenuItem(
-              key: ordersKey,
-              value: PopupMenuOption.orders,
-              child: Text('Map'.hardcoded),
+              key: accountKey,
+              value: PopupMenuOption.account,
+              child: Text('Cuenta'.hardcoded),
             ),
             PopupMenuItem(
               key: accountKey,
               value: PopupMenuOption.account,
-              child: Text('Account'.hardcoded),
+              child: Text('Mapa'.hardcoded),
             ),
           ] else
             PopupMenuItem(
               key: signInKey,
               value: PopupMenuOption.signIn,
-              child: Text('Sign In'.hardcoded),
+              child: Text('Iniciar Sesión'.hardcoded),
             ),
         ];
       },
