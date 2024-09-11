@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,16 +17,19 @@ class AuthRepository {
 
   Future<UserCredential?> signInWithEmailAndPassword(String email, String password) async {
     try {
-      return _auth.signInWithEmailAndPassword(
+      return await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      developer.log('User creation failed: ${e.message}');
-      rethrow;
+      final errorMessage = _getErrorMessage(e);
+      developer.log('Authentication failed: $errorMessage');
+      throw errorMessage; // Throw custom error message
     } catch (e) {
-      developer.log('An unexpected error occurred: $e');
-      rethrow;
+      // * Catching any other generic exceptions
+      final errorMessage = _handleGenericError(e);
+      developer.log('An unexpected error occurred: $errorMessage');
+      throw errorMessage;
     }
   }
 
@@ -36,11 +40,14 @@ class AuthRepository {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      developer.log('User creation failed: ${e.message}');
-      rethrow;
+      final errorMessage = _getErrorMessage(e);
+      developer.log('User creation failed: $errorMessage');
+      throw errorMessage;
     } catch (e) {
-      developer.log('An unexpected error occurred: $e');
-      rethrow;
+      // * Catching any other generic exceptions
+      final errorMessage = _handleGenericError(e);
+      developer.log('An unexpected error occurred: $errorMessage');
+      throw errorMessage;
     }
   }
 
@@ -80,6 +87,32 @@ class AuthRepository {
   }
 
   FirebaseAppUser? _convertUser(User? user) => user != null ? FirebaseAppUser(user) : null;
+
+  String _getErrorMessage(FirebaseAuthException e) {
+    switch (e.code) {
+      case 'email-already-in-use':
+        return 'Este correo electrónico ya está en uso.'.hardcoded;
+      case 'invalid-email':
+        return 'El correo electrónico no es válido.'.hardcoded;
+      case 'operation-not-allowed':
+        return 'Esta operación no está permitida.'.hardcoded;
+      case 'weak-password':
+        return 'La contraseña es demasiado débil.'.hardcoded;
+      case 'too-many-requests':
+        return 'Demasiadas solicitudes. Intenta de nuevo más tarde.'.hardcoded;
+      case 'user-token-expired':
+        return 'El token de usuario ha expirado. Por favor, inicia sesión de nuevo.'.hardcoded;
+      case 'network-request-failed':
+        return 'Error de red. Verifica tu conexión a internet.'.hardcoded;
+      case 'invalid-credential':
+      case 'INVALID_LOGIN_CREDENTIALS':
+        return 'Credenciales de inicio de sesión no válidas.'.hardcoded;
+      default:
+        return 'Ha ocurrido un error. Por favor, intenta de nuevo.'.hardcoded;
+    }
+  }
+
+  String _handleGenericError(Object e) => 'Ha ocurrido un error inesperado. Inténtalo de nuevo.'.hardcoded;
 }
 
 @Riverpod(keepAlive: true)
