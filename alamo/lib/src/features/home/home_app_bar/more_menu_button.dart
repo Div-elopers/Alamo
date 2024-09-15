@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 
 enum PopupMenuOption {
   signIn,
-  orders,
+  map,
   account,
 }
 
@@ -34,7 +34,7 @@ class MoreMenuButton extends StatelessWidget {
             ),
             PopupMenuItem(
               key: accountKey,
-              value: PopupMenuOption.account,
+              value: PopupMenuOption.map,
               child: Text('Mapa'.hardcoded),
             ),
           ] else
@@ -50,7 +50,7 @@ class MoreMenuButton extends StatelessWidget {
         switch (option) {
           case PopupMenuOption.signIn:
             context.goNamed(AppRoute.signIn.name);
-          case PopupMenuOption.orders:
+          case PopupMenuOption.map:
             context.goNamed(AppRoute.map.name);
           case PopupMenuOption.account:
             context.goNamed(AppRoute.account.name);
