@@ -2,6 +2,7 @@ import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
+import 'package:alamo/src/features/map/presentation/map_screen.dart';
 import 'package:alamo/src/routing/go_router_refresh_stream.dart';
 import 'package:alamo/src/routing/not_found_screen.dart';
 import 'package:flutter/material.dart';
@@ -52,8 +53,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             path: 'account',
             name: AppRoute.account.name,
             pageBuilder: (context, state) => const MaterialPage(
-              fullscreenDialog: true,
               child: AccountScreen(),
+            ),
+          ),
+          GoRoute(
+            path: 'map',
+            name: AppRoute.map.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: MapScreen(),
             ),
           ),
         ],
