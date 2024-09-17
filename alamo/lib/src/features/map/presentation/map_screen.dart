@@ -1,4 +1,4 @@
-// map_screen.dart
+import 'dart:io';
 
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +16,19 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen> {
   GoogleMapController? _googleMapController;
-  final map_ID = dotenv.env['MAPS_IOS_ID'];
+
   @override
   Widget build(BuildContext context) {
+    var mapId = "";
+    if (Platform.isAndroid) {
+      // Assign the Android Maps API Key
+      mapId = dotenv.env['MAPS_ANDROID_ID']!;
+    } else if (Platform.isIOS) {
+      // Assign the iOS Maps API Key
+      mapId = dotenv.env['MAPS_IOS_ID']!;
+    } else {
+      throw UnsupportedError('Platform not supported');
+    }
     ref.listen<AsyncValue>(
       mapControllerProvider,
       (_, state) => state.showAlertDialogOnError(context),
@@ -35,7 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       return Scaffold(
         appBar: AppBar(title: const Text('Municipio B')),
         body: GoogleMap(
-          cloudMapId: map_ID,
+          cloudMapId: mapId,
           initialCameraPosition: CameraPosition(
             target: mapController.initialPosition,
             zoom: 14,
