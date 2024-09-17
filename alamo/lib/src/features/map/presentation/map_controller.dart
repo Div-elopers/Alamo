@@ -1,5 +1,3 @@
-// lib/src/features/map/presentation/map_controller.dart
-
 import 'dart:io';
 
 import 'package:alamo/src/utils/notifier_mounted.dart';

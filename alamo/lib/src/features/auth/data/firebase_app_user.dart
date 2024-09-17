@@ -17,4 +17,10 @@ class FirebaseAppUser implements AppUser {
 
   @override
   Future<void> sendEmailVerification() => _user.sendEmailVerification();
+
+  @override
+  String? get phoneNumber => throw UnimplementedError();
+
+  @override
+  bool get phoneNumberVerified => throw UnimplementedError();
 }

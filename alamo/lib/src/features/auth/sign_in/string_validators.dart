@@ -35,8 +35,7 @@ class ValidatorInputFormatter implements TextInputFormatter {
   final StringValidator editingValidator;
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     final bool oldValueValid = editingValidator.isValid(oldValue.text);
     final bool newValueValid = editingValidator.isValid(newValue.text);
     if (oldValueValid && !newValueValid) {
@@ -69,4 +68,11 @@ class MinLengthStringValidator extends StringValidator {
   bool isValid(String value) {
     return value.length >= minLength;
   }
+}
+
+class PhoneNumberRegexValidator extends RegexValidator {
+  PhoneNumberRegexValidator()
+      : super(
+          regexSource: r'^\+?[1-9]\d{1,14}$', // Example regex for international phone numbers
+        );
 }

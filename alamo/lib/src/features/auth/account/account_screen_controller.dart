@@ -24,4 +24,37 @@ class AccountScreenController extends _$AccountScreenController {
     state = await AsyncValue.guard(() => user.sendEmailVerification());
     return state.hasError == false;
   }
+
+  Future<void> verifyPhone({
+    required String phoneNumber,
+    required void Function(PhoneVerificationResult) onVerificationCompleted,
+    required void Function(PhoneVerificationResult) onCodeSent,
+    required void Function(PhoneVerificationResult) onAutoRetrievalTimeout,
+    required void Function(PhoneVerificationResult) onVerificationFailed,
+  }) async {
+    final authRepository = ref.read(authRepositoryProvider);
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() {
+      return authRepository.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        onVerificationCompleted: onVerificationCompleted,
+        onCodeSent: onCodeSent,
+        onAutoRetrievalTimeout: onAutoRetrievalTimeout,
+        onVerificationFailed: onVerificationFailed,
+      );
+    });
+  }
+
+  Future<void> verifyPhoneCode({
+    required String verificationId,
+    required String smsCode,
+  }) async {
+    final authRepository = ref.read(authRepositoryProvider);
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() {
+      return authRepository.verifyPhoneCode(verificationId, smsCode);
+    });
+  }
 }
