@@ -33,7 +33,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> createUserWithEmailAndPassword(String email, String password) {
+  Future<UserCredential> createUserWithEmailAndPassword(String email, String password) {
     try {
       return _auth.createUserWithEmailAndPassword(
         email: email,
@@ -72,6 +72,31 @@ class AuthRepository {
         name: 'Google Sign In',
       );
     }
+  }
+
+  Future<void> deleteUser() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      try {
+        // Firebase Auth API call to delete the user
+        await currentUser.delete();
+      } on FirebaseAuthException catch (e) {
+        final errorMessage = _getErrorMessage(e);
+        developer.log('Error $e');
+        developer.log('Fallo borrar el usuario: $errorMessage');
+        throw errorMessage;
+      } catch (e) {
+        final errorMessage = _handleGenericError(e);
+        developer.log('An unexpected error occurred: $errorMessage');
+        throw errorMessage;
+      }
+    } else {
+      throw 'No existe la sesión del usuario.'.hardcoded;
+    }
+  }
+
+  Future<void> reloadCurrentUser() async {
+    return await _auth.currentUser!.reload();
   }
 
   Future<void> signOut() {
