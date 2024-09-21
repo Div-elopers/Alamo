@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/features/auth/application/user_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../domain/app_user.dart';
 
 part 'account_screen_controller.g.dart';
 
@@ -14,14 +12,32 @@ class AccountScreenController extends _$AccountScreenController {
     // nothing to do
   }
   Future<void> signOut() async {
-    final authRepository = ref.read(authRepositoryProvider);
+    final userService = ref.read(userServiceProvider);
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => authRepository.signOut());
+    state = await AsyncValue.guard(() => userService.signOut());
   }
 
-  Future<bool> sendEmailVerification(AppUser user) async {
+  Future<bool> sendEmailVerification() async {
+    final userService = ref.read(userServiceProvider);
+
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() => user.sendEmailVerification());
+    state = await AsyncValue.guard(() => userService.sendEmailVerification());
+    return state.hasError == false;
+  }
+
+  Future<bool> deleteAccount() async {
+    final userService = ref.read(userServiceProvider);
+
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => userService.deleteUserAccount());
+    return state.hasError == false;
+  }
+
+  Future<bool> reloadUserAndSyncWithFirestore() async {
+    final userService = ref.read(userServiceProvider);
+
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => userService.reloadUserAndSyncWithFirestore());
     return state.hasError == false;
   }
 }
