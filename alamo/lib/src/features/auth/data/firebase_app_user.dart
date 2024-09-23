@@ -23,4 +23,9 @@ class FirebaseAppUser implements AppUser {
 
   @override
   bool get phoneNumberVerified => throw UnimplementedError();
+
+  @override
+  Map<String, dynamic> toJson() {
+    throw UnimplementedError();
+  }
 }

@@ -6,7 +6,7 @@ part of 'map_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$mapControllerHash() => r'cd063dee308768ad4f14cda89f07eed8641f2d79';
+String _$mapControllerHash() => r'ab7360371a592f2367971afff08a372030283c8a';
 
 /// See also [MapController].
 @ProviderFor(MapController)

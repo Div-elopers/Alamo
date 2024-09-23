@@ -16,13 +16,39 @@ class AppUser {
   final String? phoneNumber;
   final bool phoneNumberVerified;
 
-  Future<void> sendEmailVerification() async {}
+  // Factory constructor to create an instance of AppUser from JSON
+  factory AppUser.fromJson(Map<String, dynamic> json) {
+    return AppUser(
+      uid: (json['uid']),
+      email: json['email'] as String?,
+      emailVerified: json['emailVerified'] as bool? ?? false,
+      phoneNumberVerified: json['phoneVerified'] as bool? ?? false,
+    );
+  }
+
+  // Method to convert an instance of AppUser to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'email': email,
+      'emailVerified': emailVerified,
+      'phoneVerified': phoneNumberVerified,
+    };
+  }
+
+  Future<void> sendEmailVerification() async {
+    // Your email verification logic here
+  }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is AppUser && other.uid == uid && other.email == email && other.phoneNumber == phoneNumber;
+    return other is AppUser &&
+        other.uid == uid &&
+        other.email == email &&
+        other.emailVerified == emailVerified &&
+        other.phoneNumberVerified == phoneNumberVerified;
   }
 
   @override
@@ -51,4 +77,6 @@ class PhoneVerificationResult {
     this.resendToken,
     this.errorMessage,
   });
+  @override
+  String toString() => 'AppUser(uid: $uid, email: $email, emailVerified: $emailVerified, phoneVerified: $phoneVerified)';
 }

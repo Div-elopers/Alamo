@@ -2,6 +2,7 @@ import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/routing/app_router.dart';
@@ -60,7 +61,7 @@ class AccountScreenContents extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authStateChangesProvider).value;
+    final user = ref.watch(userStreamProvider(ref.watch(authRepositoryProvider).currentUser!.uid)).value;
     if (user == null) {
       return const SizedBox.shrink();
     }
@@ -82,37 +83,76 @@ class AccountScreenContents extends ConsumerWidget {
           user: user,
         ),
         gapH16,
-        const VerifyPhoneNumberWidget()
+        const VerifyPhoneNumberWidget(),
         //
+        gapH16,
+        // TextButton(
+        //   onPressed: () async {
+        //     final delete = await showAlertDialog(
+        //       context: context,
+        //       title: 'Estás seguro?'.hardcoded,
+        //       cancelActionText: 'Cancelar'.hardcoded,
+        //       defaultActionText: 'Eliminar'.hardcoded,
+        //     );
+        //     if (delete == true) {
+        //       ref.read(accountScreenControllerProvider.notifier).deleteAccount();
+        //     }
+        //   },
+        //   child: Text('Eliminar cuenta'.hardcoded),
+        // ),
       ],
     );
   }
 }
 
-class EmailVerificationWidget extends ConsumerWidget {
+class EmailVerificationWidget extends ConsumerStatefulWidget {
   const EmailVerificationWidget({super.key, required this.user});
   final AppUser user;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  createState() => _EmailVerificationWidgetState();
+}
+
+class _EmailVerificationWidgetState extends ConsumerState<EmailVerificationWidget> {
+  bool showReloadIcon = false;
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(accountScreenControllerProvider);
-    if (user.emailVerified == false) {
+    final accountScreenController = ref.read(accountScreenControllerProvider.notifier);
+
+    if (!widget.user.emailVerified) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           OutlinedButton(
-              onPressed: state.isLoading
-                  ? null
-                  : () async {
-                      final success = await ref.read(accountScreenControllerProvider.notifier).sendEmailVerification(user);
-                      if (success && context.mounted) {
-                        showAlertDialog(
-                          context: context,
-                          title: "Enviado - revisa tu casilla de correo".hardcoded,
-                        );
-                      }
-                    },
-              child: Text("Verificar correo".hardcoded))
+            onPressed: state.isLoading
+                ? null
+                : () async {
+                    final success = await accountScreenController.sendEmailVerification();
+                    if (mounted && success) {
+                      showAlertDialog(
+                        context: context,
+                        title: "Enviado - revisa tu casilla de correo".hardcoded,
+                      );
+                      // Show the reload icon after the email is sent
+                      setState(() {
+                        showReloadIcon = true;
+                      });
+                    }
+                  },
+            child: Text("Verificar correo".hardcoded),
+          ),
+          if (showReloadIcon)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () async {
+                final success = await accountScreenController.reloadUserAndSyncWithFirestore();
+                if (success) {
+                  setState(() {});
+                }
+              },
+            ),
         ],
       );
     } else {
@@ -124,7 +164,7 @@ class EmailVerificationWidget extends ConsumerWidget {
             "Email Verificado".hardcoded,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green.shade600),
           ),
-          gapW8,
+          const SizedBox(width: 8),
           Icon(Icons.check_circle, color: Colors.green.shade600),
         ],
       );
