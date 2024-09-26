@@ -2,14 +2,16 @@ import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
-import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:alamo/src/widgets/action_text_button.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:alamo/src/widgets/responsive_center.dart';
+import 'package:alamo/src/widgets/verified.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Simple account screen showing some user info and a logout button.
 class AccountScreen extends ConsumerWidget {
@@ -45,7 +47,7 @@ class AccountScreen extends ConsumerWidget {
         ],
       ),
       body: const ResponsiveCenter(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.p16),
+        padding: EdgeInsets.symmetric(horizontal: Sizes.p8),
         child: AccountScreenContents(),
       ),
     );
@@ -70,15 +72,24 @@ class AccountScreenContents extends ConsumerWidget {
           user.uid,
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        gapH32,
+        gapH16,
         Text(
           user.email ?? '',
           style: Theme.of(context).textTheme.titleMedium,
         ),
         gapH16,
-        EmailVerificationWidget(
-          user: user,
-        ),
+
+        user.emailVerified
+            ? const VerifiedWidget(type: "Email") // If verified, show VerifiedWidget
+            : const VerifyEmailWidget(), // If not verified, show VerifyEmailWidget
+
+        gapH16,
+
+        // Check phone verification status
+        user.phoneVerified
+            ? const VerifiedWidget(type: "Phone") // If verified, show VerifiedWidget
+            : const VerifyPhoneWidget(),
+        //
         gapH16,
         // TextButton(
         //   onPressed: () async {
@@ -99,69 +110,63 @@ class AccountScreenContents extends ConsumerWidget {
   }
 }
 
-class EmailVerificationWidget extends ConsumerStatefulWidget {
-  const EmailVerificationWidget({super.key, required this.user});
-  final AppUser user;
+class VerifyEmailWidget extends ConsumerWidget {
+  const VerifyEmailWidget({super.key});
 
   @override
-  createState() => _EmailVerificationWidgetState();
-}
-
-class _EmailVerificationWidgetState extends ConsumerState<EmailVerificationWidget> {
-  bool showReloadIcon = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(accountScreenControllerProvider);
     final accountScreenController = ref.read(accountScreenControllerProvider.notifier);
 
-    if (!widget.user.emailVerified) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          OutlinedButton(
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        OutlinedButton(
+          onPressed: state.isLoading
+              ? null
+              : () async {
+                  final success = await accountScreenController.sendEmailVerification();
+                  if (context.mounted && success) {
+                    showAlertDialog(
+                      context: context,
+                      title: "Enviado - revisa tu casilla de correo".hardcoded,
+                    );
+                    // Automatically handle reloading via Riverpod reactivity
+                  }
+                },
+          child: state.isLoading ? const CircularProgressIndicator() : Text("Verificar correo".hardcoded),
+        ),
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: () async {
+            await accountScreenController.reloadUserAndSyncWithFirestore();
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class VerifyPhoneWidget extends ConsumerWidget {
+  const VerifyPhoneWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(accountScreenControllerProvider);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        OutlinedButton(
             onPressed: state.isLoading
                 ? null
                 : () async {
-                    final success = await accountScreenController.sendEmailVerification();
-                    if (mounted && success) {
-                      showAlertDialog(
-                        context: context,
-                        title: "Enviado - revisa tu casilla de correo".hardcoded,
-                      );
-                      // Show the reload icon after the email is sent
-                      setState(() {
-                        showReloadIcon = true;
-                      });
-                    }
+                    context.goNamed(
+                      AppRoute.verifyPhone.name,
+                    );
                   },
-            child: Text("Verificar correo".hardcoded),
-          ),
-          if (showReloadIcon)
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () async {
-                final success = await accountScreenController.reloadUserAndSyncWithFirestore();
-                if (success) {
-                  setState(() {});
-                }
-              },
-            ),
-        ],
-      );
-    } else {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            "Verificado".hardcoded,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green.shade600),
-          ),
-          const SizedBox(width: 8),
-          Icon(Icons.check_circle, color: Colors.green.shade600),
-        ],
-      );
-    }
+            child: Text("Verificar numero de telefono".hardcoded))
+      ],
+    );
   }
 }

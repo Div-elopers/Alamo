@@ -6,12 +6,14 @@ class AppUser {
     required this.uid,
     this.email,
     this.emailVerified = false,
+    this.phoneNumber,
     this.phoneVerified = false,
   });
 
   final UserID uid;
   final String? email;
   final bool emailVerified;
+  final String? phoneNumber;
   final bool phoneVerified;
 
   // Factory constructor to create an instance of AppUser from JSON
@@ -50,8 +52,29 @@ class AppUser {
   }
 
   @override
-  int get hashCode => uid.hashCode ^ email.hashCode ^ emailVerified.hashCode ^ phoneVerified.hashCode;
+  int get hashCode => uid.hashCode ^ email.hashCode ^ phoneNumber.hashCode;
 
   @override
   String toString() => 'AppUser(uid: $uid, email: $email, emailVerified: $emailVerified, phoneVerified: $phoneVerified)';
+}
+
+enum PhoneVerificationStatus {
+  codeSent,
+  verificationCompleted,
+  verificationFailed,
+  autoRetrievalTimeout,
+}
+
+class PhoneVerificationResult {
+  final PhoneVerificationStatus status;
+  final String? verificationId;
+  final int? resendToken;
+  final String? errorMessage;
+
+  PhoneVerificationResult({
+    required this.status,
+    this.verificationId,
+    this.resendToken,
+    this.errorMessage,
+  });
 }

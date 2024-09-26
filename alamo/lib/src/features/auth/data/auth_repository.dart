@@ -113,6 +113,97 @@ class AuthRepository {
 
   FirebaseAppUser? _convertUser(User? user) => user != null ? FirebaseAppUser(user) : null;
 
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required void Function(PhoneVerificationResult) onVerificationCompleted,
+    required void Function(PhoneVerificationResult) onCodeSent,
+    required void Function(PhoneVerificationResult) onAutoRetrievalTimeout,
+    required void Function(PhoneVerificationResult) onVerificationFailed,
+    Duration timeout = const Duration(seconds: 30),
+    int? forceResendingToken,
+  }) async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: timeout,
+        verificationCompleted: (PhoneAuthCredential credential) {
+          // Call the callback with a PhoneVerificationResult for completed verification
+          onVerificationCompleted(PhoneVerificationResult(
+            status: PhoneVerificationStatus.verificationCompleted,
+          ));
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          // Call the callback for failed verification
+          onVerificationFailed(PhoneVerificationResult(
+            status: PhoneVerificationStatus.verificationFailed,
+            errorMessage: e.message,
+          ));
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          // Call the callback for code sent
+          onCodeSent(PhoneVerificationResult(
+            status: PhoneVerificationStatus.codeSent,
+            verificationId: verificationId,
+            resendToken: resendToken,
+          ));
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Call the callback for auto retrieval timeout
+          onAutoRetrievalTimeout(PhoneVerificationResult(
+            status: PhoneVerificationStatus.autoRetrievalTimeout,
+            verificationId: verificationId,
+          ));
+        },
+        forceResendingToken: forceResendingToken,
+      );
+    } on FirebaseAuthException catch (e) {
+      onVerificationFailed(PhoneVerificationResult(
+        status: PhoneVerificationStatus.verificationFailed,
+        errorMessage: e.message,
+      ));
+    } on Exception catch (e) {
+      developer.log(
+        'Exception caught: $e',
+        level: 200,
+        name: 'Google Sign In',
+      );
+      rethrow;
+    }
+  }
+
+  Future<bool> verifyPhoneCode(String verificationId, String smsCode) async {
+    try {
+      // Create a PhoneAuthCredential with the verification ID and SMS code
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      User currentUser = _auth.currentUser!;
+
+      await currentUser.linkWithCredential(credential);
+
+      currentUser = _auth.currentUser!;
+
+      // If the current user is already linked with a phone number, no need to link again
+      if (currentUser.phoneNumber != null && currentUser.phoneNumber!.isNotEmpty) {
+        return true; // Phone number is already linked, verification successful
+      }
+
+      return false;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'provider-already-linked') {
+        // If the provider is already linked, it's not an error, just return success
+        return true;
+      } else {
+        // Otherwise, rethrow the exception to be handled elsewhere
+        throw FirebaseAuthException(
+          code: e.code,
+          message: e.message,
+        );
+      }
+    }
+  }
+
   String _getErrorMessage(FirebaseAuthException e) {
     switch (e.code) {
       case 'email-already-in-use':

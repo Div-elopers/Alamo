@@ -11,7 +11,6 @@ class GoogleSignInController extends _$GoogleSignInController {
     // nothing to do
   }
   Future<bool> submit() async {
-    state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _authenticate());
     return state.hasError == false;
   }

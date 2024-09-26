@@ -19,7 +19,10 @@ class FirebaseAppUser implements AppUser {
   Future<void> sendEmailVerification() => _user.sendEmailVerification();
 
   @override
-  bool get phoneVerified => throw UnimplementedError();
+  String? get phoneNumber => _user.phoneNumber;
+
+  @override
+  bool get phoneVerified => _user.phoneNumber != null && _user.phoneNumber!.isNotEmpty;
 
   @override
   Map<String, dynamic> toJson() {

@@ -1,4 +1,5 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
+import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
@@ -20,6 +21,7 @@ enum AppRoute {
   chatbot,
   account,
   signIn,
+  verifyPhone,
 }
 
 /// returns the GoRouter instance that defines all the routes in the app
@@ -55,6 +57,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const MaterialPage(
               child: AccountScreen(),
             ),
+            routes: [
+              GoRoute(
+                path: 'verify-code',
+                name: AppRoute.verifyPhone.name,
+                pageBuilder: (context, state) => const MaterialPage(
+                  child: VerifyPhoneNumberScreen(),
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: 'map',

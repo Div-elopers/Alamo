@@ -97,17 +97,18 @@ class UserService {
       await _authRepository.reloadCurrentUser();
       final updatedUser = _authRepository.currentUser;
 
-      if (updatedUser != null && updatedUser.emailVerified) {
+      if (updatedUser != null && (updatedUser.emailVerified || updatedUser.phoneVerified)) {
         // Fetch the Firestore user profile
         final firestoreUser = await _userRepository.fetchUser(updatedUser.uid);
 
-        // If the Firestore user exists and the emailVerified status is not updated, update Firestore
-        if (firestoreUser != null && !firestoreUser.emailVerified) {
+        // If the Firestore user exists and the emailVerified or phoneVerified status is not updated, update Firestore
+        if (firestoreUser != null && (!firestoreUser.emailVerified || !firestoreUser.phoneVerified)) {
           AppUser updatedAppUser = AppUser.fromJson({
             "uid": updatedUser.uid,
             "email": updatedUser.email,
             "emailVerified": updatedUser.emailVerified,
-            "phoneVerified": false,
+            "phone": updatedUser.phoneNumber ?? "",
+            "phoneVerified": updatedUser.phoneVerified,
           });
           await _userRepository.updateUser(updatedAppUser);
         }
@@ -120,6 +121,29 @@ class UserService {
     if (currentUser != null) {
       return currentUser.sendEmailVerification();
     }
+  }
+
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required void Function(PhoneVerificationResult p1) onVerificationCompleted,
+    required void Function(PhoneVerificationResult p1) onCodeSent,
+    required void Function(PhoneVerificationResult p1) onAutoRetrievalTimeout,
+    required void Function(PhoneVerificationResult p1) onVerificationFailed,
+  }) async {
+    return await _authRepository.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        onVerificationCompleted: onVerificationCompleted,
+        onCodeSent: onCodeSent,
+        onAutoRetrievalTimeout: onAutoRetrievalTimeout,
+        onVerificationFailed: onVerificationFailed);
+  }
+
+  Future<bool> verifyPhoneCode(String verificationId, String smsCode) async {
+    final success = await _authRepository.verifyPhoneCode(verificationId, smsCode);
+    if (success) {
+      await reloadUserAndSyncWithFirestore();
+    }
+    return success;
   }
 }
 
