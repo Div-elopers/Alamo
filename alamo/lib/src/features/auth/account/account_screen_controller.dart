@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:alamo/src/features/auth/application/user_service.dart';
+//import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'account_screen_controller.g.dart';
@@ -48,11 +50,11 @@ class AccountScreenController extends _$AccountScreenController {
     required void Function(PhoneVerificationResult) onAutoRetrievalTimeout,
     required void Function(PhoneVerificationResult) onVerificationFailed,
   }) async {
-    final authRepository = ref.read(authRepositoryProvider);
+    final userService = ref.read(userServiceProvider);
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() {
-      return authRepository.verifyPhoneNumber(
+      return userService.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         onVerificationCompleted: onVerificationCompleted,
         onCodeSent: onCodeSent,
@@ -62,15 +64,25 @@ class AccountScreenController extends _$AccountScreenController {
     });
   }
 
-  Future<void> verifyPhoneCode({
+  Future<bool> verifyPhoneCode({
     required String verificationId,
     required String smsCode,
   }) async {
-    final authRepository = ref.read(authRepositoryProvider);
+    final userService = ref.read(userServiceProvider);
+
     state = const AsyncLoading();
 
-    state = await AsyncValue.guard(() {
-      return authRepository.verifyPhoneCode(verificationId, smsCode);
+    final result = await AsyncValue.guard(() async {
+      await userService.verifyPhoneCode(verificationId, smsCode);
     });
+
+    if (result.hasValue == true) {
+      state = result;
+      return true;
+    } else {
+      // If there's an error, set the state to AsyncError
+      state = AsyncError(result.error!, StackTrace.current);
+      return false;
+    }
   }
 }

@@ -1,7 +1,10 @@
+import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'account_screen_controller.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class VerifyPhoneNumberScreen extends ConsumerStatefulWidget {
   const VerifyPhoneNumberScreen({super.key});
@@ -10,14 +13,41 @@ class VerifyPhoneNumberScreen extends ConsumerStatefulWidget {
   ConsumerState<VerifyPhoneNumberScreen> createState() => _VerifyPhoneNumberScreenState();
 }
 
-class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScreen> {
+class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScreen> with CodeAutoFill {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
   final PhoneNumberRegexValidator phoneValidator = PhoneNumberRegexValidator();
 
-  bool codeSent = false; // To track whether the code has been sent
+  bool codeSent = false;
   String? verificationId;
+  String? otpCode;
+
+  @override
+  void codeUpdated() {
+    setState(() {
+      otpCode = code;
+      // Automatically fill the code into the TextField
+      _codeController.text = code ?? '';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Start listening for SMS autofill
+    listenForCode();
+  }
+
+  @override
+  void dispose() {
+    // Stop listening for SMS codes when the widget is disposed
+    cancel();
+    _phoneController.dispose();
+    _codeController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(accountScreenControllerProvider);
@@ -96,20 +126,19 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                   children: [
                     const Text('Ingrese el código que recibió:'),
                     const SizedBox(height: 16),
-                    // Verification Code Input Field
-                    TextFormField(
+                    // Verification Code Input Field using PinFieldAutoFill for autofill support
+                    PinFieldAutoFill(
                       controller: _codeController,
-                      decoration: const InputDecoration(
-                        labelText: 'Código de verificación',
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'El campo no puede estar vacío';
+                      codeLength: 6,
+                      onCodeChanged: (code) {
+                        if (code?.length == 6) {
+                          _codeController.text = code!;
                         }
-                        return null;
                       },
+                      decoration: UnderlineDecoration(
+                        textStyle: Theme.of(context).textTheme.titleLarge,
+                        colorBuilder: const FixedColorBuilder(Colors.black),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     // Button to submit verification code
@@ -118,10 +147,16 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                           ? null
                           : () async {
                               if (_formKey.currentState?.validate() ?? false) {
-                                await accountController.verifyPhoneCode(
+                                final result = await accountController.verifyPhoneCode(
                                   verificationId: verificationId!,
                                   smsCode: _codeController.text,
                                 );
+
+                                if (result) {
+                                  context.goNamed(
+                                    AppRoute.account.name,
+                                  );
+                                }
                               }
                             },
                       child: state.isLoading ? const CircularProgressIndicator() : const Text('Verificar código'),

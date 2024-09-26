@@ -171,19 +171,36 @@ class AuthRepository {
     }
   }
 
-  Future<void> verifyPhoneCode(String verificationId, String smsCode) async {
+  Future<bool> verifyPhoneCode(String verificationId, String smsCode) async {
     try {
+      // Create a PhoneAuthCredential with the verification ID and SMS code
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: smsCode,
       );
+      User currentUser = _auth.currentUser!;
 
-      await _auth.signInWithCredential(credential);
+      await currentUser.linkWithCredential(credential);
+
+      currentUser = _auth.currentUser!;
+
+      // If the current user is already linked with a phone number, no need to link again
+      if (currentUser.phoneNumber != null && currentUser.phoneNumber!.isNotEmpty) {
+        return true; // Phone number is already linked, verification successful
+      }
+
+      return false;
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: e.message,
-      );
+      if (e.code == 'provider-already-linked') {
+        // If the provider is already linked, it's not an error, just return success
+        return true;
+      } else {
+        // Otherwise, rethrow the exception to be handled elsewhere
+        throw FirebaseAuthException(
+          code: e.code,
+          message: e.message,
+        );
+      }
     }
   }
 
