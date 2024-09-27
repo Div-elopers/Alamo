@@ -44,10 +44,31 @@ class UserService {
   Future<AppUser?> signInWithGoogle() async {
     final userCredential = await _authRepository.signInWithGoogle();
     final user = userCredential?.user;
+
     if (user != null) {
-      // Fetch user profile from Firestore
-      return await _userRepository.fetchUser(user.uid);
+      final existingUser = await _userRepository.fetchUser(user.uid);
+
+      if (existingUser == null) {
+        // If the user does not exist, create a new profile in Firestore
+        final appUser = AppUser(
+          uid: user.uid,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          phoneVerified: false,
+        );
+        await _userRepository.createUser(appUser);
+      }
+
+      // Return the existing or newly created user
+      return existingUser ??
+          AppUser(
+            uid: user.uid,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            phoneVerified: false,
+          );
     }
+
     return null;
   }
 
