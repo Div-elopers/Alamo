@@ -26,4 +26,11 @@ class EmailPasswordSignInController extends _$EmailPasswordSignInController {
         return userService.registerUser(email, password);
     }
   }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    final userService = ref.read(userServiceProvider);
+    state = await AsyncValue.guard(() async {
+      await userService.sendPasswordResetEmail(email);
+    });
+  }
 }

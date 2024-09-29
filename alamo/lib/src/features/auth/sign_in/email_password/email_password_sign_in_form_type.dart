@@ -28,6 +28,13 @@ extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
     }
   }
 
+  String? get optionalThirdButtonText {
+    if (this == EmailPasswordSignInFormType.signIn) {
+      return '¿Olvidaste tu contraseña?'.hardcoded;
+    }
+    return null;
+  }
+
   EmailPasswordSignInFormType get secondaryActionFormType {
     if (this == EmailPasswordSignInFormType.register) {
       return EmailPasswordSignInFormType.signIn;
