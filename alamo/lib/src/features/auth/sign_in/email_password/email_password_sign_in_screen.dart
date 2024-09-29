@@ -4,6 +4,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/email_password_va
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_form_type.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:alamo/src/widgets/custom_text_button.dart';
 import 'package:alamo/src/widgets/primary_button.dart';
@@ -11,6 +12,7 @@ import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Email & password sign in screen.
 /// Wraps the [EmailPasswordSignInContents] widget below with a [Scaffold] and
@@ -174,6 +176,15 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
                 text: _formType.secondaryButtonText,
                 onPressed: state.isLoading ? null : _updateFormType,
               ),
+              if (_formType.optionalThirdButtonText != null)
+                CustomTextButton(
+                  text: _formType.optionalThirdButtonText!,
+                  onPressed: state.isLoading
+                      ? null
+                      : () {
+                          context.goNamed(AppRoute.forgotPassword.name);
+                        },
+                ),
             ],
           ),
         ),

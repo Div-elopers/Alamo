@@ -1,6 +1,7 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
@@ -22,6 +23,7 @@ enum AppRoute {
   account,
   signIn,
   verifyPhone,
+  forgotPassword,
 }
 
 /// returns the GoRouter instance that defines all the routes in the app
@@ -40,6 +42,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return '/';
         }
       } else {
+        if (path == '/signIn/forgotPassword') {
+          //no redirection
+          return null;
+        }
         return '/signIn';
       }
       return null;
@@ -80,6 +86,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/signIn',
         name: AppRoute.signIn.name,
         builder: (context, state) => const SignInScreen(),
+        routes: [
+          GoRoute(
+            path: "forgotPassword",
+            name: AppRoute.forgotPassword.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: ForgotPasswordScreen(),
+            ),
+          ),
+        ],
       ),
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),

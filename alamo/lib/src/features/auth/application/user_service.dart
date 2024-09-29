@@ -166,6 +166,10 @@ class UserService {
     }
     return success;
   }
+
+  sendPasswordResetEmail(String email) async {
+    await _authRepository.sendPasswordResetEmail(email);
+  }
 }
 
 @Riverpod(keepAlive: true)

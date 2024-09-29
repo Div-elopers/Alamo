@@ -1,3 +1,4 @@
+import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class VerifiedWidget extends StatelessWidget {
           "$type Verificado".hardcoded,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.green.shade600),
         ),
-        const SizedBox(width: 8),
+        gapW8,
         Icon(Icons.check_circle, color: Colors.green.shade600),
       ],
     );
