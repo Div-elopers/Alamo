@@ -79,32 +79,28 @@ class AccountScreenContents extends ConsumerWidget {
         ),
         gapH16,
 
-        user.emailVerified
-            ? const VerifiedWidget(type: "Email") // If verified, show VerifiedWidget
-            : const VerifyEmailWidget(), // If not verified, show VerifyEmailWidget
+        user.emailVerified ? const VerifiedWidget(type: "Email") : const VerifyEmailWidget(),
 
         gapH16,
 
         // Check phone verification status
-        user.phoneVerified
-            ? const VerifiedWidget(type: "Phone") // If verified, show VerifiedWidget
-            : const VerifyPhoneWidget(),
+        user.phoneVerified ? const VerifiedWidget(type: "Phone") : const VerifyPhoneWidget(),
         //
         gapH16,
-        // TextButton(
-        //   onPressed: () async {
-        //     final delete = await showAlertDialog(
-        //       context: context,
-        //       title: 'Estás seguro?'.hardcoded,
-        //       cancelActionText: 'Cancelar'.hardcoded,
-        //       defaultActionText: 'Eliminar'.hardcoded,
-        //     );
-        //     if (delete == true) {
-        //       ref.read(accountScreenControllerProvider.notifier).deleteAccount();
-        //     }
-        //   },
-        //   child: Text('Eliminar cuenta'.hardcoded),
-        // ),
+        TextButton(
+          onPressed: () async {
+            final delete = await showAlertDialog(
+              context: context,
+              title: 'Estás seguro?'.hardcoded,
+              cancelActionText: 'Cancelar'.hardcoded,
+              defaultActionText: 'Eliminar'.hardcoded,
+            );
+            if (delete == true) {
+              ref.read(accountScreenControllerProvider.notifier).deleteAccount();
+            }
+          },
+          child: Text('Eliminar cuenta'.hardcoded),
+        ),
       ],
     );
   }
@@ -131,7 +127,6 @@ class VerifyEmailWidget extends ConsumerWidget {
                       context: context,
                       title: "Enviado - revisa tu casilla de correo".hardcoded,
                     );
-                    // Automatically handle reloading via Riverpod reactivity
                   }
                 },
           child: state.isLoading ? const CircularProgressIndicator() : Text("Verificar correo".hardcoded),

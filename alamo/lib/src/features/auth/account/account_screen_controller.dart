@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:alamo/src/features/auth/application/user_service.dart';
 //import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/domain/app_user.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'account_screen_controller.g.dart';
@@ -27,12 +28,11 @@ class AccountScreenController extends _$AccountScreenController {
     return state.hasError == false;
   }
 
-  Future<bool> deleteAccount() async {
+  Future<void> deleteAccount() async {
     final userService = ref.read(userServiceProvider);
 
-    state = const AsyncLoading();
     state = await AsyncValue.guard(() => userService.deleteUserAccount());
-    return state.hasError == false;
+    ref.read(goRouterProvider).goNamed(AppRoute.signIn.name);
   }
 
   Future<bool> reloadUserAndSyncWithFirestore() async {
