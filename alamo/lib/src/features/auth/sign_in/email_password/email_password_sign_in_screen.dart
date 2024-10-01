@@ -4,6 +4,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/email_password_va
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_form_type.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:alamo/src/widgets/custom_text_button.dart';
 import 'package:alamo/src/widgets/primary_button.dart';
@@ -11,6 +12,7 @@ import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 /// Email & password sign in screen.
 /// Wraps the [EmailPasswordSignInContents] widget below with a [Scaffold] and
@@ -31,9 +33,6 @@ class EmailPasswordSignInScreen extends StatelessWidget {
   }
 }
 
-/// A widget for email & password authentication, supporting the following:
-/// - sign in
-/// - register (create an account)
 class EmailPasswordSignInContents extends ConsumerStatefulWidget {
   const EmailPasswordSignInContents({
     super.key,
@@ -45,10 +44,13 @@ class EmailPasswordSignInContents extends ConsumerStatefulWidget {
   /// The default form type to use.
   final EmailPasswordSignInFormType formType;
   @override
-  ConsumerState<EmailPasswordSignInContents> createState() => _EmailPasswordSignInContentsState();
+  ConsumerState<EmailPasswordSignInContents> createState() =>
+      _EmailPasswordSignInContentsState();
 }
 
-class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignInContents> with EmailAndPasswordValidators {
+class _EmailPasswordSignInContentsState
+    extends ConsumerState<EmailPasswordSignInContents>
+    with EmailAndPasswordValidators {
   final _formKey = GlobalKey<FormState>();
   final _node = FocusScopeNode();
   final _emailController = TextEditingController();
@@ -57,17 +59,11 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
   String get email => _emailController.text;
   String get password => _passwordController.text;
 
-  // local variable used to apply AutovalidateMode.onUserInteraction and show
-  // error hints only when the form has been submitted
-  // For more details on how this is implemented, see:
-  // https://codewithandrea.com/articles/flutter-text-field-form-validation/
   var _submitted = false;
-  // track the formType as a local state variable
   late var _formType = widget.formType;
 
   @override
   void dispose() {
-    // * TextEditingControllers should be always disposed
     _node.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -78,7 +74,8 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
     setState(() => _submitted = true);
     // only submit the form if validation passes
     if (_formKey.currentState!.validate()) {
-      final controller = ref.read(emailPasswordSignInControllerProvider.notifier);
+      final controller =
+          ref.read(emailPasswordSignInControllerProvider.notifier);
       final success = await controller.submit(
         email: email,
         password: password,
@@ -111,7 +108,7 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
     _passwordController.clear();
   }
 
-  @override
+  /*@override
   Widget build(BuildContext context) {
     ref.listen<AsyncValue>(
       emailPasswordSignInControllerProvider,
@@ -174,9 +171,155 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
                 text: _formType.secondaryButtonText,
                 onPressed: state.isLoading ? null : _updateFormType,
               ),
+              if (_formType.optionalThirdButtonText != null)
+                CustomTextButton(
+                  text: _formType.optionalThirdButtonText!,
+                  onPressed: state.isLoading
+                      ? null
+                      : () {
+                          context.goNamed(AppRoute.forgotPassword.name);
+                        },
+                ),
             ],
           ),
         ),
+      ),
+    );
+  }*/
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<AsyncValue>(
+      emailPasswordSignInControllerProvider,
+      (_, state) => state.showAlertDialogOnError(context),
+    );
+    final state = ref.watch(emailPasswordSignInControllerProvider);
+
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: 16), // Padding a la izquierda de toda la columna
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Email',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF1B1C41),
+            ),
+          ),
+          const SizedBox(height: 5),
+          TextFormField(
+            key: EmailPasswordSignInScreen.emailKey,
+            controller: _emailController,
+            decoration: InputDecoration(
+              enabled: !state.isLoading,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(color: Color(0xFFBEBFDA)),
+              ),
+            ),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (email) =>
+                !_submitted ? null : emailErrorText(email ?? ''),
+            autocorrect: false,
+            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.emailAddress,
+            keyboardAppearance: Brightness.light,
+            inputFormatters: <TextInputFormatter>[
+              ValidatorInputFormatter(
+                  editingValidator: EmailEditingRegexValidator()),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Contraseña',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF1B1C41),
+            ),
+          ),
+          const SizedBox(height: 5),
+          TextFormField(
+            key: EmailPasswordSignInScreen.passwordKey,
+            controller: _passwordController,
+            decoration: InputDecoration(
+              enabled: !state.isLoading,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(color: Color(0xFFBEBFDA)),
+              ),
+            ),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (password) => !_submitted
+                ? null
+                : passwordErrorText(password ?? '', _formType),
+            obscureText: true,
+            autocorrect: false,
+            textInputAction: TextInputAction.done,
+            keyboardAppearance: Brightness.light,
+          ),
+          const SizedBox(height: 20),
+          const Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              'Olvidé mi contraseña',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF1B1C41),
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+          GestureDetector(
+            onTap: state.isLoading ? null : _submit,
+            child: Container(
+              width: 322,
+              height: 46,
+              decoration: BoxDecoration(
+                color: state.isLoading ? Colors.grey : const Color(0xFF1B1C41),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 2,
+                    offset: const Offset(1, 1),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: state.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        'Iniciar sesión',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFFFAFAFA),
+                        ),
+                      ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          CustomTextButton(
+            text: _formType.secondaryButtonText,
+            onPressed: state.isLoading ? null : _updateFormType,
+          ),
+          /* if (_formType.optionalThirdButtonText != null)
+            CustomTextButton(
+              text: _formType.optionalThirdButtonText!,
+              onPressed: state.isLoading
+                  ? null
+                  : () {
+                      context.goNamed(AppRoute.forgotPassword.name);
+                    },
+            ),*/
+        ],
       ),
     );
   }

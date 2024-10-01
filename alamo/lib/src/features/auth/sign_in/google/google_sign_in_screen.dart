@@ -25,14 +25,12 @@ class _GoogleSignInScreenState extends ConsumerState<GoogleSignInScreen> {
     );
     final state = ref.watch(googleSignInControllerProvider);
     return Center(
-      child: PrimaryButton(
-        isLoading: state.isLoading,
-        onPressed: state.isLoading ? null : _signInWithGoogle,
-        child: Image.asset(
-          'assets/images/google.png',
-          height: 24, // Adjust size as needed
-        ),
-      ),
-    );
+        child: PrimaryButton(
+            isLoading: state.isLoading,
+            onPressed: state.isLoading ? null : _signInWithGoogle,
+            child: Image.asset(
+              'assets/images/google.png',
+              height: 24, // Adjust size as needed
+            )));
   }
 }

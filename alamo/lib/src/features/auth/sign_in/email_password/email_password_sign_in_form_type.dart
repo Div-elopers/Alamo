@@ -24,7 +24,7 @@ extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
     if (this == EmailPasswordSignInFormType.register) {
       return '¿Tienes una cuenta? Inicia sesión'.hardcoded;
     } else {
-      return '¿Necesitas una cuenta? Regístrate'.hardcoded;
+      return 'Crear nueva cuenta'.hardcoded;
     }
   }
 
