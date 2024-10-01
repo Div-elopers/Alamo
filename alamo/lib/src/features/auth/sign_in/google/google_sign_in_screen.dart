@@ -27,10 +27,11 @@ class _GoogleSignInScreenState extends ConsumerState<GoogleSignInScreen> {
     return Center(
       child: PrimaryButton(
         isLoading: state.isLoading,
+        backgroundColor: Colors.white,
         onPressed: state.isLoading ? null : _signInWithGoogle,
         child: Image.asset(
           'assets/images/google.png',
-          height: 24, // Adjust size as needed
+          height: 24,
         ),
       ),
     );

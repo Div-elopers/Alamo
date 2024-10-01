@@ -16,17 +16,19 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Alamo'.hardcoded)),
-      body: const ResponsiveCenter(
-        child: Column(
-          children: [
-            EmailPasswordSignInScreen(
-              formType: EmailPasswordSignInFormType.signIn,
-            ),
-            gapH12,
-            GoogleSignInScreen(),
-          ],
+    return const Scaffold(
+      backgroundColor: Color(0xffF5F5F5),
+      body: ResponsiveCenter(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              EmailPasswordSignInScreen(
+                formType: EmailPasswordSignInFormType.signIn,
+              ),
+              //gapH12,
+              //GoogleSignInScreen(),
+            ],
+          ),
         ),
       ),
     );
