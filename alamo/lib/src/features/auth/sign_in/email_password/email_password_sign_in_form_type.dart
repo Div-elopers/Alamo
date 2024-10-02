@@ -14,7 +14,7 @@ extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
   // Getters
   String get primaryButtonText {
     if (this == EmailPasswordSignInFormType.register) {
-      return 'Crear una cuenta'.hardcoded;
+      return 'Crear nueva cuenta'.hardcoded;
     } else {
       return 'Iniciar sesión'.hardcoded;
     }
@@ -22,9 +22,9 @@ extension EmailPasswordSignInFormTypeX on EmailPasswordSignInFormType {
 
   String get secondaryButtonText {
     if (this == EmailPasswordSignInFormType.register) {
-      return '¿Tienes una cuenta? Inicia sesión'.hardcoded;
+      return 'Inicia sesión'.hardcoded;
     } else {
-      return '¿Necesitas una cuenta? Regístrate'.hardcoded;
+      return 'Crear nueva cuenta'.hardcoded;
     }
   }
 

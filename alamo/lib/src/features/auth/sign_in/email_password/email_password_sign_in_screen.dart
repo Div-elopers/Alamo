@@ -129,183 +129,195 @@ class _EmailPasswordSignInContentsState
     double height = MediaQuery.sizeOf(context).height;
     double width = MediaQuery.sizeOf(context).width;
 
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.topRight,
+    return Stack(children: [
+      Align(
+        alignment: Alignment.topRight,
+        child: Image.asset(
+          'assets/images/fotos_1.png',
+          height: 200,
+        ),
+      ),
+      SizedBox(
+        height: height,
+        child: Align(
+          alignment: Alignment.bottomLeft,
           child: Image.asset(
-            'assets/images/fotos_1.png',
+            'assets/images/fotos_2.png',
             height: 200,
           ),
         ),
-        SizedBox(
-          height: height,
-          child: Align(
-            alignment: Alignment.bottomLeft,
-            child: Image.asset(
-              'assets/images/fotos_2.png',
-              height: 200,
-            ),
+      ),
+      Column(
+        children: [
+          SizedBox(
+            height: height * 0.05,
           ),
-        ),
-        Column(
-          children: [
-            SizedBox(
-              height: height * 0.05,
-            ),
-            Image.asset(
-              'assets/images/alamo_logo.png',
-              height: 200,
-            ),
-            const Text('Ingrese su Usuario'),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            ResponsiveScrollableCard(
-              child: FocusScope(
-                node: _node,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      gapH8,
-                      // Email field
-                      const Text('Email'),
-                      SizedBox(
-                        height: height * 0.01,
-                      ),
-                      TextFormField(
-                        key: EmailPasswordSignInScreen.emailKey,
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1, color: Colors.transparent)),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.transparent),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.transparent),
-                          ),
-                          //labelText: 'Email'.hardcoded,
-                          enabled: !state.isLoading,
+          Image.asset(
+            'assets/images/alamo_logo.png',
+            height: 200,
+          ),
+          const Text('Inicia sesión'),
+          SizedBox(
+            height: height * 0.02,
+          ),
+          ResponsiveScrollableCard(
+            child: FocusScope(
+              node: _node,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    gapH8,
+                    // Email field
+                    const Text('Email'),
+                    SizedBox(
+                      height: height * 0.01,
+                    ),
+                    TextFormField(
+                      key: EmailPasswordSignInScreen.emailKey,
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1, color: Colors.transparent)),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Colors.transparent),
                         ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (email) =>
-                            !_submitted ? null : emailErrorText(email ?? ''),
-                        autocorrect: false,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.emailAddress,
-                        keyboardAppearance: Brightness.light,
-                        onEditingComplete: () => _emailEditingComplete(),
-                        inputFormatters: <TextInputFormatter>[
-                          ValidatorInputFormatter(
-                              editingValidator: EmailEditingRegexValidator()),
-                        ],
-                      ),
-                      gapH8,
-                      const Text('Contraseña'),
-                      SizedBox(
-                        height: height * 0.01,
-                      ),
-                      // Password field
-                      TextFormField(
-                        key: EmailPasswordSignInScreen.passwordKey,
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabled: !state.isLoading,
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1, color: Colors.transparent)),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.transparent),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.transparent),
-                          ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Colors.transparent),
                         ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (password) => !_submitted
-                            ? null
-                            : passwordErrorText(password ?? '', _formType),
-                        obscureText: true,
-                        autocorrect: false,
-                        textInputAction: TextInputAction.done,
-                        keyboardAppearance: Brightness.light,
-                        onEditingComplete: () => _passwordEditingComplete(),
+                        //labelText: 'Email'.hardcoded,
+                        enabled: !state.isLoading,
                       ),
-                      if (_formType.optionalThirdButtonText != null)
-                        Container(
-                          alignment: Alignment.centerRight,
-                          child: CustomTextButton(
-                            text: _formType.optionalThirdButtonText!,
-                            style: const TextStyle(
-                                decoration: TextDecoration.underline),
-                            onPressed: state.isLoading
-                                ? null
-                                : () {
-                                    context
-                                        .goNamed(AppRoute.forgotPassword.name);
-                                  },
-                          ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (email) =>
+                          !_submitted ? null : emailErrorText(email ?? ''),
+                      autocorrect: false,
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
+                      keyboardAppearance: Brightness.light,
+                      onEditingComplete: () => _emailEditingComplete(),
+                      inputFormatters: <TextInputFormatter>[
+                        ValidatorInputFormatter(
+                            editingValidator: EmailEditingRegexValidator()),
+                      ],
+                    ),
+                    gapH8,
+                    const Text('Contraseña'),
+                    SizedBox(
+                      height: height * 0.01,
+                    ),
+                    // Password field
+                    TextFormField(
+                      key: EmailPasswordSignInScreen.passwordKey,
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        enabled: !state.isLoading,
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 1, color: Colors.transparent)),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Colors.transparent),
                         ),
-                      gapH8,
-                      Row(children: [
-                        Expanded(
-                          child: Container(
-                              margin: const EdgeInsets.only(
-                                  left: 10.0, right: 20.0),
-                              child: const Divider(
-                                color: Colors.black,
-                                height: 36,
-                              )),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Colors.transparent),
                         ),
-                        Text("o inicia con"),
-                        Expanded(
-                          child: Container(
-                              margin: const EdgeInsets.only(
-                                  left: 20.0, right: 10.0),
-                              child: const Divider(
-                                color: Colors.black,
-                                height: 36,
-                              )),
+                      ),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (password) => !_submitted
+                          ? null
+                          : passwordErrorText(password ?? '', _formType),
+                      obscureText: true,
+                      autocorrect: false,
+                      textInputAction: TextInputAction.done,
+                      keyboardAppearance: Brightness.light,
+                      onEditingComplete: () => _passwordEditingComplete(),
+                    ),
+                    if (_formType.optionalThirdButtonText != null)
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: CustomTextButton(
+                          text: _formType.optionalThirdButtonText!,
+                          style: const TextStyle(
+                              decoration: TextDecoration.underline),
+                          onPressed: state.isLoading
+                              ? null
+                              : () {
+                                  context.goNamed(AppRoute.forgotPassword.name);
+                                },
                         ),
-                      ]),
-                      gapH8,
-                      GoogleSignInScreen(),
-                      gapH8,
-                      CustomTextButton(
-                        style: const TextStyle(
-                            decoration: TextDecoration.underline),
-                        text: _formType.secondaryButtonText,
-                        onPressed: state.isLoading ? null : _updateFormType,
                       ),
-                      SizedBox(
-                        height: height * 0.05,
+                    gapH8,
+                    Row(children: [
+                      Expanded(
+                        child: Container(
+                            margin:
+                                const EdgeInsets.only(left: 10.0, right: 20.0),
+                            child: const Divider(
+                              color: Colors.black,
+                              height: 36,
+                            )),
                       ),
-                      PrimaryButton(
-                        text: _formType.primaryButtonText,
-                        backgroundColor: Color(0xff1B1C41),
-                        isLoading: state.isLoading,
-                        onPressed: state.isLoading ? null : () => _submit(),
+                      const Text("o inicia con"),
+                      Expanded(
+                        child: Container(
+                            margin:
+                                const EdgeInsets.only(left: 20.0, right: 10.0),
+                            child: const Divider(
+                              color: Colors.black,
+                              height: 36,
+                            )),
                       ),
-                    ],
-                  ),
+                    ]),
+                    gapH8,
+                    const Row(children: [
+                      Expanded(
+                        child:
+                            GoogleSignInScreen(), // Widget del primer botón (o contenido)
+                      ),
+                      /* SizedBox(
+                          width:
+                            1),*/ // Espacio horizontal entre los widgets (gapH8)
+                      Expanded(
+                        child: GoogleSignInScreen(),
+                      ),
+                    ]),
+                    gapH8,
+                    /*CustomTextButton(
+                      style:
+                          const TextStyle(decoration: TextDecoration.underline),
+                      text: _formType.secondaryButtonText,
+                      onPressed: state.isLoading ? null : _updateFormType,
+                    ),*/
+                    CustomTextButton(
+                      text: 'Crear cuenta', // Texto para crear una nueva cuenta
+                      onPressed: () => _goToRegisterScreen(context),
+                      //SizedBox(
+                      // height: height * 0.05,
+                    ),
+
+                    PrimaryButton(
+                      text: _formType.primaryButtonText,
+                      backgroundColor: const Color(0xff1B1C41),
+                      isLoading: state.isLoading,
+                      onPressed: state.isLoading ? null : () => _submit(),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        )
-      ],
-    );
+          )
+        ],
+      )
+    ]);
   }
 }
