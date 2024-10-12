@@ -16,11 +16,16 @@ class Thread {
 
   // Factory method to create a Thread from Firestore data
   factory Thread.fromDocument(String threadId, Map<String, dynamic> data) {
+    List<Message> messages = (data['messages'] != null
+        ? (data['messages'] as List<dynamic>).map((messageData) => Message.fromDocument(messageData as Map<String, dynamic>)).toList()
+        : <Message>[]);
+
+    messages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     return Thread(
       threadId: threadId,
       participants: List<String>.from(data['participants'] as List<dynamic>),
-      messages: (data['messages'] as List<dynamic>).map((messageData) => Message.fromDocument(messageData as Map<String, dynamic>)).toList(),
-      lastUpdated: (data['lastUpdated'] as Timestamp).toDate(),
+      messages: messages,
+      lastUpdated: (data['lastUpdated'] != null ? (data['lastUpdated'] as Timestamp).toDate() : DateTime.now()),
     );
   }
 

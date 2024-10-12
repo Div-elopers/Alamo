@@ -40,7 +40,7 @@ class ChatScreen extends ConsumerWidget {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data == null) {
-                      return const Center(child: Text("No messages yet."));
+                      return const Center(child: Text("No hay mensajes aún."));
                     }
 
                     final thread = snapshot.data!;
@@ -75,14 +75,14 @@ class ChatScreen extends ConsumerWidget {
     final TextEditingController messageController = TextEditingController();
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: messageController,
               decoration: const InputDecoration(
-                labelText: 'Enter message',
+                labelText: 'Escriba su mensaje',
               ),
               onSubmitted: (text) {
                 if (text.isNotEmpty) {

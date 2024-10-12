@@ -2,15 +2,17 @@ import 'dart:async';
 
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
+import 'package:alamo/src/features/chat/data/chat_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../domain/app_user.dart';
 
 part 'user_service.g.dart';
 
 class UserService {
-  const UserService(this._authRepository, this._userRepository);
+  const UserService(this._authRepository, this._userRepository, this._chatRepository);
   final AuthRepository _authRepository;
   final UsersRepository _userRepository;
+  final ChatRepository _chatRepository;
 
   // Register a new user
   Future<void> registerUser(String email, String password) async {
@@ -90,6 +92,12 @@ class UserService {
   Future<void> deleteUserAccount() async {
     final currentUser = _authRepository.currentUser;
     if (currentUser != null) {
+      final threadId = await _chatRepository.findThreadByParticipant(currentUser.uid);
+
+      if (threadId != null) {
+        await _chatRepository.deleteChatThread(threadId);
+      }
+
       // Delete user from Firestore
       await _userRepository.deleteUser(currentUser.uid);
       // Sign out from authentication
@@ -176,5 +184,6 @@ class UserService {
 UserService userService(UserServiceRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final userRepository = ref.watch(userRepositoryProvider);
-  return UserService(authRepository, userRepository);
+  final chatRepository = ref.watch(chatRepositoryProvider);
+  return UserService(authRepository, userRepository, chatRepository);
 }
