@@ -43,7 +43,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: const Text('Municipio B')),
+        appBar: AppBar(title: const Text('Mapa')),
         body: GoogleMap(
           cloudMapId: mapId,
           initialCameraPosition: CameraPosition(
