@@ -51,3 +51,47 @@ alamo/pubspec.lock
 alamo/firebase.json
 alamo/android/app/google-services.json
 alamo/.env
+
+alamo/functions/venv/*
+# Ignore Python virtual environment
+functions/venv/
+
+# Ignore __pycache__ folders (Python bytecode cache)
+functions/**/__pycache__/
+functions/**/*.py[cod]
+
+# Ignore compiled Python files
+functions/**/*.pyc
+
+# Ignore local environment configuration
+functions/.env
+functions/.python-version
+
+# Ignore log files
+functions/*.log
+
+# Ignore any coverage reports
+functions/htmlcov/
+functions/.coverage
+functions/.coverage.*
+
+# Ignore temporary files or folders created by editors/IDEs
+functions/.vscode/
+functions/.idea/
+functions/*~
+
+# Ignore macOS specific files
+functions/.DS_Store
+
+# Ignore Firebase Functions build and deployment files (Node.js specific)
+functions/node_modules/
+functions/package-lock.json
+
+# Ignore Python cache and pip files
+functions/pip-log.txt
+functions/pip-delete-this-directory.txt
+
+# Ignore any other temporary or backup files
+functions/.pytest_cache/
+functions/*.bak
+functions/*.swp
