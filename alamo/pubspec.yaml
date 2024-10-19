@@ -47,9 +47,9 @@ flutter:
 
   fonts:
     # Used for Golden Image tests
-    - family: Roboto
+    - family: Sofia Sanz
       fonts:
-        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/sofia_sanz.ttf
 
   assets:
     - assets/images/google.png   

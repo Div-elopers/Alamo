@@ -3,6 +3,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/email_password_si
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_validators.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_form_type.dart';
 import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/routing/app_router.dart';
@@ -156,10 +157,13 @@ class _EmailPasswordSignInContentsState
             'assets/images/alamo_logo.png',
             height: 200,
           ),
-          const Text('Inicia sesión'),
-          SizedBox(
-            height: height * 0.02,
-          ),
+          const Text('Inicia sesión',
+              style: TextStyle(
+                fontFamily: 'Sofia Sanz', // Especifica tu fuente personalizada
+                fontSize: 20, // Cambia el tamaño según tus necesidades
+                fontWeight:
+                    FontWeight.bold, // Opcional: puedes usar bold o regular
+              )),
           ResponsiveScrollableCard(
             child: FocusScope(
               node: _node,
@@ -291,19 +295,26 @@ class _EmailPasswordSignInContentsState
                         child: GoogleSignInScreen(),
                       ),
                     ]),
-                    gapH8,
-                    /*CustomTextButton(
+                    //Boton de Register
+                    CustomTextButton(
+                      style:
+                          const TextStyle(decoration: TextDecoration.underline),
+                      text: _formType.secondaryButtonText,
+                      onPressed: state.isLoading
+                          ? null
+                          : () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => RegisterScreen()));
+                            },
+                    ),
+                    // Botón anterior de register
+                    /*gapH8,
+                    CustomTextButton(
                       style:
                           const TextStyle(decoration: TextDecoration.underline),
                       text: _formType.secondaryButtonText,
                       onPressed: state.isLoading ? null : _updateFormType,
                     ),*/
-                    CustomTextButton(
-                      text: 'Crear cuenta', // Texto para crear una nueva cuenta
-                      onPressed: () => _goToRegisterScreen(context),
-                      //SizedBox(
-                      // height: height * 0.05,
-                    ),
 
                     PrimaryButton(
                       text: _formType.primaryButtonText,
