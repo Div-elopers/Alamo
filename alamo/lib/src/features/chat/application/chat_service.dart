@@ -27,9 +27,9 @@ class ChatService {
   }
 
   // Add a message to the chat thread in Firestore
-  Future<void> addMessage(String threadId, String senderId, String messageContent) async {
+  Future<void> addMessage(String threadId, String messageContent) async {
     final messageData = {
-      'senderId': senderId,
+      'userIsSender': true,
       'content': messageContent,
       'timestamp': DateTime.now(),
       'type': 'text',

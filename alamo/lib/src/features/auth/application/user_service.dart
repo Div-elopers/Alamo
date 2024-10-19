@@ -15,17 +15,12 @@ class UserService {
   final ChatRepository _chatRepository;
 
   // Register a new user
-  Future<void> registerUser(String email, String password) async {
+  Future<void> registerUser(String email, String password, String displayName) async {
     final userCredential = await _authRepository.createUserWithEmailAndPassword(email, password);
     final user = userCredential.user;
     if (user != null) {
       // Create user profile in Firestore
-      final appUser = AppUser(
-        uid: user.uid,
-        email: user.email,
-        emailVerified: user.emailVerified,
-        phoneVerified: false,
-      );
+      final appUser = AppUser(uid: user.uid, email: user.email, emailVerified: user.emailVerified, phoneVerified: false, displayName: displayName);
       await _userRepository.createUser(appUser);
     }
   }
@@ -57,6 +52,7 @@ class UserService {
           email: user.email,
           emailVerified: user.emailVerified,
           phoneVerified: false,
+          displayName: "",
         );
         await _userRepository.createUser(appUser);
       }
@@ -68,6 +64,7 @@ class UserService {
             email: user.email,
             emailVerified: user.emailVerified,
             phoneVerified: false,
+            displayName: "",
           );
     }
 
@@ -110,11 +107,12 @@ class UserService {
     final firebaseUser = _authRepository.currentUser;
     if (firebaseUser != null) {
       return AppUser(
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        emailVerified: firebaseUser.emailVerified,
-        phoneVerified: false, // Assuming false by default
-      );
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          emailVerified: firebaseUser.emailVerified,
+          phoneVerified: false,
+          displayName: firebaseUser.displayName // Assuming false by default
+          );
     }
     return null;
   }
