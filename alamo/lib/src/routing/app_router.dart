@@ -4,6 +4,7 @@ import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
+import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
 import 'package:alamo/src/routing/go_router_refresh_stream.dart';
@@ -81,6 +82,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const MaterialPage(
               child: MapScreen(),
             ),
+          ),
+          GoRoute(
+            path: 'chat/:userId',
+            name: AppRoute.chatbot.name,
+            pageBuilder: (context, state) {
+              final userId = state.pathParameters['userId']!;
+              return MaterialPage(
+                child: ChatScreen(userId: userId),
+              );
+            },
           ),
         ],
       ),

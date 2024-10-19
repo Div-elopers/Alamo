@@ -8,6 +8,7 @@ enum PopupMenuOption {
   signIn,
   map,
   account,
+  chatBot,
 }
 
 class MoreMenuButton extends StatelessWidget {
@@ -37,6 +38,11 @@ class MoreMenuButton extends StatelessWidget {
               value: PopupMenuOption.map,
               child: Text('Mapa'.hardcoded),
             ),
+            PopupMenuItem(
+              key: accountKey,
+              value: PopupMenuOption.chatBot,
+              child: Text('Chat'.hardcoded),
+            ),
           ] else
             PopupMenuItem(
               key: signInKey,
@@ -54,6 +60,8 @@ class MoreMenuButton extends StatelessWidget {
             context.goNamed(AppRoute.map.name);
           case PopupMenuOption.account:
             context.goNamed(AppRoute.account.name);
+          case PopupMenuOption.chatBot:
+            context.goNamed(AppRoute.chatbot.name, pathParameters: {'userId': user!.uid});
         }
       },
     );
