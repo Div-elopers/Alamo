@@ -39,37 +39,23 @@ class ChatService {
     await _chatRepository.addMessage(threadId, messageData);
 
     // Now trigger the cloud function to send the conversation to ChatGPT
-    // await _sendMessageToChatGPT(threadId);
+    //await _sendMessageToAssistant(threadId, messageContent);
   }
 
-  Future<void> _sendMessageToChatGPT(String threadId) async {
-    // Fetch the full chat thread
-    final thread = await _chatRepository.fetchChatThread(threadId);
+  Future<void> _sendMessageToAssistant(String threadId, String messageContent) async {
+    try {
+      // Prepare the data for the cloud function
+      final HttpsCallable callable = _cloudFunctions.httpsCallable('send_message_to_assistant');
 
-    // Ensure the thread exists and has messages
-    if (thread != null) {
-      // Convert the thread to ChatGPT-compatible format
-      final List<Map<String, String>> conversation = thread.toChatGPTFormat();
-
-      // Call the Cloud Function to process the conversation with ChatGPT
-      final HttpsCallable callable = _cloudFunctions.httpsCallable('chatGPTFunction');
+      // Call the cloud function with the threadId and the latest user message
       final response = await callable.call({
         'threadId': threadId,
-        'messages': conversation,
+        'messageContent': messageContent,
       });
 
-      // Handle the response from ChatGPT and store it as a new message
-      if (response.data != null) {
-        final botMessage = {
-          "senderId": 'chatbot',
-          "content": response.data['reply'],
-          "timestamp": DateTime.now(),
-          "type": 'text',
-        };
-
-        // Save the bot's reply as a new message in the thread
-        await _chatRepository.addMessage(threadId, botMessage);
-      }
+      await _chatRepository.addMessage(threadId, response.data);
+    } catch (error) {
+      // Handle errors if something goes wrong
     }
   }
 }
