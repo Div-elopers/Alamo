@@ -318,7 +318,6 @@ class _EmailPasswordSignInContentsState
 
                     PrimaryButton(
                       text: _formType.primaryButtonText,
-                      backgroundColor: const Color(0xff1B1C41),
                       isLoading: state.isLoading,
                       onPressed: state.isLoading ? null : () => _submit(),
                     ),

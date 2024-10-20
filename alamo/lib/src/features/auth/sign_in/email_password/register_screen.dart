@@ -26,21 +26,19 @@ class RegisterScreen extends StatelessWidget {
             child: Text(
               'Registro de usuario',
               style: TextStyle(
-                color: Color(0xff1B1C41), // Color del texto
-                fontSize: 20, // Tamaño del texto
+                color: Color(0xff1B1C41),
+                fontSize: 20,
                 fontFamily: 'Sofia Sanz',
               ),
             ),
           ),
-          backgroundColor:
-              Colors.transparent, // Establece el fondo transparente
+          backgroundColor: Colors.transparent,
           elevation: 0,
           iconTheme: const IconThemeData(color: Color(0xff1B1C41)),
           leading: IconButton(
-            icon: const Icon(
-                Icons.arrow_back_ios), // Cambia esto por tu icono personalizado
+            icon: const Icon(Icons.arrow_back_ios),
             color: const Color(0xff1B1C41),
-            iconSize: 20, // Tamaño del icono
+            iconSize: 20,
             onPressed: () {
               Navigator.of(context).pop(); // Navega hacia atrás
             },
@@ -54,7 +52,7 @@ class RegisterScreen extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      const SizedBox(height: 20), // Espacio superior
+                      //const SizedBox(height: 0), // Espacio superior
                       // Campo de nombre
                       const Text('Nombre'),
                       const SizedBox(height: 8), // Espacio entre texto y campo
@@ -221,7 +219,6 @@ class RegisterScreen extends StatelessWidget {
                             borderSide:
                                 BorderSide(width: 1, color: Colors.transparent),
                           ),
-                          //labelText: 'Contraseña',
                         ),
                         obscureText: true,
                         validator: (value) {
@@ -231,11 +228,19 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                       ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 16.0),
+                        child: Text(
+                          'Al registrarse está de acuerdo con los términos y condiciones',
+                          style: TextStyle(
+                            fontFamily: 'Sofia Sanz',
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 32),
                       PrimaryButton(
-                        text:
-                            'Registrarse', // Asegúrate de que este texto sea el adecuado
-                        backgroundColor: const Color(0xff1B1C41),
+                        text: 'Crear usuario',
                         isLoading:
                             _isLoading, // Aquí puedes manejar el estado de carga
                         onPressed: _isLoading
