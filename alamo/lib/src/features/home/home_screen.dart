@@ -1,9 +1,11 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 //import 'package:alamo/src/features/home/home_app_bar/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:alamo/src/widgets/custom_button.dart';
 import 'package:alamo/src/features/home/home_app_bar/bottom_navigation_bar.dart';
+import 'package:alamo/src/features/auth/account/cutom_drawer_screen.dart';
 /*class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -41,11 +43,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Color(0xff1B1C41)),
-          onPressed: () {
-            // Lógica para abrir el menú
-          },
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Color(0xff1B1C41)),
+            onPressed: () {
+              Scaffold.of(context).openDrawer(); // Opens the drawer
+            },
+          ),
         ),
         actions: [
           IconButton(
@@ -58,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
+      drawer: const CustomDrawer(), // Usa el widget CustomDrawer aquí
       body: Column(
         children: [
           Expanded(
@@ -106,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Center(
               child: CustomButton(
-                text: ' $title',
+                text: title, // Usa el título directamente
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -122,19 +127,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-  /*Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
-        BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Agregar'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-      ],
-      currentIndex: 0,
-      onTap: (index) {
-        // Lógica para cambiar de pantalla
-      },
-    );
-  }*/
-
