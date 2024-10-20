@@ -159,7 +159,7 @@ class _EmailPasswordSignInContentsState
           ),
           const Text('Inicia sesión',
               style: TextStyle(
-                fontFamily: 'Sofia Sanz', // Especifica tu fuente personalizada
+                fontFamily: 'Sofia Sans', // Especifica tu fuente personalizada
                 fontSize: 20, // Cambia el tamaño según tus necesidades
                 fontWeight:
                     FontWeight.bold, // Opcional: puedes usar bold o regular

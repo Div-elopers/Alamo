@@ -21,7 +21,7 @@ class PrimaryButton extends StatelessWidget {
     this.backgroundColor = const Color(0xff1B1C41),
     this.foregroundColor = Colors.white,
     this.radius,
-    this.fontFamily = 'Sofia Sanz', // Inicializa el nuevo parámetro
+    this.fontFamily = 'Sofia Sans', // Inicializa el nuevo parámetro
     this.fontSize = 16,
   });
 

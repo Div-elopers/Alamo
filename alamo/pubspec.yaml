@@ -48,9 +48,9 @@ flutter:
 
   fonts:
     # Used for Golden Image tests
-    - family: Sofia Sanz
+    - family: Sofia Sans
       fonts:
-        - asset: assets/fonts/sofia_sanz.ttf
+        - asset: assets/fonts/SofiaSans-Regular.ttf
 
   assets:
     - assets/images/google.png   

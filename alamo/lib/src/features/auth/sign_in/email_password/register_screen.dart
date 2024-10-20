@@ -28,7 +28,7 @@ class RegisterScreen extends StatelessWidget {
               style: TextStyle(
                 color: Color(0xff1B1C41),
                 fontSize: 20,
-                fontFamily: 'Sofia Sanz',
+                fontFamily: 'Sofia Sans',
               ),
             ),
           ),
@@ -233,7 +233,7 @@ class RegisterScreen extends StatelessWidget {
                         child: Text(
                           'Al registrarse está de acuerdo con los términos y condiciones',
                           style: TextStyle(
-                            fontFamily: 'Sofia Sanz',
+                            fontFamily: 'Sofia Sans',
                             fontSize: 12,
                           ),
                         ),
