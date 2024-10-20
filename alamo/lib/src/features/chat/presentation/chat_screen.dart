@@ -1,5 +1,4 @@
 import 'package:alamo/src/features/auth/data/users_repository.dart';
-import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/features/chat/domain/app_thread.dart';
@@ -17,15 +16,14 @@ class ChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatController = ref.watch(chatScreenControllerProvider.notifier);
-    String texto = "userName";
     final userStream = ref.watch(userStreamProvider(userId));
 
     return userStream.when(
       data: (user) {
-        final senderName = user?.displayName ?? 'Unknown User'; // Use displayName or a fallback
+        final senderName = user?.displayName ?? 'usuario';
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Chat')),
+          appBar: AppBar(title: const Text('Asistente virtual')),
           body: FutureBuilder<String>(
             future: chatController.getOrCreateThreadId(userId),
             builder: (context, snapshot) {
@@ -65,7 +63,7 @@ class ChatScreen extends ConsumerWidget {
                                   return MessageBubble(
                                     senderName: message.userIsSender ? senderName : 'Chatbot',
                                     text: message.content,
-                                    date: message.timestamp.toLocal().toString(),
+                                    date: message.formattedTime,
                                     userIsSender: message.userIsSender,
                                   );
                                 },
@@ -127,7 +125,7 @@ class ChatScreen extends ConsumerWidget {
     final TextEditingController messageController = TextEditingController();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Row(
         children: [
           Expanded(
@@ -135,6 +133,9 @@ class ChatScreen extends ConsumerWidget {
               controller: messageController,
               decoration: const InputDecoration(
                 labelText: 'Escriba su mensaje',
+                labelStyle: TextStyle(
+                  fontSize: 14,
+                ),
               ),
               onSubmitted: (text) {
                 if (text.isNotEmpty) {

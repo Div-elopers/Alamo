@@ -28,30 +28,28 @@ class MessageBubble extends StatelessWidget {
           ),
           Material(
             borderRadius: BorderRadius.only(
-              topRight: userIsSender ? const Radius.circular(0) : const Radius.circular(30),
-              topLeft: userIsSender ? const Radius.circular(30) : const Radius.circular(0),
-              bottomLeft: const Radius.circular(30),
-              bottomRight: const Radius.circular(30),
+              topRight: userIsSender ? const Radius.circular(0) : const Radius.circular(25),
+              topLeft: userIsSender ? const Radius.circular(25) : const Radius.circular(0),
+              bottomLeft: const Radius.circular(25),
+              bottomRight: const Radius.circular(25),
             ),
-            elevation: 7,
-            color: userIsSender ? Colors.lightBlueAccent : Colors.white,
+            color: userIsSender ? const Color.fromRGBO(27, 27, 64, 1.0) : Colors.white,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     text,
                     style: const TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 15.0,
+                      color: Colors.white,
+                      fontSize: 14.0,
                     ),
                   ),
-                  const SizedBox(height: 5),
                   Text(
                     date,
                     style: const TextStyle(
-                      color: Colors.black54,
+                      color: Colors.white,
                       fontSize: 10.0,
                     ),
                   ),
