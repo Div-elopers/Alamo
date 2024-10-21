@@ -1,8 +1,5 @@
-import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_form_type.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_screen.dart';
-import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/widgets/responsive_center.dart';
 import 'package:flutter/material.dart';
 

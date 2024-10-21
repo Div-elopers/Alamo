@@ -5,9 +5,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/email_password_si
 import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
-import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/routing/app_router.dart';
-import 'package:alamo/src/utils/app_theme.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:alamo/src/widgets/custom_text_button.dart';
 import 'package:alamo/src/widgets/primary_button.dart';

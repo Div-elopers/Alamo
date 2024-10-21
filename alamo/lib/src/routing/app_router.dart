@@ -3,7 +3,6 @@ import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';

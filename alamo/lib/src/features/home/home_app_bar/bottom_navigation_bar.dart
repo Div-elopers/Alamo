@@ -1,6 +1,7 @@
 import 'package:alamo/src/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:alamo/src/features/auth/domain/app_user.dart';
 
 /*enum PopupMenuOption {
   // signIn,
@@ -12,11 +13,13 @@ import 'package:go_router/go_router.dart';
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
+  final AppUser? user; //
 
   const CustomBottomNavigationBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    this.user,
   });
 
   @override
@@ -86,10 +89,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
         context.goNamed(AppRoute.home.name);
         break;
       case 2:
-        context.goNamed(AppRoute.chatbot.name);
-        break;
+        context.goNamed(AppRoute.chatbot.name,
+            pathParameters: {'userId': user!.uid});
       case 3:
-        context.goNamed('library'); //Falta
+        context.goNamed(AppRoute.home.name); // Pendiente de definir
         break;
     }
   }
