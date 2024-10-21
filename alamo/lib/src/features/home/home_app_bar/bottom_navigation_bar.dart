@@ -1,4 +1,13 @@
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+/*enum PopupMenuOption {
+  // signIn,
+  map,
+  //account,
+  chatBot,
+}*/
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -28,18 +37,23 @@ class CustomBottomNavigationBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(Icons.map, 'Mapa', 0),
-          _buildNavItem(Icons.home, 'Inicio', 1),
-          _buildNavItem(Icons.forum, 'Asistente', 2),
-          _buildNavItem(Icons.library_books, 'Biblioteca', 3),
+          _buildNavItem(Icons.map, 'Mapa', 0, context),
+          _buildNavItem(Icons.home, 'Inicio', 1, context),
+          _buildNavItem(Icons.forum, 'Asistente', 2, context),
+          _buildNavItem(Icons.library_books, 'Biblioteca', 3, context),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
+  Widget _buildNavItem(
+      IconData icon, String label, int index, BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(index),
+      onTap: () {
+        onTap(index); // Actualiza el índice
+        _navigateToScreen(
+            index, context); // Navega a la pantalla correspondiente
+      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -61,5 +75,22 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _navigateToScreen(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        context.goNamed(AppRoute.map.name);
+        break;
+      case 1:
+        context.goNamed(AppRoute.home.name);
+        break;
+      case 2:
+        context.goNamed(AppRoute.chatbot.name);
+        break;
+      case 3:
+        context.goNamed('library'); //Falta
+        break;
+    }
   }
 }
