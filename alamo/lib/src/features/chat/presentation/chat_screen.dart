@@ -1,3 +1,4 @@
+import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/features/chat/domain/app_thread.dart';
@@ -15,65 +16,73 @@ class ChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatController = ref.watch(chatScreenControllerProvider.notifier);
+    final userStream = ref.watch(userStreamProvider(userId));
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
-      body: FutureBuilder<String>(
-        future: chatController.getOrCreateThreadId(userId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+    return userStream.when(
+      data: (user) {
+        final senderName = user?.displayName ?? 'usuario';
 
-          final threadId = snapshot.data!;
+        return Scaffold(
+          appBar: AppBar(title: const Text('Asistente virtual')),
+          body: FutureBuilder<String>(
+            future: chatController.getOrCreateThreadId(userId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
 
-          return Column(
-            children: [
-              Expanded(
-                child: StreamBuilder<Thread?>(
-                  stream: chatController.watchChatThread(threadId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data == null || snapshot.data!.messages.isEmpty) {
-                      // Si el thread no tiene mensajes, mostrar las categorías
-                      return _buildCategorySelection(context, chatController, threadId);
-                    }
+              final threadId = snapshot.data!;
 
-                    final thread = snapshot.data!;
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            reverse: true,
-                            itemCount: thread.messages.length,
-                            itemBuilder: (context, index) {
-                              final message = thread.messages[index];
-                              final userIsSender = message.senderId == userId;
+              return Column(
+                children: [
+                  Expanded(
+                    child: StreamBuilder<Thread?>(
+                      stream: chatController.watchChatThread(threadId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data == null || snapshot.data!.messages.isEmpty) {
+                          // Si el thread no tiene mensajes, mostrar las categorías
+                          return _buildCategorySelection(context, chatController, threadId);
+                        }
 
-                              return MessageBubble(
-                                senderName: message.senderId,
-                                text: message.content,
-                                date: message.timestamp.toLocal().toString(),
-                                userIsSender: userIsSender,
-                              );
-                            },
-                          ),
-                        ),
-                        _buildMessageInput(context, chatController, threadId),
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+                        final thread = snapshot.data!;
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                reverse: true,
+                                itemCount: thread.messages.length,
+                                itemBuilder: (context, index) {
+                                  final message = thread.messages[index];
+
+                                  return MessageBubble(
+                                    senderName: message.userIsSender ? senderName : 'Chatbot',
+                                    text: message.content,
+                                    date: message.formattedTime,
+                                    userIsSender: message.userIsSender,
+                                  );
+                                },
+                              ),
+                            ),
+                            _buildMessageInput(context, chatController, threadId),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => const Text('Error loading user info'),
     );
   }
 
@@ -100,7 +109,7 @@ class ChatScreen extends ConsumerWidget {
                 selected: false,
                 onSelected: (selected) {
                   if (selected) {
-                    chatController.sendMessage(threadId, userId, category); // Enviar la categoría como primer mensaje
+                    chatController.sendMessage(threadId, category);
                   }
                 },
               );
@@ -116,7 +125,7 @@ class ChatScreen extends ConsumerWidget {
     final TextEditingController messageController = TextEditingController();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Row(
         children: [
           Expanded(
@@ -124,10 +133,13 @@ class ChatScreen extends ConsumerWidget {
               controller: messageController,
               decoration: const InputDecoration(
                 labelText: 'Escriba su mensaje',
+                labelStyle: TextStyle(
+                  fontSize: 14,
+                ),
               ),
               onSubmitted: (text) {
                 if (text.isNotEmpty) {
-                  chatController.sendMessage(threadId, userId, text);
+                  chatController.sendMessage(threadId, text);
                   messageController.clear();
                 }
               },
@@ -138,7 +150,7 @@ class ChatScreen extends ConsumerWidget {
             onPressed: () {
               final text = messageController.text;
               if (text.isNotEmpty) {
-                chatController.sendMessage(threadId, userId, text);
+                chatController.sendMessage(threadId, text);
                 messageController.clear();
               }
             },

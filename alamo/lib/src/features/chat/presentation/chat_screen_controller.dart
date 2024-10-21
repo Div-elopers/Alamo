@@ -33,12 +33,12 @@ class ChatScreenController extends _$ChatScreenController {
   }
 
   // Send a message
-  Future<void> sendMessage(String threadId, String senderId, String messageContent) async {
+  Future<void> sendMessage(String threadId, String messageContent) async {
     final chatService = ref.read(chatServiceProvider);
     state = const AsyncLoading(); // Set the state to loading while message is being sent
 
     // Attempt to send the message and update the state accordingly
-    state = await AsyncValue.guard(() => chatService.addMessage(threadId, senderId, messageContent));
+    state = await AsyncValue.guard(() => chatService.addMessage(threadId, messageContent));
   }
 
   Future<String> getOrCreateThreadId(String userId) async {

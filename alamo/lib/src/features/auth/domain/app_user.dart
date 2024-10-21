@@ -8,6 +8,7 @@ class AppUser {
     this.emailVerified = false,
     this.phoneNumber,
     this.phoneVerified = false,
+    required this.displayName,
   });
 
   final UserID uid;
@@ -15,6 +16,7 @@ class AppUser {
   final bool emailVerified;
   final String? phoneNumber;
   final bool phoneVerified;
+  final String displayName;
 
   // Factory constructor to create an instance of AppUser from JSON
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class AppUser {
       email: json['email'] as String?,
       emailVerified: json['emailVerified'] as bool? ?? false,
       phoneVerified: json['phoneVerified'] as bool? ?? false,
+      displayName: json['displayName'] as String,
     );
   }
 
@@ -33,6 +36,7 @@ class AppUser {
       'email': email,
       'emailVerified': emailVerified,
       'phoneVerified': phoneVerified,
+      'displayName': displayName,
     };
   }
 
@@ -48,7 +52,8 @@ class AppUser {
         other.uid == uid &&
         other.email == email &&
         other.emailVerified == emailVerified &&
-        other.phoneVerified == phoneVerified;
+        other.phoneVerified == phoneVerified &&
+        other.displayName == displayName;
   }
 
   @override

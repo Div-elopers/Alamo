@@ -28,4 +28,7 @@ class FirebaseAppUser implements AppUser {
   Map<String, dynamic> toJson() {
     throw UnimplementedError();
   }
+
+  @override
+  String get displayName => throw UnimplementedError();
 }

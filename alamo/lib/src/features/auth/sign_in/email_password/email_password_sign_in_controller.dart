@@ -23,7 +23,7 @@ class EmailPasswordSignInController extends _$EmailPasswordSignInController {
       case EmailPasswordSignInFormType.signIn:
         return userService.signInWithEmailAndPassword(email, password);
       case EmailPasswordSignInFormType.register:
-        return userService.registerUser(email, password);
+        return userService.registerUser(email, password, "displayName");
     }
   }
 
