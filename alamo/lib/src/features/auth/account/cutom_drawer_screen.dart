@@ -1,7 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:alamo/src/constants/app_sizes.dart';
+import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
+import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/features/auth/data/users_repository.dart';
+import 'package:alamo/src/localization/string_hardcoded.dart';
+import 'package:alamo/src/routing/app_router.dart';
+import 'package:alamo/src/utils/async_value_ui.dart';
+import 'package:alamo/src/widgets/action_text_button.dart';
+import 'package:alamo/src/widgets/alert_dialogs.dart';
+import 'package:alamo/src/widgets/responsive_center.dart';
+import 'package:alamo/src/widgets/verified.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart'; // Asegúrate de importar el archivo correcto
+
+//import 'package:hooks_riverpod/hooks_riverpod.dart'; // Asegúrate de que este import esté presente
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  final WidgetRef ref; // Agrega el ref aquí
+
+  const CustomDrawer({super.key, required this.ref}); // Modifica el constructor
 
   @override
   Widget build(BuildContext context) {
@@ -12,27 +29,25 @@ class CustomDrawer extends StatelessWidget {
         color: Colors.white, // Color de fondo
         child: Column(
           children: [
-            // Encabezado del Drawer sin separación
+            // Encabezado del Drawer
             Container(
               color: Colors.white, // Color del encabezado
               padding: const EdgeInsets.all(16.0), // Espacio interno
               child: Row(
                 children: [
-                  // Contenedor cuadrado en lugar de CircleAvatar
+                  // Contenedor cuadrado
                   Container(
-                    width: 80, // Ancho del contenedor
-                    height: 80, // Altura del contenedor
+                    width: 80,
+                    height: 80,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/images/perfil.png'),
-                        fit: BoxFit
-                            .cover, // Ajusta la imagen al tamaño del contenedor
+                        fit: BoxFit.cover,
                       ),
-                      borderRadius: BorderRadius.zero, // Sin bordes redondeados
+                      borderRadius: BorderRadius.zero,
                     ),
                   ),
-                  const SizedBox(
-                      width: 10), // Espacio entre la imagen y el texto
+                  const SizedBox(width: 10),
                   const Expanded(
                     child: Text(
                       'Nombre del Usuario',
@@ -40,8 +55,7 @@ class CustomDrawer extends StatelessWidget {
                           fontSize: 20,
                           fontFamily: 'Sofia Sans',
                           fontWeight: FontWeight.w900),
-                      overflow:
-                          TextOverflow.ellipsis, // Manejar el desbordamiento
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -51,7 +65,7 @@ class CustomDrawer extends StatelessWidget {
             _buildListTile(
               icon: Icons.person,
               title: 'Perfil',
-              color: const Color(0xff1B1C41), // Color azul
+              color: const Color(0xff1B1C41),
               onTap: () {
                 // Lógica para ir a la pantalla de perfil
               },
@@ -59,7 +73,7 @@ class CustomDrawer extends StatelessWidget {
             _buildListTile(
               icon: Icons.help,
               title: 'Términos y condiciones',
-              color: const Color(0xff1B1C41), // Color azul
+              color: const Color(0xff1B1C41),
               onTap: () {
                 // Lógica
               },
@@ -67,19 +81,37 @@ class CustomDrawer extends StatelessWidget {
             _buildListTile(
               icon: Icons.info,
               title: 'Eliminar cuenta',
-              color: Colors.red, // Color rojo
-              onTap: () {
-                // Lógica
+              color: Colors.red,
+              onTap: () async {
+                final delete = await showAlertDialog(
+                  context: context,
+                  title: 'Estás seguro?',
+                  cancelActionText: 'Cancelar',
+                  defaultActionText: 'Eliminar',
+                );
+                if (delete == true) {
+                  ref
+                      .read(accountScreenControllerProvider.notifier)
+                      .deleteAccount();
+                }
               },
             ),
-            const Spacer(), // Espacio flexible para empujar el footer hacia abajo
+            const Spacer(),
             // Cerrar sesión
             _buildListTile(
               icon: Icons.logout,
               title: 'Cerrar sesión',
-              color: const Color(0xff1B1C41), // Color azul
-              onTap: () {
-                // Lógica para cerrar sesión
+              color: const Color(0xff1B1C41),
+              onTap: () async {
+                final logout = await showAlertDialog(
+                  context: context,
+                  title: 'Estás seguro?',
+                  cancelActionText: 'Cancelar',
+                  defaultActionText: 'Cerrar sesión',
+                );
+                if (logout == true) {
+                  ref.read(accountScreenControllerProvider.notifier).signOut();
+                }
               },
             ),
           ],
@@ -106,7 +138,7 @@ class CustomDrawer extends StatelessWidget {
             fontSize: 16,
             color: color,
             fontFamily: 'Sofia Sans',
-            fontWeight: FontWeight.w400), // Cambia el color del texto aquí
+            fontWeight: FontWeight.w400),
       ),
       onTap: onTap,
     );

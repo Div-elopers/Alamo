@@ -1,11 +1,13 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
+//import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 //import 'package:alamo/src/features/home/home_app_bar/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:alamo/src/widgets/custom_button.dart';
 import 'package:alamo/src/features/home/home_app_bar/bottom_navigation_bar.dart';
 import 'package:alamo/src/features/auth/account/cutom_drawer_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 /*class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -18,18 +20,17 @@ import 'package:alamo/src/features/auth/account/cutom_drawer_screen.dart';
   }
 }*/
 
-class HomeScreen extends StatefulWidget {
+// Define el StateProvider para el índice de navegación
+final currentIndexProvider = StateProvider<int>((ref) => 0);
+
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentIndex =
+        ref.watch(currentIndexProvider); // Lee el índice actual
 
-class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0; // Para gestionar el índice de navegación
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Padding(
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      drawer: const CustomDrawer(), // Usa el widget CustomDrawer aquí
+      drawer: CustomDrawer(ref: ref), // Proporciona el ref aquí
       body: Column(
         children: [
           Expanded(
@@ -79,12 +80,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           CustomBottomNavigationBar(
-            currentIndex: _currentIndex,
+            currentIndex: currentIndex, // Lee directamente el índice
             onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-                // Lógica para cambiar de pantalla según el índice
-              });
+              ref.read(currentIndexProvider.notifier).state =
+                  index; // Actualiza el índice
             },
           ),
         ],
