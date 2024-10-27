@@ -21,7 +21,7 @@ final chatRepositoryProvider = Provider<ChatRepository>.internal(
 );
 
 typedef ChatRepositoryRef = ProviderRef<ChatRepository>;
-String _$chatThreadStreamHash() => r'bc99c66b476f0fb1a17f9edd6aca3404e74b53bb';
+String _$chatStreamHash() => r'cb32041b0754d6383203e6dd018e65e8378ff86c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -44,30 +44,30 @@ class _SystemHash {
   }
 }
 
-/// See also [chatThreadStream].
-@ProviderFor(chatThreadStream)
-const chatThreadStreamProvider = ChatThreadStreamFamily();
+/// See also [chatStream].
+@ProviderFor(chatStream)
+const chatStreamProvider = ChatStreamFamily();
 
-/// See also [chatThreadStream].
-class ChatThreadStreamFamily extends Family<AsyncValue<Thread?>> {
-  /// See also [chatThreadStream].
-  const ChatThreadStreamFamily();
+/// See also [chatStream].
+class ChatStreamFamily extends Family<AsyncValue<Chat?>> {
+  /// See also [chatStream].
+  const ChatStreamFamily();
 
-  /// See also [chatThreadStream].
-  ChatThreadStreamProvider call(
-    String threadId,
+  /// See also [chatStream].
+  ChatStreamProvider call(
+    String chatId,
   ) {
-    return ChatThreadStreamProvider(
-      threadId,
+    return ChatStreamProvider(
+      chatId,
     );
   }
 
   @override
-  ChatThreadStreamProvider getProviderOverride(
-    covariant ChatThreadStreamProvider provider,
+  ChatStreamProvider getProviderOverride(
+    covariant ChatStreamProvider provider,
   ) {
     return call(
-      provider.threadId,
+      provider.chatId,
     );
   }
 
@@ -83,119 +83,119 @@ class ChatThreadStreamFamily extends Family<AsyncValue<Thread?>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'chatThreadStreamProvider';
+  String? get name => r'chatStreamProvider';
 }
 
-/// See also [chatThreadStream].
-class ChatThreadStreamProvider extends AutoDisposeStreamProvider<Thread?> {
-  /// See also [chatThreadStream].
-  ChatThreadStreamProvider(
-    String threadId,
+/// See also [chatStream].
+class ChatStreamProvider extends AutoDisposeStreamProvider<Chat?> {
+  /// See also [chatStream].
+  ChatStreamProvider(
+    String chatId,
   ) : this._internal(
-          (ref) => chatThreadStream(
-            ref as ChatThreadStreamRef,
-            threadId,
+          (ref) => chatStream(
+            ref as ChatStreamRef,
+            chatId,
           ),
-          from: chatThreadStreamProvider,
-          name: r'chatThreadStreamProvider',
+          from: chatStreamProvider,
+          name: r'chatStreamProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$chatThreadStreamHash,
-          dependencies: ChatThreadStreamFamily._dependencies,
+                  : _$chatStreamHash,
+          dependencies: ChatStreamFamily._dependencies,
           allTransitiveDependencies:
-              ChatThreadStreamFamily._allTransitiveDependencies,
-          threadId: threadId,
+              ChatStreamFamily._allTransitiveDependencies,
+          chatId: chatId,
         );
 
-  ChatThreadStreamProvider._internal(
+  ChatStreamProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.threadId,
+    required this.chatId,
   }) : super.internal();
 
-  final String threadId;
+  final String chatId;
 
   @override
   Override overrideWith(
-    Stream<Thread?> Function(ChatThreadStreamRef provider) create,
+    Stream<Chat?> Function(ChatStreamRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ChatThreadStreamProvider._internal(
-        (ref) => create(ref as ChatThreadStreamRef),
+      override: ChatStreamProvider._internal(
+        (ref) => create(ref as ChatStreamRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        threadId: threadId,
+        chatId: chatId,
       ),
     );
   }
 
   @override
-  AutoDisposeStreamProviderElement<Thread?> createElement() {
-    return _ChatThreadStreamProviderElement(this);
+  AutoDisposeStreamProviderElement<Chat?> createElement() {
+    return _ChatStreamProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ChatThreadStreamProvider && other.threadId == threadId;
+    return other is ChatStreamProvider && other.chatId == chatId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, threadId.hashCode);
+    hash = _SystemHash.combine(hash, chatId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin ChatThreadStreamRef on AutoDisposeStreamProviderRef<Thread?> {
-  /// The parameter `threadId` of this provider.
-  String get threadId;
+mixin ChatStreamRef on AutoDisposeStreamProviderRef<Chat?> {
+  /// The parameter `chatId` of this provider.
+  String get chatId;
 }
 
-class _ChatThreadStreamProviderElement
-    extends AutoDisposeStreamProviderElement<Thread?> with ChatThreadStreamRef {
-  _ChatThreadStreamProviderElement(super.provider);
+class _ChatStreamProviderElement extends AutoDisposeStreamProviderElement<Chat?>
+    with ChatStreamRef {
+  _ChatStreamProviderElement(super.provider);
 
   @override
-  String get threadId => (origin as ChatThreadStreamProvider).threadId;
+  String get chatId => (origin as ChatStreamProvider).chatId;
 }
 
-String _$chatThreadFutureHash() => r'8c6807e12a8e01dcf6ee842953a09294861f26df';
+String _$chatFutureHash() => r'8d12245507adaf5f312964ed0f18ce973cddbee6';
 
-/// See also [chatThreadFuture].
-@ProviderFor(chatThreadFuture)
-const chatThreadFutureProvider = ChatThreadFutureFamily();
+/// See also [chatFuture].
+@ProviderFor(chatFuture)
+const chatFutureProvider = ChatFutureFamily();
 
-/// See also [chatThreadFuture].
-class ChatThreadFutureFamily extends Family<AsyncValue<Thread?>> {
-  /// See also [chatThreadFuture].
-  const ChatThreadFutureFamily();
+/// See also [chatFuture].
+class ChatFutureFamily extends Family<AsyncValue<Chat?>> {
+  /// See also [chatFuture].
+  const ChatFutureFamily();
 
-  /// See also [chatThreadFuture].
-  ChatThreadFutureProvider call(
-    String threadId,
+  /// See also [chatFuture].
+  ChatFutureProvider call(
+    String chatId,
   ) {
-    return ChatThreadFutureProvider(
-      threadId,
+    return ChatFutureProvider(
+      chatId,
     );
   }
 
   @override
-  ChatThreadFutureProvider getProviderOverride(
-    covariant ChatThreadFutureProvider provider,
+  ChatFutureProvider getProviderOverride(
+    covariant ChatFutureProvider provider,
   ) {
     return call(
-      provider.threadId,
+      provider.chatId,
     );
   }
 
@@ -211,91 +211,91 @@ class ChatThreadFutureFamily extends Family<AsyncValue<Thread?>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'chatThreadFutureProvider';
+  String? get name => r'chatFutureProvider';
 }
 
-/// See also [chatThreadFuture].
-class ChatThreadFutureProvider extends AutoDisposeFutureProvider<Thread?> {
-  /// See also [chatThreadFuture].
-  ChatThreadFutureProvider(
-    String threadId,
+/// See also [chatFuture].
+class ChatFutureProvider extends AutoDisposeFutureProvider<Chat?> {
+  /// See also [chatFuture].
+  ChatFutureProvider(
+    String chatId,
   ) : this._internal(
-          (ref) => chatThreadFuture(
-            ref as ChatThreadFutureRef,
-            threadId,
+          (ref) => chatFuture(
+            ref as ChatFutureRef,
+            chatId,
           ),
-          from: chatThreadFutureProvider,
-          name: r'chatThreadFutureProvider',
+          from: chatFutureProvider,
+          name: r'chatFutureProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$chatThreadFutureHash,
-          dependencies: ChatThreadFutureFamily._dependencies,
+                  : _$chatFutureHash,
+          dependencies: ChatFutureFamily._dependencies,
           allTransitiveDependencies:
-              ChatThreadFutureFamily._allTransitiveDependencies,
-          threadId: threadId,
+              ChatFutureFamily._allTransitiveDependencies,
+          chatId: chatId,
         );
 
-  ChatThreadFutureProvider._internal(
+  ChatFutureProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
-    required this.threadId,
+    required this.chatId,
   }) : super.internal();
 
-  final String threadId;
+  final String chatId;
 
   @override
   Override overrideWith(
-    FutureOr<Thread?> Function(ChatThreadFutureRef provider) create,
+    FutureOr<Chat?> Function(ChatFutureRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
-      override: ChatThreadFutureProvider._internal(
-        (ref) => create(ref as ChatThreadFutureRef),
+      override: ChatFutureProvider._internal(
+        (ref) => create(ref as ChatFutureRef),
         from: from,
         name: null,
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
-        threadId: threadId,
+        chatId: chatId,
       ),
     );
   }
 
   @override
-  AutoDisposeFutureProviderElement<Thread?> createElement() {
-    return _ChatThreadFutureProviderElement(this);
+  AutoDisposeFutureProviderElement<Chat?> createElement() {
+    return _ChatFutureProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ChatThreadFutureProvider && other.threadId == threadId;
+    return other is ChatFutureProvider && other.chatId == chatId;
   }
 
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, threadId.hashCode);
+    hash = _SystemHash.combine(hash, chatId.hashCode);
 
     return _SystemHash.finish(hash);
   }
 }
 
-mixin ChatThreadFutureRef on AutoDisposeFutureProviderRef<Thread?> {
-  /// The parameter `threadId` of this provider.
-  String get threadId;
+mixin ChatFutureRef on AutoDisposeFutureProviderRef<Chat?> {
+  /// The parameter `chatId` of this provider.
+  String get chatId;
 }
 
-class _ChatThreadFutureProviderElement
-    extends AutoDisposeFutureProviderElement<Thread?> with ChatThreadFutureRef {
-  _ChatThreadFutureProviderElement(super.provider);
+class _ChatFutureProviderElement extends AutoDisposeFutureProviderElement<Chat?>
+    with ChatFutureRef {
+  _ChatFutureProviderElement(super.provider);
 
   @override
-  String get threadId => (origin as ChatThreadFutureProvider).threadId;
+  String get chatId => (origin as ChatFutureProvider).chatId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
