@@ -26,39 +26,61 @@ class MessageBubble extends StatelessWidget {
               color: Colors.black54,
             ),
           ),
-          Material(
-            borderRadius: BorderRadius.only(
-              topRight: userIsSender ? const Radius.circular(0) : const Radius.circular(25),
-              topLeft: userIsSender ? const Radius.circular(25) : const Radius.circular(0),
-              bottomLeft: const Radius.circular(25),
-              bottomRight: const Radius.circular(25),
-            ),
-            color: userIsSender ? const Color.fromRGBO(27, 27, 64, 1.0) : Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    text,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.0,
-                    ),
-                  ),
-                  Text(
-                    date,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10.0,
-                    ),
-                  ),
-                ],
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topRight: userIsSender ? const Radius.circular(0) : const Radius.circular(25),
+                topLeft: userIsSender ? const Radius.circular(25) : const Radius.circular(0),
+                bottomLeft: const Radius.circular(25),
+                bottomRight: const Radius.circular(25),
+              ),
+              border: Border.all(
+                color: const Color.fromRGBO(27, 27, 64, 1.0),
+                width: 0.5,
               ),
             ),
-          ),
+            child: Material(
+              borderRadius: BorderRadius.only(
+                topRight: userIsSender ? const Radius.circular(0) : const Radius.circular(25),
+                topLeft: userIsSender ? const Radius.circular(25) : const Radius.circular(0),
+                bottomLeft: const Radius.circular(25),
+                bottomRight: const Radius.circular(25),
+              ),
+              color: userIsSender ? const Color.fromRGBO(27, 27, 64, 1.0) : Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      text,
+                      style: _messageTextStyle(userIsSender),
+                    ),
+                    Text(
+                      date,
+                      style: _dateTextStyle(userIsSender),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
   }
+}
+
+TextStyle _messageTextStyle(bool userIsSender) {
+  return TextStyle(
+    color: userIsSender ? Colors.white : const Color.fromRGBO(27, 27, 64, 1.0),
+    fontSize: 14.0,
+  );
+}
+
+TextStyle _dateTextStyle(bool userIsSender) {
+  return TextStyle(
+    color: userIsSender ? Colors.white : const Color.fromRGBO(27, 27, 64, 1.0),
+    fontSize: 10.0,
+  );
 }

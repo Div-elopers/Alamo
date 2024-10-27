@@ -95,3 +95,4 @@ functions/pip-delete-this-directory.txt
 functions/.pytest_cache/
 functions/*.bak
 functions/*.swp
+alamo/functions/.env

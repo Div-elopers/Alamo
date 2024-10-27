@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:alamo/src/features/chat/domain/app_thread.dart';
+import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,39 +10,50 @@ class ChatRepository {
   final FirebaseFirestore _firestore;
 
   // Firestore paths for chat collection
-  static String chatsPath() => 'chat';
-  static String chatPath(String threadId) => 'chat/$threadId';
+  static String chatsPath() => 'chats';
+  static String chatPath(String chatId) => 'chats/$chatId';
 
-  // Fetch a single chat thread by threadId
-  Future<Thread?> fetchChatThread(String threadId) async {
-    final ref = _chatRef(threadId);
+  // Fetch a single chat chat by chatId
+  Future<Chat?> fetchChat(String chatId) async {
+    final ref = _chatRef(chatId);
     final snapshot = await ref.get();
-    return _getThreadFromDocumentSnapshot(snapshot);
+    return _getChatFromDocumentSnapshot(snapshot);
   }
 
-  // Watch a single chat thread by threadId as a stream
-  Stream<Thread?> watchChatThread(String threadId) {
-    final ref = _chatRef(threadId);
-    return ref.snapshots().map((snapshot) => _getThreadFromDocumentSnapshot(snapshot));
+  // Watch a single chat chat by chatId as a stream
+  Stream<Chat?> watchChat(String chatId) {
+    final ref = _chatRef(chatId);
+    return ref.snapshots().map((snapshot) => _getChatFromDocumentSnapshot(snapshot));
   }
 
-  Future<String> createChatThread(String userId) async {
-    final docRef = _firestore.collection('chat').doc(); // Generate a new threadId
-    final threadData = {
+  Future<String> createChat(String userId) async {
+    final docRef = _firestore.collection(chatsPath()).doc();
+    final chatData = {
       'participants': [userId],
       'messages': [],
       'lastUpdated': FieldValue.serverTimestamp(),
+      'threadId': ""
     };
 
-    await docRef.set(threadData);
+    await docRef.set(chatData);
     return docRef.id;
   }
 
-  Future<String?> findThreadByParticipant(String userId) async {
+  Future<void> addThreadId(String threadId, String chatId) async {
+    try {
+      await _firestore.collection(chatsPath()).doc(chatId).update({
+        'threadId': threadId,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String?> findChatByParticipant(String userId) async {
     final querySnapshot = await _firestore
-        .collection('chat')
+        .collection(chatsPath())
         .where('participants', arrayContains: userId)
-        .limit(1) // Assuming one thread per user
+        .limit(1) // Assuming one chat per user
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
@@ -52,9 +63,9 @@ class ChatRepository {
     }
   }
 
-  // Add a message to the chat thread
-  Future<void> addMessage(String threadId, Map<String, dynamic> messageData) async {
-    final ref = _chatRef(threadId);
+  // Add a message to the chat chat
+  Future<void> addMessage(String chatId, Map<String, dynamic> messageData) async {
+    final ref = _chatRef(chatId);
 
     await ref.update({
       'messages': FieldValue.arrayUnion([messageData]),
@@ -62,17 +73,17 @@ class ChatRepository {
     });
   }
 
-  // Delete a chat thread
-  Future<void> deleteChatThread(String threadId) {
-    return _firestore.doc(chatPath(threadId)).delete();
+  // Delete a chat chat
+  Future<void> deleteChat(String chatId) {
+    return _firestore.doc(chatPath(chatId)).delete();
   }
 
   // Helper methods to create Firestore references
-  DocumentReference<Map<String, dynamic>> _chatRef(String threadId) => _firestore.doc(chatPath(threadId));
+  DocumentReference<Map<String, dynamic>> _chatRef(String chatId) => _firestore.doc(chatPath(chatId));
 
-  Thread? _getThreadFromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
+  Chat? _getChatFromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     if (snapshot.exists) {
-      return Thread.fromDocument(snapshot.id, snapshot.data()!);
+      return Chat.fromDocument(snapshot.id, snapshot.data()!);
     } else {
       return null;
     }
@@ -84,16 +95,16 @@ ChatRepository chatRepository(ChatRepositoryRef ref) {
   return ChatRepository(FirebaseFirestore.instance);
 }
 
-// A provider for watching a specific chat thread by threadId
+// A provider for watching a specific chat chat by chatId
 @riverpod
-Stream<Thread?> chatThreadStream(ChatThreadStreamRef ref, String threadId) {
+Stream<Chat?> chatStream(ChatStreamRef ref, String chatId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.watchChatThread(threadId);
+  return chatRepository.watchChat(chatId);
 }
 
-// A provider for fetching a specific chat thread by threadId
+// A provider for fetching a specific chat chat by chatId
 @riverpod
-Future<Thread?> chatThreadFuture(ChatThreadFutureRef ref, String threadId) {
+Future<Chat?> chatFuture(ChatFutureRef ref, String chatId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
-  return chatRepository.fetchChatThread(threadId);
+  return chatRepository.fetchChat(chatId);
 }
