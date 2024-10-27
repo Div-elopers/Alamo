@@ -51,11 +51,16 @@ flutter:
     # Used for Golden Image tests
     - family: Sofia Sans
       fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
         - asset: assets/fonts/SofiaSans-Regular.ttf
+
 
   assets:
     - assets/images/google.png   
     - assets/images/
     - .env 
+    - assets/images/bottom_leaf.png  
+    - assets/images/top_leaf.png   
+    - assets/images/alamo_logo.png   
   
 

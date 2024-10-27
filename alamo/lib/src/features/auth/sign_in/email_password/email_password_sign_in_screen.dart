@@ -2,9 +2,8 @@ import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_controller.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_validators.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_form_type.dart';
-import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
+import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:alamo/src/widgets/custom_text_button.dart';
@@ -48,13 +47,10 @@ class EmailPasswordSignInContents extends ConsumerStatefulWidget {
   /// The default form type to use.
   final EmailPasswordSignInFormType formType;
   @override
-  ConsumerState<EmailPasswordSignInContents> createState() =>
-      _EmailPasswordSignInContentsState();
+  ConsumerState<EmailPasswordSignInContents> createState() => _EmailPasswordSignInContentsState();
 }
 
-class _EmailPasswordSignInContentsState
-    extends ConsumerState<EmailPasswordSignInContents>
-    with EmailAndPasswordValidators {
+class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignInContents> {
   final _formKey = GlobalKey<FormState>();
   final _node = FocusScopeNode();
   final _emailController = TextEditingController();
@@ -82,34 +78,33 @@ class _EmailPasswordSignInContentsState
 
   Future<void> _submit() async {
     setState(() => _submitted = true);
-    // only submit the form if validation passes
-    if (_formKey.currentState!.validate()) {
-      final controller =
-          ref.read(emailPasswordSignInControllerProvider.notifier);
-      final success = await controller.submit(
-        email: email,
-        password: password,
-        formType: _formType,
-      );
-      if (success) {
-        widget.onSignedIn?.call();
-      }
-    }
+    // // only submit the form if validation passes
+    // if (_formKey.currentState!.validate()) {
+    //   final controller = ref.read(emailPasswordSignInControllerProvider.notifier);
+    //   // final success = await controller.submit(
+    //   //   email: email,
+    //   //   password: password,
+    //   //   formType: _formType,
+    //   // );
+    //   if (success) {
+    //     widget.onSignedIn?.call();
+    //   }
+    // }
   }
 
-  void _emailEditingComplete() {
-    if (canSubmitEmail(email)) {
-      _node.nextFocus();
-    }
-  }
+  // void _emailEditingComplete() {
+  //   if (canSubmitEmail(email)) {
+  //     _node.nextFocus();
+  //   }
+  // }
 
-  void _passwordEditingComplete() {
-    if (!canSubmitEmail(email)) {
-      _node.previousFocus();
-      return;
-    }
-    _submit();
-  }
+  // void _passwordEditingComplete() {
+  //   if (!canSubmitEmail(email)) {
+  //     _node.previousFocus();
+  //     return;
+  //   }
+  //   _submit();
+  // }
 
   void _updateFormType() {
     // * Toggle between register and sign in form
@@ -125,207 +120,75 @@ class _EmailPasswordSignInContentsState
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(emailPasswordSignInControllerProvider);
-    double height = MediaQuery.sizeOf(context).height;
-    double width = MediaQuery.sizeOf(context).width;
-
-    return Stack(children: [
-      Align(
-        alignment: Alignment.topRight,
-        child: Image.asset(
-          'assets/images/fotos_1.png',
-          height: 200,
-        ),
-      ),
-      SizedBox(
-        height: height,
-        child: Align(
-          alignment: Alignment.bottomLeft,
-          child: Image.asset(
-            'assets/images/fotos_2.png',
-            height: 200,
-          ),
-        ),
-      ),
-      Column(
-        children: [
-          SizedBox(
-            height: height * 0.05,
-          ),
-          Image.asset(
-            'assets/images/alamo_logo.png',
-            height: 200,
-          ),
-          const Text('Inicia sesión',
-              style: TextStyle(
-                fontFamily: 'Sofia Sans', // Especifica tu fuente personalizada
-                fontSize: 20, // Cambia el tamaño según tus necesidades
-                fontWeight:
-                    FontWeight.bold, // Opcional: puedes usar bold o regular
-              )),
-          ResponsiveScrollableCard(
-            child: FocusScope(
-              node: _node,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    gapH8,
-                    // Email field
-                    const Text('Email'),
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    TextFormField(
-                      key: EmailPasswordSignInScreen.emailKey,
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1, color: Colors.transparent)),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
-                        //labelText: 'Email'.hardcoded,
-                        enabled: !state.isLoading,
-                      ),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (email) =>
-                          !_submitted ? null : emailErrorText(email ?? ''),
-                      autocorrect: false,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      keyboardAppearance: Brightness.light,
-                      onEditingComplete: () => _emailEditingComplete(),
-                      inputFormatters: <TextInputFormatter>[
-                        ValidatorInputFormatter(
-                            editingValidator: EmailEditingRegexValidator()),
-                      ],
-                    ),
-                    gapH8,
-                    const Text('Contraseña'),
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    // Password field
-                    TextFormField(
-                      key: EmailPasswordSignInScreen.passwordKey,
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        enabled: !state.isLoading,
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1, color: Colors.transparent)),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 1, color: Colors.transparent),
-                        ),
-                      ),
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      validator: (password) => !_submitted
-                          ? null
-                          : passwordErrorText(password ?? '', _formType),
-                      obscureText: true,
-                      autocorrect: false,
-                      textInputAction: TextInputAction.done,
-                      keyboardAppearance: Brightness.light,
-                      onEditingComplete: () => _passwordEditingComplete(),
-                    ),
-                    if (_formType.optionalThirdButtonText != null)
-                      Container(
-                        alignment: Alignment.centerRight,
-                        child: CustomTextButton(
-                          text: _formType.optionalThirdButtonText!,
-                          style: const TextStyle(
-                              decoration: TextDecoration.underline),
-                          onPressed: state.isLoading
-                              ? null
-                              : () {
-                                  context.goNamed(AppRoute.forgotPassword.name);
-                                },
-                        ),
-                      ),
-                    gapH8,
-                    Row(children: [
-                      Expanded(
-                        child: Container(
-                            margin:
-                                const EdgeInsets.only(left: 10.0, right: 20.0),
-                            child: const Divider(
-                              color: Colors.black,
-                              height: 36,
-                            )),
-                      ),
-                      const Text("o inicia con"),
-                      Expanded(
-                        child: Container(
-                            margin:
-                                const EdgeInsets.only(left: 20.0, right: 10.0),
-                            child: const Divider(
-                              color: Colors.black,
-                              height: 36,
-                            )),
-                      ),
-                    ]),
-                    gapH8,
-                    const Row(children: [
-                      Expanded(
-                        child:
-                            GoogleSignInScreen(), // Widget del primer botón (o contenido)
-                      ),
-                      /* SizedBox(
-                          width:
-                            1),*/ // Espacio horizontal entre los widgets (gapH8)
-                      Expanded(
-                        child: GoogleSignInScreen(),
-                      ),
-                    ]),
-                    //Boton de Register
-                    CustomTextButton(
-                      style:
-                          const TextStyle(decoration: TextDecoration.underline),
-                      text: _formType.secondaryButtonText,
-                      onPressed: state.isLoading
-                          ? null
-                          : () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => RegisterScreen()));
-                            },
-                    ),
-                    // Botón anterior de register
-                    /*gapH8,
-                    CustomTextButton(
-                      style:
-                          const TextStyle(decoration: TextDecoration.underline),
-                      text: _formType.secondaryButtonText,
-                      onPressed: state.isLoading ? null : _updateFormType,
-                    ),*/
-
-                    PrimaryButton(
-                      text: _formType.primaryButtonText,
-                      isLoading: state.isLoading,
-                      onPressed: state.isLoading ? null : () => _submit(),
-                    ),
-                  ],
+    return ResponsiveScrollableCard(
+      child: FocusScope(
+        node: _node,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              gapH8,
+              // Email field
+              TextFormField(
+                key: EmailPasswordSignInScreen.emailKey,
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email'.hardcoded,
+                  enabled: !state.isLoading,
                 ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                //      validator: (email) => !_submitted ? null : emailErrorText(email ?? ''),
+                autocorrect: false,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.emailAddress,
+                keyboardAppearance: Brightness.light,
+                //      onEditingComplete: () => _emailEditingComplete(),
+                inputFormatters: <TextInputFormatter>[
+                  ValidatorInputFormatter(editingValidator: EmailEditingRegexValidator()),
+                ],
               ),
-            ),
-          )
-        ],
-      )
-    ]);
+              gapH8,
+              // Password field
+              TextFormField(
+                key: EmailPasswordSignInScreen.passwordKey,
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: _formType.passwordLabelText,
+                  enabled: !state.isLoading,
+                ),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                //validator: (password) => !_submitted ? null : passwordErrorText(password ?? '', _formType),
+                obscureText: true,
+                autocorrect: false,
+                textInputAction: TextInputAction.done,
+                keyboardAppearance: Brightness.light,
+                //       onEditingComplete: () => _passwordEditingComplete(),
+              ),
+              gapH8,
+              PrimaryButton(
+                text: _formType.primaryButtonText,
+                isLoading: state.isLoading,
+                onPressed: state.isLoading ? null : () => _submit(),
+              ),
+              gapH8,
+              CustomTextButton(
+                text: _formType.secondaryButtonText,
+                onPressed: state.isLoading ? null : _updateFormType,
+              ),
+              if (_formType.optionalThirdButtonText != null)
+                CustomTextButton(
+                  text: _formType.optionalThirdButtonText!,
+                  onPressed: state.isLoading
+                      ? null
+                      : () {
+                          context.goNamed(AppRoute.forgotPassword.name);
+                        },
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

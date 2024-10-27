@@ -2,7 +2,8 @@ import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/sign_in_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
@@ -12,40 +13,34 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-/// All the supported routes in the app.
-/// By using an enum, we route by name using this syntax:
-/// ```dart
-/// context.goNamed(AppRoute.orders.name)
-/// ```
 enum AppRoute {
   home,
   map,
   chatbot,
   account,
   signIn,
+  signUp, // Nueva entrada para SignUp
   verifyPhone,
   forgotPassword,
   register,
 }
 
-/// returns the GoRouter instance that defines all the routes in the app
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return GoRouter(
     initialLocation: '/',
     debugLogDiagnostics: true,
-    // * redirect logic based on the authentication state
     redirect: (context, state) async {
       final user = authRepository.currentUser;
       final isLoggedIn = user != null;
       final path = state.uri.path;
       if (isLoggedIn) {
-        if (path == '/signIn') {
+        if (path == '/signIn' || path == '/signUp') {
           return '/';
         }
       } else {
-        if (path == '/signIn/forgotPassword') {
-          //no redirection
+        if (path == '/signIn/forgotPassword' || path == '/signUp') {
+          // No redirecciona en estas rutas
           return null;
         }
         return '/signIn';
@@ -107,6 +102,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/signUp',
+        name: AppRoute.signUp.name,
+        builder: (context, state) => const SignUpScreen(),
       ),
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),
