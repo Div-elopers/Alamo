@@ -1,7 +1,6 @@
 import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:alamo/src/widgets/primary_button.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 
 class GoogleSignInScreen extends ConsumerStatefulWidget {
@@ -24,14 +23,11 @@ class _GoogleSignInScreenState extends ConsumerState<GoogleSignInScreen> {
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(googleSignInControllerProvider);
-    return Center(
-      child: PrimaryButton(
-        isLoading: state.isLoading,
-        onPressed: state.isLoading ? null : _signInWithGoogle,
-        child: Image.asset(
-          'assets/images/google.png',
-          height: 24, // Adjust size as needed
-        ),
+    return ElevatedButton(
+      onPressed: state.isLoading ? null : _signInWithGoogle,
+      child: Image.asset(
+        'assets/images/google.png',
+        height: 24,
       ),
     );
   }
