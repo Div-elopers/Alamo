@@ -50,7 +50,7 @@ class EmailPasswordSignInContents extends ConsumerStatefulWidget {
   ConsumerState<EmailPasswordSignInContents> createState() => _EmailPasswordSignInContentsState();
 }
 
-class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignInContents> with EmailAndPasswordValidators {
+class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignInContents> {
   final _formKey = GlobalKey<FormState>();
   final _node = FocusScopeNode();
   final _emailController = TextEditingController();
@@ -78,33 +78,33 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
 
   Future<void> _submit() async {
     setState(() => _submitted = true);
-    // only submit the form if validation passes
-    if (_formKey.currentState!.validate()) {
-      final controller = ref.read(emailPasswordSignInControllerProvider.notifier);
-      final success = await controller.submit(
-        email: email,
-        password: password,
-        formType: _formType,
-      );
-      if (success) {
-        widget.onSignedIn?.call();
-      }
-    }
+    // // only submit the form if validation passes
+    // if (_formKey.currentState!.validate()) {
+    //   final controller = ref.read(emailPasswordSignInControllerProvider.notifier);
+    //   // final success = await controller.submit(
+    //   //   email: email,
+    //   //   password: password,
+    //   //   formType: _formType,
+    //   // );
+    //   if (success) {
+    //     widget.onSignedIn?.call();
+    //   }
+    // }
   }
 
-  void _emailEditingComplete() {
-    if (canSubmitEmail(email)) {
-      _node.nextFocus();
-    }
-  }
+  // void _emailEditingComplete() {
+  //   if (canSubmitEmail(email)) {
+  //     _node.nextFocus();
+  //   }
+  // }
 
-  void _passwordEditingComplete() {
-    if (!canSubmitEmail(email)) {
-      _node.previousFocus();
-      return;
-    }
-    _submit();
-  }
+  // void _passwordEditingComplete() {
+  //   if (!canSubmitEmail(email)) {
+  //     _node.previousFocus();
+  //     return;
+  //   }
+  //   _submit();
+  // }
 
   void _updateFormType() {
     // * Toggle between register and sign in form
@@ -138,12 +138,12 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
                   enabled: !state.isLoading,
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (email) => !_submitted ? null : emailErrorText(email ?? ''),
+                //      validator: (email) => !_submitted ? null : emailErrorText(email ?? ''),
                 autocorrect: false,
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.emailAddress,
                 keyboardAppearance: Brightness.light,
-                onEditingComplete: () => _emailEditingComplete(),
+                //      onEditingComplete: () => _emailEditingComplete(),
                 inputFormatters: <TextInputFormatter>[
                   ValidatorInputFormatter(editingValidator: EmailEditingRegexValidator()),
                 ],
@@ -158,12 +158,12 @@ class _EmailPasswordSignInContentsState extends ConsumerState<EmailPasswordSignI
                   enabled: !state.isLoading,
                 ),
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (password) => !_submitted ? null : passwordErrorText(password ?? '', _formType),
+                //validator: (password) => !_submitted ? null : passwordErrorText(password ?? '', _formType),
                 obscureText: true,
                 autocorrect: false,
                 textInputAction: TextInputAction.done,
                 keyboardAppearance: Brightness.light,
-                onEditingComplete: () => _passwordEditingComplete(),
+                //       onEditingComplete: () => _passwordEditingComplete(),
               ),
               gapH8,
               PrimaryButton(

@@ -52,9 +52,14 @@ flutter:
     - family: Roboto
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/SofiaSans-Regular.ttf
+
 
   assets:
     - assets/images/google.png   
     - .env 
+    - assets/images/bottom_leaf.png  
+    - assets/images/top_leaf.png   
+    - assets/images/alamo_logo.png   
   
 

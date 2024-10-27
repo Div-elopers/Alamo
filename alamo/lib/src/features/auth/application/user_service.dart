@@ -15,9 +15,10 @@ class UserService {
   final ChatRepository _chatRepository;
 
   // Register a new user
-  Future<void> registerUser(String email, String password, String displayName) async {
+  Future<void> signUpWithEmailAndPassword({required String email, required String password}) async {
     final userCredential = await _authRepository.createUserWithEmailAndPassword(email, password);
     final user = userCredential.user;
+    const displayName = "";
     if (user != null) {
       // Create user profile in Firestore
       final appUser = AppUser(uid: user.uid, email: user.email, emailVerified: user.emailVerified, phoneVerified: false, displayName: displayName);
@@ -26,7 +27,7 @@ class UserService {
   }
 
   // Sign in with email and password
-  Future<AppUser?> signInWithEmailAndPassword(String email, String password) async {
+  Future<AppUser?> signInWithEmailAndPassword({required String email, required String password}) async {
     final userCredential = await _authRepository.signInWithEmailAndPassword(email, password);
     final user = userCredential?.user;
     await reloadUserAndSyncWithFirestore();
