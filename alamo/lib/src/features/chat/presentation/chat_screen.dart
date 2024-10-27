@@ -1,7 +1,7 @@
 import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:alamo/src/features/chat/domain/app_thread.dart';
+import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:alamo/src/widgets/message_bubble.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen_controller.dart';
 
@@ -25,7 +25,7 @@ class ChatScreen extends ConsumerWidget {
         return Scaffold(
           appBar: AppBar(title: const Text('Asistente virtual')),
           body: FutureBuilder<String>(
-            future: chatController.getOrCreateThreadId(userId),
+            future: chatController.getOrCreateChatId(userId),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -33,32 +33,32 @@ class ChatScreen extends ConsumerWidget {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
 
-              final threadId = snapshot.data!;
-
+              final chatId = snapshot.data!;
               return Column(
                 children: [
                   Expanded(
-                    child: StreamBuilder<Thread?>(
-                      stream: chatController.watchChatThread(threadId),
+                    child: StreamBuilder<Chat?>(
+                      stream: chatController.watchChat(chatId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Error: ${snapshot.error}'));
                         } else if (!snapshot.hasData || snapshot.data == null || snapshot.data!.messages.isEmpty) {
-                          // Si el thread no tiene mensajes, mostrar las categorías
-                          return _buildCategorySelection(context, chatController, threadId);
+                          // Si el chat no tiene mensajes, mostrar las categorías
+                          return _buildCategorySelection(context, chatController, chatId);
                         }
 
-                        final thread = snapshot.data!;
+                        final chat = snapshot.data!;
+                        final threadId = chat.threadId;
                         return Column(
                           children: [
                             Expanded(
                               child: ListView.builder(
                                 reverse: true,
-                                itemCount: thread.messages.length,
+                                itemCount: chat.messages.length,
                                 itemBuilder: (context, index) {
-                                  final message = thread.messages[index];
+                                  final message = chat.messages[index];
 
                                   return MessageBubble(
                                     senderName: message.userIsSender ? senderName : 'Chatbot',
@@ -69,7 +69,7 @@ class ChatScreen extends ConsumerWidget {
                                 },
                               ),
                             ),
-                            _buildMessageInput(context, chatController, threadId),
+                            _buildMessageInput(context, chatController, chatId, threadId),
                           ],
                         );
                       },
@@ -87,7 +87,7 @@ class ChatScreen extends ConsumerWidget {
   }
 
   // Widget que muestra las categorías seleccionables
-  Widget _buildCategorySelection(BuildContext context, ChatScreenController chatController, String threadId) {
+  Widget _buildCategorySelection(BuildContext context, ChatScreenController chatController, String chatId) {
     final categories = ['Alimentación', 'Salud', 'Vestimenta', 'Refugios', 'General'];
 
     return Padding(
@@ -109,7 +109,7 @@ class ChatScreen extends ConsumerWidget {
                 selected: false,
                 onSelected: (selected) {
                   if (selected) {
-                    chatController.sendMessage(threadId, category);
+                    chatController.sendMessage(chatId, category, "");
                   }
                 },
               );
@@ -121,7 +121,7 @@ class ChatScreen extends ConsumerWidget {
   }
 
   // Input para mensajes
-  Widget _buildMessageInput(BuildContext context, ChatScreenController chatController, String threadId) {
+  Widget _buildMessageInput(BuildContext context, ChatScreenController chatController, String chatId, String threadId) {
     final TextEditingController messageController = TextEditingController();
 
     return Padding(
@@ -139,7 +139,7 @@ class ChatScreen extends ConsumerWidget {
               ),
               onSubmitted: (text) {
                 if (text.isNotEmpty) {
-                  chatController.sendMessage(threadId, text);
+                  chatController.sendMessage(chatId, text, threadId);
                   messageController.clear();
                 }
               },
@@ -150,7 +150,7 @@ class ChatScreen extends ConsumerWidget {
             onPressed: () {
               final text = messageController.text;
               if (text.isNotEmpty) {
-                chatController.sendMessage(threadId, text);
+                chatController.sendMessage(chatId, text, threadId);
                 messageController.clear();
               }
             },

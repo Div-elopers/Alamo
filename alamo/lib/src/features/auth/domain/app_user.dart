@@ -25,7 +25,7 @@ class AppUser {
       email: json['email'] as String?,
       emailVerified: json['emailVerified'] as bool? ?? false,
       phoneVerified: json['phoneVerified'] as bool? ?? false,
-      displayName: json['displayName'] as String,
+      displayName: json['displayName'] as String? ?? "",
     );
   }
 

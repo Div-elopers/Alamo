@@ -89,10 +89,10 @@ class UserService {
   Future<void> deleteUserAccount() async {
     final currentUser = _authRepository.currentUser;
     if (currentUser != null) {
-      final threadId = await _chatRepository.findThreadByParticipant(currentUser.uid);
+      final chatId = await _chatRepository.findChatByParticipant(currentUser.uid);
 
-      if (threadId != null) {
-        await _chatRepository.deleteChatThread(threadId);
+      if (chatId != null) {
+        await _chatRepository.deleteChat(chatId);
       }
 
       // Delete user from Firestore
