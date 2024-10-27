@@ -48,10 +48,12 @@ flutter:
   generate: true
 
   fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
     # Used for Golden Image tests
     - family: Sofia Sans
       fonts:
-        - asset: assets/fonts/Roboto-Regular.ttf
         - asset: assets/fonts/SofiaSans-Regular.ttf
 
 
