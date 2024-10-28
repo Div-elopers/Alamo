@@ -49,29 +49,25 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(
-      IconData icon, String label, int index, BuildContext context) {
+  Widget _buildNavItem(IconData icon, String label, int index, BuildContext context) {
     return GestureDetector(
       onTap: () {
         onTap(index); // Actualiza el índice
-        _navigateToScreen(
-            index, context); // Navega a la pantalla correspondiente
+        _navigateToScreen(index, context); // Navega a la pantalla correspondiente
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
-            color:
-                currentIndex == index ? const Color(0xff1B1C41) : Colors.grey,
+            color: currentIndex == index ? const Color(0xff1B1C41) : Colors.grey,
             size: 24,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color:
-                  currentIndex == index ? const Color(0xff1B1C41) : Colors.grey,
+              color: currentIndex == index ? const Color(0xff1B1C41) : Colors.grey,
               fontSize: 12,
             ),
           ),
@@ -89,8 +85,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         context.goNamed(AppRoute.home.name);
         break;
       case 2:
-        context.goNamed(AppRoute.chatbot.name,
-            pathParameters: {'userId': user!.uid});
+        context.goNamed(AppRoute.chatbot.name, pathParameters: {'userId': user!.uid});
       case 3:
         context.goNamed(AppRoute.home.name); // Pendiente de definir
         break;

@@ -1,4 +1,5 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
+import 'package:alamo/src/features/auth/data/auth_repository.dart';
 //import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
 //import 'package:alamo/src/features/home/home_app_bar/home_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex =
-        ref.watch(currentIndexProvider); // Lee el índice actual
+    final currentIndex = ref.watch(currentIndexProvider); // Lee el índice actual
+    final user = ref.watch(authStateChangesProvider).value;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,20 +71,17 @@ class HomeScreen extends ConsumerWidget {
             child: ListView(
               children: [
                 // Aquí van las cards
-                _buildCard(context, 'Tutorial de uso', 'Descripción 1',
-                    'assets/images/image1.png'),
-                _buildCard(context, 'Acerca de la app', 'Descripción 2',
-                    'assets/images/image2.png'),
-                _buildCard(context, 'Algo más', 'Descripción 3',
-                    'assets/images/image3.png'),
+                _buildCard(context, 'Tutorial de uso', 'Descripción 1', 'assets/images/image1.png'),
+                _buildCard(context, 'Acerca de la app', 'Descripción 2', 'assets/images/image2.png'),
+                _buildCard(context, 'Algo más', 'Descripción 3', 'assets/images/image3.png'),
               ],
             ),
           ),
           CustomBottomNavigationBar(
+            user: user,
             currentIndex: currentIndex, // Lee directamente el índice
             onTap: (index) {
-              ref.read(currentIndexProvider.notifier).state =
-                  index; // Actualiza el índice
+              ref.read(currentIndexProvider.notifier).state = index; // Actualiza el índice
             },
           ),
         ],
@@ -91,8 +89,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildCard(BuildContext context, String title, String description,
-      String imagePath) {
+  Widget _buildCard(BuildContext context, String title, String description, String imagePath) {
     return ResponsiveScrollableCard(
       child: Card(
         margin: EdgeInsets.zero,
@@ -114,8 +111,7 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const AccountScreen()),
+                    MaterialPageRoute(builder: (context) => const AccountScreen()),
                   );
                 },
               ),
