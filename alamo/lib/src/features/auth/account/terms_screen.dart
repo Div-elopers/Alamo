@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:alamo/src/widgets/custom_app_bar.dart';
 
 class TermsScreen extends StatelessWidget {
   const TermsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA), // Fondo blanco #FAFAFA
+    return const Scaffold(
+      appBar: CustomAppBar(title: 'Términos y condiciones'),
+      backgroundColor: Color(0xFFFAFAFA),
       body: Center(
         child: SizedBox(
           width: 390, // Ancho de 390px
@@ -14,14 +16,7 @@ class TermsScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Términos y Condiciones',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Aquí van los términos y condiciones...',
@@ -31,12 +26,12 @@ class TermsScreen extends StatelessWidget {
                   textAlign: TextAlign.justify,
                 ),
               ),
-              ElevatedButton(
+              /* ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 child: const Text('Aceptar'),
-              ),
+              ),*/
             ],
           ),
         ),
