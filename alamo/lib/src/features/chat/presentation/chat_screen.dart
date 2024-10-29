@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:alamo/src/widgets/message_bubble.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen_controller.dart';
+import 'package:alamo/src/widgets/custom_app_bar.dart';
 
 class ChatScreen extends ConsumerWidget {
   final String userId;
@@ -23,7 +24,8 @@ class ChatScreen extends ConsumerWidget {
         final senderName = user?.displayName ?? 'usuario';
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Asistente virtual')),
+          appBar: const CustomAppBar(
+              title: 'Asistente virtual'), // Usar CustomAppBar aquí
           body: FutureBuilder<String>(
             future: chatController.getOrCreateChatId(userId),
             builder: (context, snapshot) {
@@ -40,13 +42,19 @@ class ChatScreen extends ConsumerWidget {
                     child: StreamBuilder<Chat?>(
                       stream: chatController.watchChat(chatId),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data == null || snapshot.data!.messages.isEmpty) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data == null ||
+                            snapshot.data!.messages.isEmpty) {
                           // Si el chat no tiene mensajes, mostrar las categorías
-                          return _buildCategorySelection(context, chatController, chatId);
+                          return _buildCategorySelection(
+                              context, chatController, chatId);
                         }
 
                         final chat = snapshot.data!;
@@ -61,7 +69,9 @@ class ChatScreen extends ConsumerWidget {
                                   final message = chat.messages[index];
 
                                   return MessageBubble(
-                                    senderName: message.userIsSender ? senderName : 'Chatbot',
+                                    senderName: message.userIsSender
+                                        ? senderName
+                                        : 'Chatbot',
                                     text: message.content,
                                     date: message.formattedTime,
                                     userIsSender: message.userIsSender,
@@ -69,7 +79,8 @@ class ChatScreen extends ConsumerWidget {
                                 },
                               ),
                             ),
-                            _buildMessageInput(context, chatController, chatId, threadId),
+                            _buildMessageInput(
+                                context, chatController, chatId, threadId),
                           ],
                         );
                       },
@@ -87,8 +98,15 @@ class ChatScreen extends ConsumerWidget {
   }
 
   // Widget que muestra las categorías seleccionables
-  Widget _buildCategorySelection(BuildContext context, ChatScreenController chatController, String chatId) {
-    final categories = ['Alimentación', 'Salud', 'Vestimenta', 'Refugios', 'General'];
+  Widget _buildCategorySelection(BuildContext context,
+      ChatScreenController chatController, String chatId) {
+    final categories = [
+      'Alimentación',
+      'Salud',
+      'Vestimenta',
+      'Refugios',
+      'General'
+    ];
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -121,7 +139,8 @@ class ChatScreen extends ConsumerWidget {
   }
 
   // Input para mensajes
-  Widget _buildMessageInput(BuildContext context, ChatScreenController chatController, String chatId, String threadId) {
+  Widget _buildMessageInput(BuildContext context,
+      ChatScreenController chatController, String chatId, String threadId) {
     final TextEditingController messageController = TextEditingController();
 
     return Padding(

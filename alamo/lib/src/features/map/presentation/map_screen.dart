@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'map_controller.dart';
 import 'package:alamo/src/features/home/home_app_bar/bottom_navigation_bar.dart';
+import 'package:alamo/src/widgets/custom_app_bar.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
@@ -54,7 +55,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: const Text('Mapa')),
+        appBar: const CustomAppBar(title: 'Mapa'), // Usar CustomAppBar aquí
         body: Stack(
           children: [
             GoogleMap(
@@ -83,7 +84,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               left: 0,
               right: 0,
               child: CustomBottomNavigationBar(
-                currentIndex: currentIndex, // Lee directamente el índice
+                currentIndex: currentIndex,
                 onTap: (index) {
                   ref.read(currentIndexProvider.notifier).state = index;
                 },
