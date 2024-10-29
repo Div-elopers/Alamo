@@ -15,7 +15,7 @@ class RegisterScreen extends StatelessWidget {
   // Clave para el formulario
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {

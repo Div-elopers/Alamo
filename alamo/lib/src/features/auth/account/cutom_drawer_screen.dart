@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:alamo/src/features/auth/account/terms_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   final WidgetRef ref; // Agrega el ref aquí
@@ -63,7 +64,12 @@ class CustomDrawer extends StatelessWidget {
               title: 'Términos y condiciones',
               color: const Color(0xff1B1C41),
               onTap: () {
-                // Lógica
+                // Navega a TermsScreen
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsScreen(),
+                    ));
               },
             ),
             _buildListTile(
