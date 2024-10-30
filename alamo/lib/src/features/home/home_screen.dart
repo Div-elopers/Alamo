@@ -1,7 +1,6 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
-//import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
-//import 'package:alamo/src/features/home/home_app_bar/home_app_bar.dart';
+
 import 'package:flutter/material.dart';
 import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:alamo/src/widgets/custom_button.dart';
@@ -9,19 +8,6 @@ import 'package:alamo/src/features/home/home_app_bar/bottom_navigation_bar.dart'
 import 'package:alamo/src/features/auth/account/cutom_drawer_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/*class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: HomeAppBar(),
-      body: Placeholder(),
-    );
-  }
-}*/
-
-// Define el StateProvider para el índice de navegación
 final currentIndexProvider = StateProvider<int>((ref) => 0);
 
 class HomeScreen extends ConsumerWidget {
@@ -64,13 +50,12 @@ class HomeScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      drawer: CustomDrawer(ref: ref), // Proporciona el ref aquí
+      drawer: const CustomDrawer(),
       body: Column(
         children: [
           Expanded(
             child: ListView(
               children: [
-                // Aquí van las cards
                 _buildCard(context, 'Tutorial de uso', 'Descripción 1', 'assets/images/image1.png'),
                 _buildCard(context, 'Acerca de la app', 'Descripción 2', 'assets/images/image2.png'),
                 _buildCard(context, 'Algo más', 'Descripción 3', 'assets/images/image3.png'),
@@ -79,9 +64,9 @@ class HomeScreen extends ConsumerWidget {
           ),
           CustomBottomNavigationBar(
             user: user,
-            currentIndex: currentIndex, // Lee directamente el índice
+            currentIndex: currentIndex,
             onTap: (index) {
-              ref.read(currentIndexProvider.notifier).state = index; // Actualiza el índice
+              ref.read(currentIndexProvider.notifier).state = index;
             },
           ),
         ],

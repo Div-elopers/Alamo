@@ -27,24 +27,6 @@ class AccountScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: state.isLoading ? const CircularProgressIndicator() : Text('Cuenta'.hardcoded),
-        actions: [
-          ActionTextButton(
-            text: 'Cerrar sesión'.hardcoded,
-            onPressed: state.isLoading
-                ? null
-                : () async {
-                    final logout = await showAlertDialog(
-                      context: context,
-                      title: 'Estás seguro?'.hardcoded,
-                      cancelActionText: 'Cancelar'.hardcoded,
-                      defaultActionText: 'Cerrar sesión'.hardcoded,
-                    );
-                    if (logout == true) {
-                      ref.read(accountScreenControllerProvider.notifier).signOut();
-                    }
-                  },
-          ),
-        ],
       ),
       body: const ResponsiveCenter(
         padding: EdgeInsets.symmetric(horizontal: Sizes.p8),
