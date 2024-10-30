@@ -15,13 +15,26 @@ class UserService {
   final ChatRepository _chatRepository;
 
   // Register a new user
-  Future<void> signUpWithEmailAndPassword({required String email, required String password}) async {
+  Future<void> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required Map<String, String> additionalInfo,
+  }) async {
     final userCredential = await _authRepository.createUserWithEmailAndPassword(email, password);
     final user = userCredential.user;
-    const displayName = "";
+
     if (user != null) {
-      // Create user profile in Firestore
-      final appUser = AppUser(uid: user.uid, email: user.email, emailVerified: user.emailVerified, phoneVerified: false, displayName: displayName);
+      // Create user profile in Firestore with additional information
+      final appUser = AppUser(
+        uid: user.uid,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        phoneVerified: false,
+        name: additionalInfo['name'] ?? '',
+        phoneNumber: additionalInfo['phoneNumber'],
+        department: additionalInfo['department'],
+        createdAt: DateTime.now(),
+      );
       await _userRepository.createUser(appUser);
     }
   }
@@ -53,7 +66,7 @@ class UserService {
           email: user.email,
           emailVerified: user.emailVerified,
           phoneVerified: false,
-          displayName: "",
+          name: "",
         );
         await _userRepository.createUser(appUser);
       }
@@ -65,7 +78,7 @@ class UserService {
             email: user.email,
             emailVerified: user.emailVerified,
             phoneVerified: false,
-            displayName: "",
+            name: "",
           );
     }
 
@@ -108,12 +121,11 @@ class UserService {
     final firebaseUser = _authRepository.currentUser;
     if (firebaseUser != null) {
       return AppUser(
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          emailVerified: firebaseUser.emailVerified,
-          phoneVerified: false,
-          displayName: firebaseUser.displayName // Assuming false by default
-          );
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        emailVerified: firebaseUser.emailVerified,
+        phoneVerified: false,
+      );
     }
     return null;
   }

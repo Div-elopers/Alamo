@@ -16,7 +16,6 @@ class AccountScreenController extends _$AccountScreenController {
   }
   Future<void> signOut() async {
     final userService = ref.read(userServiceProvider);
-    state = const AsyncLoading();
     state = await AsyncValue.guard(() => userService.signOut());
   }
 

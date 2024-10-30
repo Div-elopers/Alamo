@@ -2,10 +2,8 @@ import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/register_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
-//import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
@@ -37,7 +35,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isLoggedIn = user != null;
       final path = state.uri.path;
       if (isLoggedIn) {
-        if (path == '/signIn') {
+        if (path == '/signIn' || path == '/signIn/signUp') {
           return '/';
         }
       } else {
@@ -107,7 +105,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             path: 'signUp',
             name: AppRoute.signUp.name,
             pageBuilder: (context, state) {
-              return const MaterialPage(child: SignUpScreen());
+              return MaterialPage(child: SignUpScreen());
             },
           ),
         ],

@@ -1,22 +1,33 @@
 import 'dart:async';
-
 import 'package:alamo/src/features/auth/application/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'email_password_sign_in_controller.g.dart';
 
 @riverpod
 class EmailPasswordSignInController extends _$EmailPasswordSignInController {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final departmentController = TextEditingController();
+  final repitpassController = TextEditingController();
 
   @override
   FutureOr<void> build() {
-    // nothing to do
+    // Initial setup or state if necessary
   }
 
   bool get isLoading => state.isLoading;
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    final userService = ref.read(userServiceProvider);
+    state = await AsyncValue.guard(() async {
+      await userService.sendPasswordResetEmail(email);
+    });
+  }
 
   Future<bool> signIn({
     required String email,
@@ -26,46 +37,55 @@ class EmailPasswordSignInController extends _$EmailPasswordSignInController {
     return !state.hasError;
   }
 
-  // Método para registrarse
   Future<bool> signUp({
+    required String name,
+    required String phoneNumber,
+    required String department,
     required String email,
     required String password,
+    required String repeatPassword,
   }) async {
-    state = await AsyncValue.guard(() => _signUp(email, password));
+    phoneNumber = formatPhoneNumber(phoneNumber);
+    state = await AsyncValue.guard(() => _signUp(name, phoneNumber, department, email, password));
     return !state.hasError;
   }
 
-  // Método específico para manejar el inicio de sesión
   Future<void> _signIn(String email, String password) async {
     final userService = ref.read(userServiceProvider);
-    try {
-      await userService.signInWithEmailAndPassword(email: email, password: password);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-      rethrow;
-    }
+    await userService.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  // Método específico para manejar el registro de usuario
-  Future<void> _signUp(String email, String password) async {
+  Future<void> _signUp(
+    String name,
+    String phoneNumber,
+    String department,
+    String email,
+    String password,
+  ) async {
     final userService = ref.read(userServiceProvider);
-    try {
-      await userService.signUpWithEmailAndPassword(email: email, password: password);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-      rethrow;
-    }
-  }
-
-  Future<void> sendPasswordResetEmail(String email) async {
-    final userService = ref.read(userServiceProvider);
-    state = await AsyncValue.guard(() async {
-      await userService.sendPasswordResetEmail(email);
-    });
+    await userService.signUpWithEmailAndPassword(
+      email: email,
+      password: password,
+      additionalInfo: {
+        'name': name,
+        'phoneNumber': phoneNumber,
+        'department': department,
+      },
+    );
   }
 
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    // super.dispose();
+  }
+
+  String formatPhoneNumber(String phoneNumber) {
+    try {
+      final parsedNumber = PhoneNumber.parse(phoneNumber, callerCountry: IsoCode.UY);
+      return "598${parsedNumber.formatNsn(isoCode: IsoCode.UY)}";
+    } catch (e) {
+      return phoneNumber;
+    }
   }
 }
