@@ -62,8 +62,6 @@ flutter:
     - assets/images/google.png   
     - assets/images/
     - .env 
-    - assets/images/bottom_leaf.png  
-    - assets/images/top_leaf.png   
-    - assets/images/alamo_logo.png   
+
   
 
