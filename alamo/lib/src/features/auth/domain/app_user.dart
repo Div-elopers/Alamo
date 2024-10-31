@@ -2,30 +2,37 @@ typedef UserID = String;
 
 /// Simple class representing the user UID and email.
 class AppUser {
-  const AppUser({
+  final String uid;
+  final String? email;
+  final bool emailVerified;
+  final bool phoneVerified;
+  final String name;
+  final String? phoneNumber;
+  final String? department;
+  final DateTime? createdAt;
+
+  AppUser({
     required this.uid,
     this.email,
     this.emailVerified = false,
-    this.phoneNumber,
     this.phoneVerified = false,
-    required this.displayName,
+    this.name = "",
+    this.phoneNumber,
+    this.department,
+    this.createdAt,
   });
 
-  final UserID uid;
-  final String? email;
-  final bool emailVerified;
-  final String? phoneNumber;
-  final bool phoneVerified;
-  final String displayName;
-
-  // Factory constructor to create an instance of AppUser from JSON
+  // Factory constructor to create an AppUser instance from JSON data
   factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
-      uid: (json['uid']),
+      uid: json['uid'] as String,
       email: json['email'] as String?,
       emailVerified: json['emailVerified'] as bool? ?? false,
       phoneVerified: json['phoneVerified'] as bool? ?? false,
-      displayName: json['displayName'] as String? ?? "",
+      name: json['name'] as String? ?? "",
+      phoneNumber: json['phoneNumber'] as String?,
+      department: json['department'] as String?,
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
     );
   }
 
@@ -36,7 +43,10 @@ class AppUser {
       'email': email,
       'emailVerified': emailVerified,
       'phoneVerified': phoneVerified,
-      'displayName': displayName,
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'department': department,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 
@@ -53,7 +63,7 @@ class AppUser {
         other.email == email &&
         other.emailVerified == emailVerified &&
         other.phoneVerified == phoneVerified &&
-        other.displayName == displayName;
+        other.name == name;
   }
 
   @override

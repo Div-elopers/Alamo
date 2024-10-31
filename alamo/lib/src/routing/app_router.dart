@@ -2,8 +2,8 @@ import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
-import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
+import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
@@ -22,6 +22,7 @@ enum AppRoute {
   signUp, // Nueva entrada para SignUp
   verifyPhone,
   forgotPassword,
+  register,
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -34,11 +35,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final isLoggedIn = user != null;
       final path = state.uri.path;
       if (isLoggedIn) {
-        if (path == '/signIn' || path == '/signUp') {
+        if (path == '/signIn' || path == '/signIn/signUp') {
           return '/';
         }
       } else {
-        if (path == '/signIn/forgotPassword' || path == '/signUp') {
+        if (path == '/signIn/forgotPassword' || path == '/signIn/signUp') {
           // No redirecciona en estas rutas
           return null;
         }
@@ -100,12 +101,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               child: ForgotPasswordScreen(),
             ),
           ),
+          GoRoute(
+            path: 'signUp',
+            name: AppRoute.signUp.name,
+            pageBuilder: (context, state) {
+              return MaterialPage(child: SignUpScreen());
+            },
+          ),
         ],
-      ),
-      GoRoute(
-        path: '/signUp',
-        name: AppRoute.signUp.name,
-        builder: (context, state) => const SignUpScreen(),
       ),
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),

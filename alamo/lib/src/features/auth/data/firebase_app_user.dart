@@ -30,5 +30,11 @@ class FirebaseAppUser implements AppUser {
   }
 
   @override
-  String get displayName => throw UnimplementedError();
+  String get name => throw UnimplementedError();
+
+  @override
+  DateTime? get createdAt => throw UnimplementedError();
+
+  @override
+  String? get department => throw UnimplementedError();
 }

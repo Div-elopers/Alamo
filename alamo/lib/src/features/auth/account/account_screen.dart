@@ -5,7 +5,6 @@ import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
-import 'package:alamo/src/widgets/action_text_button.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:alamo/src/widgets/responsive_center.dart';
 import 'package:alamo/src/widgets/verified.dart';
@@ -27,24 +26,6 @@ class AccountScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: state.isLoading ? const CircularProgressIndicator() : Text('Cuenta'.hardcoded),
-        actions: [
-          ActionTextButton(
-            text: 'Cerrar sesión'.hardcoded,
-            onPressed: state.isLoading
-                ? null
-                : () async {
-                    final logout = await showAlertDialog(
-                      context: context,
-                      title: 'Estás seguro?'.hardcoded,
-                      cancelActionText: 'Cancelar'.hardcoded,
-                      defaultActionText: 'Cerrar sesión'.hardcoded,
-                    );
-                    if (logout == true) {
-                      ref.read(accountScreenControllerProvider.notifier).signOut();
-                    }
-                  },
-          ),
-        ],
       ),
       body: const ResponsiveCenter(
         padding: EdgeInsets.symmetric(horizontal: Sizes.p8),

@@ -10,10 +10,12 @@ class VerifyPhoneNumberScreen extends ConsumerStatefulWidget {
   const VerifyPhoneNumberScreen({super.key});
 
   @override
-  ConsumerState<VerifyPhoneNumberScreen> createState() => _VerifyPhoneNumberScreenState();
+  ConsumerState<VerifyPhoneNumberScreen> createState() =>
+      _VerifyPhoneNumberScreenState();
 }
 
-class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScreen> with CodeAutoFill {
+class _VerifyPhoneNumberScreenState
+    extends ConsumerState<VerifyPhoneNumberScreen> with CodeAutoFill {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _codeController = TextEditingController();
@@ -51,7 +53,8 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(accountScreenControllerProvider);
-    final accountController = ref.read(accountScreenControllerProvider.notifier);
+    final accountController =
+        ref.read(accountScreenControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Verificar número de teléfono')),
@@ -94,7 +97,9 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                             phoneNumber: _phoneController.text,
                             onVerificationCompleted: (result) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Número verificado automáticamente')),
+                                const SnackBar(
+                                    content: Text(
+                                        'Número verificado automáticamente')),
                               );
                             },
                             onCodeSent: (result) {
@@ -105,18 +110,24 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                             },
                             onAutoRetrievalTimeout: (result) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Tiempo de espera agotado para verificación automática')),
+                                const SnackBar(
+                                    content: Text(
+                                        'Tiempo de espera agotado para verificación automática')),
                               );
                             },
                             onVerificationFailed: (result) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error de verificación: ${result.errorMessage}')),
+                                SnackBar(
+                                    content: Text(
+                                        'Error de verificación: ${result.errorMessage}')),
                               );
                             },
                           );
                         }
                       },
-                child: state.isLoading ? const CircularProgressIndicator() : const Text('Enviar código de verificación'),
+                child: state.isLoading
+                    ? const CircularProgressIndicator()
+                    : const Text('Enviar código de verificación'),
               ),
               const SizedBox(height: 16),
               // Conditionally show verification code input field
@@ -147,7 +158,8 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                           ? null
                           : () async {
                               if (_formKey.currentState?.validate() ?? false) {
-                                final result = await accountController.verifyPhoneCode(
+                                final result =
+                                    await accountController.verifyPhoneCode(
                                   verificationId: verificationId!,
                                   smsCode: _codeController.text,
                                 );
@@ -159,7 +171,9 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                                 }
                               }
                             },
-                      child: state.isLoading ? const CircularProgressIndicator() : const Text('Verificar código'),
+                      child: state.isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Verificar código'),
                     ),
                   ],
                 ),

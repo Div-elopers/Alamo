@@ -29,6 +29,7 @@ dependencies:
   sms_autofill: ^2.4.0
   cloud_functions: ^5.1.3
   http: ^1.2.2
+  phone_numbers_parser: ^9.0.1
 
 dev_dependencies:
   flutter_test:
@@ -48,18 +49,19 @@ flutter:
   generate: true
 
   fonts:
-    # Used for Golden Image tests
     - family: Roboto
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+    # Used for Golden Image tests
+    - family: Sofia Sans
+      fonts:
         - asset: assets/fonts/SofiaSans-Regular.ttf
 
 
   assets:
     - assets/images/google.png   
+    - assets/images/
     - .env 
-    - assets/images/bottom_leaf.png  
-    - assets/images/top_leaf.png   
-    - assets/images/alamo_logo.png   
+
   
 

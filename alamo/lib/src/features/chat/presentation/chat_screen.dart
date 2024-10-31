@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:alamo/src/widgets/message_bubble.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen_controller.dart';
+import 'package:alamo/src/widgets/custom_app_bar.dart';
 
 class ChatScreen extends ConsumerWidget {
   final String userId;
@@ -20,10 +21,10 @@ class ChatScreen extends ConsumerWidget {
 
     return userStream.when(
       data: (user) {
-        final senderName = user?.displayName ?? 'usuario';
+        final senderName = user?.name ?? 'usuario';
 
         return Scaffold(
-          appBar: AppBar(title: const Text('Asistente virtual')),
+          appBar: const CustomAppBar(title: 'Asistente virtual'), // Usar CustomAppBar aquí
           body: FutureBuilder<String>(
             future: chatController.getOrCreateChatId(userId),
             builder: (context, snapshot) {

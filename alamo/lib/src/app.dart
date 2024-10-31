@@ -17,7 +17,12 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(
         // * Use this to toggle Material 3 (defaults to true since Flutter 3.16)
         useMaterial3: true,
-        primarySwatch: Colors.grey,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.grey,
+        ).copyWith(
+          primary: const Color.fromRGBO(27, 27, 64, 1.0),
+          secondary: Colors.grey,
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           foregroundColor: Color.fromRGBO(27, 27, 64, 1.0),
