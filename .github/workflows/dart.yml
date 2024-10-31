@@ -13,12 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Setup Dart SDK
-      - uses: dart-lang/setup-dart@v1
-
-      # Set the working directory to where your pubspec.yaml is located
-      - name: Set working directory
-        run: cd alamo
+      # Setup Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.3'  
 
       - name: Install dependencies
         run: flutter pub get
@@ -26,13 +25,13 @@ jobs:
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
+      #   run: flutter format --output=none --set-exit-if-changed .
       #   working-directory: alamo  # Specify the working directory here
 
       - name: Analyze project source
-        run: dart analyze
+        run: flutter analyze
         working-directory: alamo  # Specify the working directory here
 
       - name: Run tests
-        run: dart test
+        run: flutter test
         working-directory: alamo  # Specify the working directory here
