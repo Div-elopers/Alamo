@@ -8,14 +8,14 @@ import 'package:alamo/src/features/home/home_app_bar/bottom_navigation_bar.dart'
 import 'package:alamo/src/features/auth/account/cutom_drawer_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final currentIndexProvider = StateProvider<int>((ref) => 0);
+final currentIndexProvider = StateProvider<int>((ref) => 1);
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(currentIndexProvider); // Lee el índice actual
+    const currentIndex = 1;
     final user = ref.watch(authStateChangesProvider).value;
 
     return Scaffold(
@@ -83,7 +83,7 @@ class HomeScreen extends ConsumerWidget {
           alignment: Alignment.center,
           children: [
             SizedBox(
-              height: 200,
+              height: 190,
               width: double.infinity,
               child: Image.asset(
                 imagePath,

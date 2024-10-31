@@ -14,10 +14,7 @@ class ResponsiveScrollableCard extends StatelessWidget {
       maxContentWidth: Breakpoint.tablet,
       child: Padding(
         padding: const EdgeInsets.all(Sizes.p16),
-        child: Padding(
-          padding: const EdgeInsets.all(Sizes.p16),
-          child: child,
-        ),
+        child: child,
       ),
     );
   }

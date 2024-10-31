@@ -5,7 +5,6 @@ import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
-import 'package:alamo/src/widgets/action_text_button.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:alamo/src/widgets/responsive_center.dart';
 import 'package:alamo/src/widgets/verified.dart';

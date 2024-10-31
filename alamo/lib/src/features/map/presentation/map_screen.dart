@@ -46,8 +46,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     final state = ref.watch(mapControllerProvider);
     final mapController = ref.read(mapControllerProvider.notifier);
-    final currentIndex =
-        ref.watch(currentIndexProvider); // Lee el índice actual
+    final currentIndex = ref.watch(currentIndexProvider);
 
     if (state.isLoading) {
       return const Center(
