@@ -37,4 +37,18 @@ class FirebaseAppUser implements AppUser {
 
   @override
   String? get department => throw UnimplementedError();
+
+  @override
+  // TODO: implement profileUrl
+  String? get profileUrl => throw UnimplementedError();
+
+  @override
+  set emailVerified(bool emailVerified) {
+    // TODO: implement emailVerified
+  }
+
+  @override
+  set phoneVerified(bool phoneVerified) {
+    // TODO: implement phoneVerified
+  }
 }

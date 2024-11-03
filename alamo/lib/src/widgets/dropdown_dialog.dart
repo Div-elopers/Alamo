@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AdaptiveDropdown extends StatelessWidget {
+class AdaptiveDropdown extends StatefulWidget {
   final String? value;
   final List<String> items;
   final ValueChanged<String?>? onChanged;
@@ -17,28 +17,58 @@ class AdaptiveDropdown extends StatelessWidget {
   });
 
   @override
+  State<AdaptiveDropdown> createState() => _AdaptiveDropdownState();
+}
+
+class _AdaptiveDropdownState extends State<AdaptiveDropdown> {
+  String? _selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize _selectedValue with the initial value passed to the widget
+    _selectedValue = widget.value;
+  }
+
+  @override
+  void didUpdateWidget(covariant AdaptiveDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update _selectedValue if the widget's value changes externally
+    if (widget.value != oldWidget.value) {
+      setState(() {
+        _selectedValue = widget.value;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (Platform.isIOS) {
       // iOS-specific dropdown using CupertinoPicker
       return _buildCupertinoDropdown(context);
     } else {
       // Material Design dropdown for Android and Web
-      return _buildMaterialDropdown(onChanged);
+      return _buildMaterialDropdown();
     }
   }
 
-  Widget _buildMaterialDropdown(
-    ValueChanged<String?>? onChanged,
-  ) {
+  Widget _buildMaterialDropdown() {
     return DropdownButtonFormField<String>(
-      value: value,
-      items: items.map((String item) {
+      value: _selectedValue,
+      items: widget.items.map((String item) {
         return DropdownMenuItem<String>(
           value: item,
           child: Text(item),
         );
       }).toList(),
-      onChanged: onChanged,
+      onChanged: (newValue) {
+        setState(() {
+          _selectedValue = newValue;
+        });
+        if (widget.onChanged != null) {
+          widget.onChanged!(newValue);
+        }
+      },
       decoration: const InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(width: 0.1, color: Colors.black),
@@ -46,7 +76,7 @@ class AdaptiveDropdown extends StatelessWidget {
         filled: true,
         fillColor: Colors.white,
       ),
-      validator: validator,
+      validator: widget.validator,
     );
   }
 
@@ -61,7 +91,7 @@ class AdaptiveDropdown extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
         ),
-        child: Text(value ?? items.first),
+        child: Text(_selectedValue ?? widget.items.first),
       ),
     );
   }
@@ -84,12 +114,18 @@ class AdaptiveDropdown extends StatelessWidget {
             useMagnifier: true,
             itemExtent: 32.0,
             scrollController: FixedExtentScrollController(
-              initialItem: items.indexOf(value ?? items.first),
+              initialItem: widget.items.indexOf(_selectedValue ?? widget.items.first),
             ),
             onSelectedItemChanged: (int selectedItem) {
-              onChanged!(items[selectedItem]);
+              final newValue = widget.items[selectedItem];
+              setState(() {
+                _selectedValue = newValue;
+              });
+              if (widget.onChanged != null) {
+                widget.onChanged!(newValue);
+              }
             },
-            children: items.map((String item) => Center(child: Text(item))).toList(),
+            children: widget.items.map((String item) => Center(child: Text(item))).toList(),
           ),
         ),
       ),

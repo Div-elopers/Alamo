@@ -1,4 +1,5 @@
 import 'package:alamo/src/constants/app_sizes.dart';
+import 'package:alamo/src/constants/departments.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_controller.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:alamo/src/widgets/dropdown_dialog.dart';
@@ -28,7 +29,7 @@ class SignUpScreen extends ConsumerWidget {
     final departmentController = controller.departmentController;
     final emailController = controller.emailController;
     final passwordController = controller.passwordController;
-    final repitpassController = controller.repitpassController;
+    final repeatpassController = controller.repeatpassController;
 
     return Scaffold(
       appBar: AppBar(
@@ -89,7 +90,7 @@ class SignUpScreen extends ConsumerWidget {
                     ),
                     _buildTextFormField(
                       label: 'Repetir contraseña',
-                      controller: repitpassController,
+                      controller: repeatpassController,
                       obscureText: obscureRepeatPassword,
                       validator: (value) => validators.repeatPasswordErrorText(
                         passwordController.text,
@@ -121,7 +122,7 @@ class SignUpScreen extends ConsumerWidget {
                                   department: departmentController.text,
                                   email: emailController.text.trim(),
                                   password: passwordController.text.trim(),
-                                  repeatPassword: repitpassController.text.trim(),
+                                  repeatPassword: repeatpassController.text.trim(),
                                 );
 
                                 if (success) {
@@ -207,28 +208,6 @@ class SignUpScreen extends ConsumerWidget {
     );
   }
 }
-
-final List<String> uruguayDepartments = [
-  'Artigas',
-  'Canelones',
-  'Cerro Largo',
-  'Colonia',
-  'Durazno',
-  'Flores',
-  'Florida',
-  'Lavalleja',
-  'Maldonado',
-  'Montevideo',
-  'Paysandú',
-  'Río Negro',
-  'Rivera',
-  'Rocha',
-  'Salto',
-  'San José',
-  'Soriano',
-  'Tacuarembó',
-  'Treinta y Tres',
-];
 
 final obscurePasswordProvider = StateProvider<bool>((ref) => true);
 final obscureRepeatPasswordProvider = StateProvider<bool>((ref) => true);
