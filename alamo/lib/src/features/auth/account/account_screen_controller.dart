@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:alamo/src/features/auth/application/user_service.dart';
 //import 'package:alamo/src/features/auth/data/auth_repository.dart';
@@ -88,6 +89,14 @@ class AccountScreenController extends _$AccountScreenController {
       state = AsyncError(result.error!, StackTrace.current);
       return false;
     }
+  }
+
+  Future<void> updateProfilePhoto(File imageFile) async {
+    final userService = ref.read(userServiceProvider);
+
+    await AsyncValue.guard(() async {
+      await userService.uploadProfilePhoto(imageFile);
+    });
   }
 
   void updateProfile({required String name, required String phoneNumber, required String department, required String email}) {}

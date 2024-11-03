@@ -67,6 +67,13 @@ class UsersRepository {
         fromFirestore: (doc, _) => AppUser.fromJson(doc.data()!),
         toFirestore: (user, _) => user.toJson(),
       );
+
+  Future<void> updateUserProfileUrl(String userID, String downloadUrl) async {
+    final ref = _userRef(userID);
+    await ref.update({
+      'profileUrl': downloadUrl,
+    });
+  }
 }
 
 @Riverpod(keepAlive: true)

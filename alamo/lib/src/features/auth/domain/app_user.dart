@@ -26,15 +26,15 @@ class AppUser {
   // Factory constructor to create an AppUser instance from JSON data
   factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
-      uid: json['uid'] as String,
-      email: json['email'] as String?,
-      emailVerified: json['emailVerified'] as bool? ?? false,
-      phoneVerified: json['phoneVerified'] as bool? ?? false,
-      name: json['name'] as String? ?? "",
-      phoneNumber: json['phoneNumber'] as String?,
-      department: json['department'] as String?,
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
-    );
+        uid: json['uid'] as String,
+        email: json['email'] as String?,
+        emailVerified: json['emailVerified'] as bool? ?? false,
+        phoneVerified: json['phoneVerified'] as bool? ?? false,
+        name: json['name'] as String? ?? "",
+        phoneNumber: json['phoneNumber'] as String?,
+        department: json['department'] as String?,
+        createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
+        profileUrl: json['profileUrl'] as String? ?? "");
   }
 
   // Method to convert an instance of AppUser to JSON
@@ -48,6 +48,7 @@ class AppUser {
       'phoneNumber': phoneNumber,
       'department': department,
       'createdAt': createdAt?.toIso8601String(),
+      'profileUrl': profileUrl,
     };
   }
 

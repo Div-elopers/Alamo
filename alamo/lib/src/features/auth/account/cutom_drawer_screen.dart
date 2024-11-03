@@ -35,16 +35,9 @@ class CustomDrawer extends ConsumerWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/perfil.png'),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.zero,
-                      ),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(user.profileUrl!),
                     ),
                     const SizedBox(width: 10),
                     Expanded(

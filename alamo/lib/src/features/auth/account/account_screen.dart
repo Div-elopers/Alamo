@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/constants/departments.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
@@ -9,6 +10,7 @@ import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:alamo/src/widgets/dropdown_dialog.dart';
+import 'package:alamo/src/widgets/profile_photo.dart';
 import 'package:alamo/src/widgets/responsive_center.dart';
 import 'package:alamo/src/widgets/verified.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +45,6 @@ class ProfileScreen extends ConsumerWidget {
   ProfileScreen({super.key});
   final validators = EmailAndPasswordValidators(); // Add validators instance
 
-  void selectImage() {}
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(accountScreenControllerProvider.notifier);
@@ -52,6 +52,10 @@ class ProfileScreen extends ConsumerWidget {
 
     if (user == null) {
       return const Center(child: CircularProgressIndicator()); // Loading indicator while user data is fetched
+    }
+
+    Future<void> handleImageUpload(File imageFile) async {
+      await controller.updateProfilePhoto(imageFile);
     }
 
     // Text controllers for form fields, initialized with user data
@@ -67,24 +71,9 @@ class ProfileScreen extends ConsumerWidget {
         children: [
           // User photo section
           Center(
-            child: Stack(
-              children: [
-                // Profile photo
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: NetworkImage(user.profileUrl ??
-                      'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'), // Replace with default if null
-                ),
-                Positioned(
-                  bottom: -12,
-                  left: 40,
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.add_a_photo),
-                    iconSize: 20,
-                  ),
-                )
-              ],
+            child: ProfilePhoto(
+              userProfileUrl: user.profileUrl ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+              onImageUploaded: handleImageUpload,
             ),
           ),
           gapH16,

@@ -1,27 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chat_screen_controller.dart';
+part of 'profile_photo_repository.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatScreenControllerHash() =>
-    r'19e2b49d3666d9721446506649dc987056bf7b70';
+String _$profileRepositoryHash() => r'934410a74fbead1f98d5eb9181fc2958d3ce98e1';
 
-/// See also [ChatScreenController].
-@ProviderFor(ChatScreenController)
-final chatScreenControllerProvider =
-    AutoDisposeAsyncNotifierProvider<ChatScreenController, void>.internal(
-  ChatScreenController.new,
-  name: r'chatScreenControllerProvider',
+/// See also [profileRepository].
+@ProviderFor(profileRepository)
+final profileRepositoryProvider = Provider<ProfileImageRepository>.internal(
+  profileRepository,
+  name: r'profileRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$chatScreenControllerHash,
+      : _$profileRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$ChatScreenController = AutoDisposeAsyncNotifier<void>;
+typedef ProfileRepositoryRef = ProviderRef<ProfileImageRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
