@@ -4,16 +4,21 @@ import 'package:alamo/src/features/auth/application/user_service.dart';
 //import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:alamo/src/routing/app_router.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'account_screen_controller.g.dart';
 
 @riverpod
 class AccountScreenController extends _$AccountScreenController {
+  final emailController = TextEditingController();
+  final nameController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final departmentController = TextEditingController();
+
   @override
-  FutureOr<void> build() {
-    // nothing to do
-  }
+  FutureOr<void> build() {}
+
   Future<void> signOut() async {
     final userService = ref.read(userServiceProvider);
     state = await AsyncValue.guard(() => userService.signOut());
@@ -84,4 +89,6 @@ class AccountScreenController extends _$AccountScreenController {
       return false;
     }
   }
+
+  void updateProfile({required String name, required String phoneNumber, required String department, required String email}) {}
 }

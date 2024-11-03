@@ -4,23 +4,24 @@ typedef UserID = String;
 class AppUser {
   final String uid;
   final String? email;
-  final bool emailVerified;
-  final bool phoneVerified;
+  bool emailVerified;
+  bool phoneVerified;
   final String name;
   final String? phoneNumber;
   final String? department;
   final DateTime? createdAt;
+  final String? profileUrl;
 
-  AppUser({
-    required this.uid,
-    this.email,
-    this.emailVerified = false,
-    this.phoneVerified = false,
-    this.name = "",
-    this.phoneNumber,
-    this.department,
-    this.createdAt,
-  });
+  AppUser(
+      {required this.uid,
+      this.email,
+      this.emailVerified = false,
+      this.phoneVerified = false,
+      this.name = "",
+      this.phoneNumber,
+      this.department,
+      this.createdAt,
+      this.profileUrl});
 
   // Factory constructor to create an AppUser instance from JSON data
   factory AppUser.fromJson(Map<String, dynamic> json) {
