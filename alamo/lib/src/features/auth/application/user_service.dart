@@ -103,14 +103,17 @@ class UserService {
   Future<void> deleteUserAccount() async {
     final currentUser = _authRepository.currentUser;
     if (currentUser != null) {
-      final chatId = await _chatRepository.findChatByParticipant(currentUser.uid);
+      final userId = currentUser.uid;
+
+      // Delete user from Firestore
+      await _userRepository.deleteUser(userId);
+
+      final chatId = await _chatRepository.findChatByParticipant(userId);
 
       if (chatId != null) {
         await _chatRepository.deleteChat(chatId);
       }
 
-      // Delete user from Firestore
-      await _userRepository.deleteUser(currentUser.uid);
       // Sign out from authentication
       await _authRepository.deleteUser();
     }
@@ -143,14 +146,9 @@ class UserService {
 
         // If the Firestore user exists and the emailVerified or phoneVerified status is not updated, update Firestore
         if (firestoreUser != null && (!firestoreUser.emailVerified || !firestoreUser.phoneVerified)) {
-          AppUser updatedAppUser = AppUser.fromJson({
-            "uid": updatedUser.uid,
-            "email": updatedUser.email,
-            "emailVerified": updatedUser.emailVerified,
-            "phone": updatedUser.phoneNumber ?? "",
-            "phoneVerified": updatedUser.phoneVerified,
-          });
-          await _userRepository.updateUser(updatedAppUser);
+          firestoreUser.emailVerified = updatedUser.emailVerified;
+          firestoreUser.phoneVerified = updatedUser.phoneVerified;
+          await _userRepository.updateUser(firestoreUser);
         }
       }
     }
