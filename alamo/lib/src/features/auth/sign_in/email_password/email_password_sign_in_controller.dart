@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:alamo/src/features/auth/application/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'email_password_sign_in_controller.g.dart';
@@ -13,7 +12,7 @@ class EmailPasswordSignInController extends _$EmailPasswordSignInController {
   final nameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final departmentController = TextEditingController();
-  final repitpassController = TextEditingController();
+  final repeatpassController = TextEditingController();
 
   @override
   FutureOr<void> build() {
@@ -45,7 +44,6 @@ class EmailPasswordSignInController extends _$EmailPasswordSignInController {
     required String password,
     required String repeatPassword,
   }) async {
-    phoneNumber = formatPhoneNumber(phoneNumber);
     state = await AsyncValue.guard(() => _signUp(name, phoneNumber, department, email, password));
     return !state.hasError;
   }
@@ -78,14 +76,5 @@ class EmailPasswordSignInController extends _$EmailPasswordSignInController {
     emailController.dispose();
     passwordController.dispose();
     // super.dispose();
-  }
-
-  String formatPhoneNumber(String phoneNumber) {
-    try {
-      final parsedNumber = PhoneNumber.parse(phoneNumber, callerCountry: IsoCode.UY);
-      return "598${parsedNumber.formatNsn(isoCode: IsoCode.UY)}";
-    } catch (e) {
-      return phoneNumber;
-    }
   }
 }

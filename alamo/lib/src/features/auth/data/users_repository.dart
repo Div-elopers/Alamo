@@ -49,7 +49,7 @@ class UsersRepository {
   // Update a user
   Future<void> updateUser(AppUser user) {
     final ref = _userRef(user.uid);
-    return ref.set(user);
+    return ref.set(user, SetOptions(merge: true));
   }
 
   // Delete a user by uid
@@ -67,6 +67,13 @@ class UsersRepository {
         fromFirestore: (doc, _) => AppUser.fromJson(doc.data()!),
         toFirestore: (user, _) => user.toJson(),
       );
+
+  Future<void> updateUserProfileUrl(String userID, String downloadUrl) async {
+    final ref = _userRef(userID);
+    await ref.update({
+      'profileUrl': downloadUrl,
+    });
+  }
 }
 
 @Riverpod(keepAlive: true)

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/features/auth/data/profile_photo_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:alamo/src/features/chat/data/chat_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,10 +11,11 @@ import '../domain/app_user.dart';
 part 'user_service.g.dart';
 
 class UserService {
-  const UserService(this._authRepository, this._userRepository, this._chatRepository);
+  const UserService(this._authRepository, this._userRepository, this._chatRepository, this._profileImageRepository);
   final AuthRepository _authRepository;
   final UsersRepository _userRepository;
   final ChatRepository _chatRepository;
+  final ProfileImageRepository _profileImageRepository;
 
   // Register a new user
   Future<void> signUpWithEmailAndPassword({
@@ -20,7 +23,12 @@ class UserService {
     required String password,
     required Map<String, String> additionalInfo,
   }) async {
-    final userCredential = await _authRepository.createUserWithEmailAndPassword(email, password);
+    final name = additionalInfo['name'] ?? '';
+    final userCredential = await _authRepository.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+      name: name,
+    );
     final user = userCredential.user;
 
     if (user != null) {
@@ -34,6 +42,7 @@ class UserService {
         phoneNumber: additionalInfo['phoneNumber'],
         department: additionalInfo['department'],
         createdAt: DateTime.now(),
+        profileUrl: "",
       );
       await _userRepository.createUser(appUser);
     }
@@ -103,14 +112,17 @@ class UserService {
   Future<void> deleteUserAccount() async {
     final currentUser = _authRepository.currentUser;
     if (currentUser != null) {
-      final chatId = await _chatRepository.findChatByParticipant(currentUser.uid);
+      final userId = currentUser.uid;
+
+      // Delete user from Firestore
+      await _userRepository.deleteUser(userId);
+
+      final chatId = await _chatRepository.findChatByParticipant(userId);
 
       if (chatId != null) {
         await _chatRepository.deleteChat(chatId);
       }
 
-      // Delete user from Firestore
-      await _userRepository.deleteUser(currentUser.uid);
       // Sign out from authentication
       await _authRepository.deleteUser();
     }
@@ -143,14 +155,9 @@ class UserService {
 
         // If the Firestore user exists and the emailVerified or phoneVerified status is not updated, update Firestore
         if (firestoreUser != null && (!firestoreUser.emailVerified || !firestoreUser.phoneVerified)) {
-          AppUser updatedAppUser = AppUser.fromJson({
-            "uid": updatedUser.uid,
-            "email": updatedUser.email,
-            "emailVerified": updatedUser.emailVerified,
-            "phone": updatedUser.phoneNumber ?? "",
-            "phoneVerified": updatedUser.phoneVerified,
-          });
-          await _userRepository.updateUser(updatedAppUser);
+          firestoreUser.emailVerified = updatedUser.emailVerified;
+          firestoreUser.phoneVerified = updatedUser.phoneVerified;
+          await _userRepository.updateUser(firestoreUser);
         }
       }
     }
@@ -189,6 +196,15 @@ class UserService {
   sendPasswordResetEmail(String email) async {
     await _authRepository.sendPasswordResetEmail(email);
   }
+
+  Future<void> uploadProfilePhoto(File imageFile) async {
+    final userID = _authRepository.currentUser!.uid;
+    // Call ProfileImageRepository to upload the image and get the URL
+    final downloadUrl = await _profileImageRepository.uploadProfileImageFromFile(imageFile, userID);
+
+    // Update the user's profile URL in the UserRepository
+    await _userRepository.updateUserProfileUrl(userID, downloadUrl);
+  }
 }
 
 @Riverpod(keepAlive: true)
@@ -196,5 +212,6 @@ UserService userService(UserServiceRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final userRepository = ref.watch(userRepositoryProvider);
   final chatRepository = ref.watch(chatRepositoryProvider);
-  return UserService(authRepository, userRepository, chatRepository);
+  final profileImageRepository = ref.watch(profileRepositoryProvider);
+  return UserService(authRepository, userRepository, chatRepository, profileImageRepository);
 }

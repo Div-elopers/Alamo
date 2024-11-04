@@ -19,7 +19,7 @@ enum AppRoute {
   chatbot,
   account,
   signIn,
-  signUp, // Nueva entrada para SignUp
+  signUp,
   verifyPhone,
   forgotPassword,
   register,
@@ -34,13 +34,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final user = authRepository.currentUser;
       final isLoggedIn = user != null;
       final path = state.uri.path;
+
       if (isLoggedIn) {
         if (path == '/signIn' || path == '/signIn/signUp') {
           return '/';
         }
       } else {
-        if (path == '/signIn/forgotPassword' || path == '/signIn/signUp') {
-          // No redirecciona en estas rutas
+        // Allow access to `/forgotPassword` without redirection to `/signIn`
+        if (path == '/forgotPassword' || path == '/signIn/signUp') {
           return null;
         }
         return '/signIn';
@@ -95,20 +96,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const SignInScreen(),
         routes: [
           GoRoute(
-            path: "forgotPassword",
-            name: AppRoute.forgotPassword.name,
-            pageBuilder: (context, state) => const MaterialPage(
-              child: ForgotPasswordScreen(),
-            ),
-          ),
-          GoRoute(
             path: 'signUp',
             name: AppRoute.signUp.name,
-            pageBuilder: (context, state) {
-              return MaterialPage(child: SignUpScreen());
-            },
+            pageBuilder: (context, state) => MaterialPage(child: SignUpScreen()),
           ),
         ],
+      ),
+      // Define `forgotPassword` as a top-level route
+      GoRoute(
+        path: '/forgotPassword',
+        name: AppRoute.forgotPassword.name,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: ForgotPasswordScreen(),
+        ),
       ),
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),

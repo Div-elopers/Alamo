@@ -1,8 +1,10 @@
 import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_controller.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -29,6 +31,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restablecer Contraseña'),
+        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop() // Go back to the previous screen
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -59,6 +63,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                     : () async {
                         if (_formKey.currentState?.validate() ?? false) {
                           await controller.sendPasswordResetEmail(_emailController.text);
+
+                          // Check if the widget is still mounted before using context
                           if (context.mounted) {
                             // Show confirmation dialog
                             await showAlertDialog(
@@ -67,6 +73,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               content: 'Te hemos enviado un correo para restablecer tu contraseña.',
                               defaultActionText: 'Aceptar',
                             );
+
+                            // Ensure the widget is still mounted after dialog
+                            if (context.mounted) {
+                              context.goNamed(AppRoute.home.name);
+                            }
                           }
                         }
                       },

@@ -1,53 +1,60 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 typedef UserID = String;
 
 /// Simple class representing the user UID and email.
 class AppUser {
   final String uid;
   final String? email;
-  final bool emailVerified;
-  final bool phoneVerified;
+  bool emailVerified;
+  bool phoneVerified;
   final String name;
   final String? phoneNumber;
   final String? department;
   final DateTime? createdAt;
+  final String profileUrl;
 
-  AppUser({
-    required this.uid,
-    this.email,
-    this.emailVerified = false,
-    this.phoneVerified = false,
-    this.name = "",
-    this.phoneNumber,
-    this.department,
-    this.createdAt,
-  });
+  AppUser(
+      {required this.uid,
+      required this.email,
+      this.emailVerified = false,
+      this.phoneVerified = false,
+      this.name = "",
+      this.phoneNumber,
+      this.department,
+      this.createdAt,
+      this.profileUrl = ""});
 
   // Factory constructor to create an AppUser instance from JSON data
   factory AppUser.fromJson(Map<String, dynamic> json) {
     return AppUser(
-      uid: json['uid'] as String,
-      email: json['email'] as String?,
-      emailVerified: json['emailVerified'] as bool? ?? false,
-      phoneVerified: json['phoneVerified'] as bool? ?? false,
-      name: json['name'] as String? ?? "",
-      phoneNumber: json['phoneNumber'] as String?,
-      department: json['department'] as String?,
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
-    );
+        uid: json['uid'] as String,
+        email: json['email'] as String?,
+        emailVerified: json['emailVerified'] as bool? ?? false,
+        phoneVerified: json['phoneVerified'] as bool? ?? false,
+        name: json['name'] as String? ?? "",
+        phoneNumber: json['phoneNumber'] as String?,
+        department: json['department'] as String?,
+        createdAt: json['createdAt'] != null ? (json['createdAt'] as Timestamp).toDate() : null,
+        profileUrl: json['profileUrl'] as String? ?? "");
   }
 
   // Method to convert an instance of AppUser to JSON
   Map<String, dynamic> toJson() {
-    return {
-      'uid': uid,
-      'email': email,
-      'emailVerified': emailVerified,
-      'phoneVerified': phoneVerified,
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'department': department,
-      'createdAt': createdAt?.toIso8601String(),
-    };
+    final data = <String, dynamic>{};
+
+    data['uid'] = uid;
+    if (email != null) data['email'] = email;
+    if (createdAt != null) data['createdAt'] = createdAt;
+    if (name.isNotEmpty) data['name'] = name;
+    if (phoneNumber != null) data['phoneNumber'] = phoneNumber;
+    if (department != null) data['department'] = department;
+    if (profileUrl != "") data['profileUrl'] = profileUrl;
+    // Only add booleans if they're true
+    if (emailVerified) data['emailVerified'] = emailVerified;
+    if (phoneVerified) data['phoneVerified'] = phoneVerified;
+
+    return data;
   }
 
   Future<void> sendEmailVerification() async {

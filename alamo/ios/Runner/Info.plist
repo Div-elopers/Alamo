@@ -45,32 +45,32 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
 	<key>CFBundleURLTypes</key>
-<array>
-    <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <string>uy.edu.utec.alamo</string>
-        </array>
-    </dict>
-    <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <string>com.googleusercontent.apps.934172637590-s0nnqvpom0d8punm11rj17v49frl7soi</string>
-        </array>
-    </dict>
-    <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-            <string>Editor</string>
-        </array>
-    </dict>
-</array>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>uy.edu.utec.alamo</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.934172637590-s0nnqvpom0d8punm11rj17v49frl7soi</string>
+			</array>
+		</dict>
+	</array>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library to upload profile pictures.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to take profile pictures.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone for audio recording.</string>
 </dict>
 </plist>
