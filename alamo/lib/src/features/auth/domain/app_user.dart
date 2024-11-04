@@ -49,7 +49,7 @@ class AppUser {
     if (name.isNotEmpty) data['name'] = name;
     if (phoneNumber != null) data['phoneNumber'] = phoneNumber;
     if (department != null) data['department'] = department;
-    data['profileUrl'] = profileUrl;
+    if (profileUrl != "") data['profileUrl'] = profileUrl;
     // Only add booleans if they're true
     if (emailVerified) data['emailVerified'] = emailVerified;
     if (phoneVerified) data['phoneVerified'] = phoneVerified;
