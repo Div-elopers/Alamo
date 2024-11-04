@@ -31,6 +31,8 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restablecer Contraseña'),
+        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop() // Go back to the previous screen
+            ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

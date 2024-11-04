@@ -51,7 +51,7 @@ class ProfileScreen extends ConsumerWidget {
     final user = ref.watch(userStreamProvider(ref.watch(authRepositoryProvider).currentUser!.uid)).value;
 
     if (user == null) {
-      return const Center(child: CircularProgressIndicator()); // Loading indicator while user data is fetched
+      return const Center(child: CircularProgressIndicator());
     }
 
     Future<void> handleImageUpload(File imageFile) async {
@@ -83,11 +83,22 @@ class ProfileScreen extends ConsumerWidget {
             controller: nameController,
             validator: (value) => validators.nameErrorText(value ?? ''),
           ),
-          _buildTextFormField(
-            label: 'Teléfono',
-            keyboardType: const TextInputType.numberWithOptions(),
-            controller: phoneController,
-            validator: (value) => validators.phoneNumberErrorText(value ?? ''),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: _buildTextFormField(
+                  label: 'Teléfono',
+                  keyboardType: const TextInputType.numberWithOptions(),
+                  controller: phoneController,
+                  validator: (value) {
+                    final errorText = validators.phoneNumberErrorText(value ?? '');
+                    return errorText;
+                  },
+                ),
+              ),
+              user.phoneVerified ? const VerifiedWidget() : VerifyPhoneWidget(phoneNumber: phoneController.text),
+            ],
           ),
           const Text(
             'Departamento',
@@ -119,13 +130,13 @@ class ProfileScreen extends ConsumerWidget {
               ),
               gapW8,
               // Verification Widget
-              user.emailVerified ? const VerifiedWidget(type: "Email") : const VerifyEmailWidget(),
+              user.emailVerified ? const VerifiedWidget() : const VerifyEmailWidget(),
             ],
           ),
 
           TextButton(
             onPressed: () {
-              context.goNamed(AppRoute.forgotPassword.name);
+              context.pushNamed(AppRoute.forgotPassword.name);
             },
             child: const Text('Cambiar contraseña'),
           ),
@@ -224,7 +235,7 @@ class VerifyEmailWidget extends ConsumerWidget {
                     );
                   }
                 },
-          icon: state.isLoading ? const CircularProgressIndicator() : const Icon(Icons.check_circle, color: Colors.grey),
+          icon: state.isLoading ? const CircularProgressIndicator() : const Icon(Icons.verified, color: Colors.grey),
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
@@ -238,25 +249,28 @@ class VerifyEmailWidget extends ConsumerWidget {
 }
 
 class VerifyPhoneWidget extends ConsumerWidget {
-  const VerifyPhoneWidget({super.key});
+  const VerifyPhoneWidget({required this.phoneNumber, super.key});
+
+  final String phoneNumber;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(accountScreenControllerProvider);
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        OutlinedButton(
-            onPressed: state.isLoading
-                ? null
-                : () async {
-                    context.goNamed(
-                      AppRoute.verifyPhone.name,
-                    );
-                  },
-            child: Text("Verificar numero de telefono".hardcoded))
-      ],
+    return Tooltip(
+      message: "Verify Phone Number",
+      child: IconButton(
+        icon: const Icon(Icons.verified),
+        color: Colors.grey,
+        onPressed: !state.isLoading
+            ? () {
+                context.goNamed(
+                  AppRoute.verifyPhone.name,
+                  extra: phoneNumber,
+                );
+              }
+            : null,
+      ),
     );
   }
 }

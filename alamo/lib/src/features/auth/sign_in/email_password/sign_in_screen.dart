@@ -84,7 +84,7 @@ class SignInScreen extends ConsumerWidget {
                       onPressed: controller.isLoading
                           ? null
                           : () {
-                              context.goNamed(AppRoute.forgotPassword.name);
+                              context.pushNamed(AppRoute.forgotPassword.name);
                             },
                       child: const Text(
                         'Olvidé mi contraseña',
