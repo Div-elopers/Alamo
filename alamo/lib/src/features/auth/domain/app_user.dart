@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 typedef UserID = String;
 
 /// Simple class representing the user UID and email.
@@ -10,18 +12,18 @@ class AppUser {
   final String? phoneNumber;
   final String? department;
   final DateTime? createdAt;
-  final String? profileUrl;
+  final String profileUrl;
 
   AppUser(
       {required this.uid,
-      this.email,
+      required this.email,
       this.emailVerified = false,
       this.phoneVerified = false,
       this.name = "",
       this.phoneNumber,
       this.department,
       this.createdAt,
-      this.profileUrl});
+      this.profileUrl = ""});
 
   // Factory constructor to create an AppUser instance from JSON data
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -33,23 +35,26 @@ class AppUser {
         name: json['name'] as String? ?? "",
         phoneNumber: json['phoneNumber'] as String?,
         department: json['department'] as String?,
-        createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
+        createdAt: json['createdAt'] != null ? (json['createdAt'] as Timestamp).toDate() : null,
         profileUrl: json['profileUrl'] as String? ?? "");
   }
 
   // Method to convert an instance of AppUser to JSON
   Map<String, dynamic> toJson() {
-    return {
-      'uid': uid,
-      'email': email,
-      'emailVerified': emailVerified,
-      'phoneVerified': phoneVerified,
-      'name': name,
-      'phoneNumber': phoneNumber,
-      'department': department,
-      'createdAt': createdAt?.toIso8601String(),
-      'profileUrl': profileUrl,
-    };
+    final data = <String, dynamic>{};
+
+    data['uid'] = uid;
+    if (email != null) data['email'] = email;
+    if (createdAt != null) data['createdAt'] = createdAt;
+    if (name.isNotEmpty) data['name'] = name;
+    if (phoneNumber != null) data['phoneNumber'] = phoneNumber;
+    if (department != null) data['department'] = department;
+    data['profileUrl'] = profileUrl;
+    // Only add booleans if they're true
+    if (emailVerified) data['emailVerified'] = emailVerified;
+    if (phoneVerified) data['phoneVerified'] = phoneVerified;
+
+    return data;
   }
 
   Future<void> sendEmailVerification() async {

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
 import 'package:alamo/src/localization/string_hardcoded.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';

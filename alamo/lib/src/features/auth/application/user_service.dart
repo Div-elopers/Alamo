@@ -23,7 +23,12 @@ class UserService {
     required String password,
     required Map<String, String> additionalInfo,
   }) async {
-    final userCredential = await _authRepository.createUserWithEmailAndPassword(email, password);
+    final name = additionalInfo['name'] ?? '';
+    final userCredential = await _authRepository.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+      name: name,
+    );
     final user = userCredential.user;
 
     if (user != null) {
@@ -37,6 +42,7 @@ class UserService {
         phoneNumber: additionalInfo['phoneNumber'],
         department: additionalInfo['department'],
         createdAt: DateTime.now(),
+        profileUrl: "",
       );
       await _userRepository.createUser(appUser);
     }

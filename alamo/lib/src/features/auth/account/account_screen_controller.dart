@@ -99,5 +99,26 @@ class AccountScreenController extends _$AccountScreenController {
     });
   }
 
-  void updateProfile({required String name, required String phoneNumber, required String department, required String email}) {}
+  Future<void> updateProfile({
+    required String name,
+    required String phoneNumber,
+    required String department,
+    required String email,
+    required String uid,
+  }) async {
+    // Create an AppUser instance with the updated data
+    final updatedUser = AppUser(
+      uid: uid,
+      name: name,
+      phoneNumber: phoneNumber,
+      department: department,
+      email: email,
+    );
+
+    final userService = ref.read(userServiceProvider);
+
+    await AsyncValue.guard(() async {
+      await userService.updateUser(updatedUser);
+    });
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
@@ -37,7 +39,11 @@ class CustomDrawer extends ConsumerWidget {
                   children: [
                     CircleAvatar(
                       radius: 50,
-                      backgroundImage: NetworkImage(user.profileUrl!),
+                      backgroundImage: NetworkImage(
+                        user.profileUrl != ""
+                            ? user.profileUrl
+                            : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(

@@ -49,7 +49,7 @@ class UsersRepository {
   // Update a user
   Future<void> updateUser(AppUser user) {
     final ref = _userRef(user.uid);
-    return ref.set(user);
+    return ref.set(user, SetOptions(merge: true));
   }
 
   // Delete a user by uid

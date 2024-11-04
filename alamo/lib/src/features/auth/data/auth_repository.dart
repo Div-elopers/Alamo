@@ -33,18 +33,33 @@ class AuthRepository {
     }
   }
 
-  Future<UserCredential> createUserWithEmailAndPassword(String email, String password) {
+  Future<UserCredential> createUserWithEmailAndPassword({
+    required String email,
+    required String password,
+    String? name,
+  }) async {
     try {
-      return _auth.createUserWithEmailAndPassword(
+      // Create user with email and password
+      final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      if (name != null || name != "") {
+        // Set the display name for the user
+        await userCredential.user?.updateProfile(displayName: name);
+
+        // Reload the user to make sure the display name is updated
+        await userCredential.user?.reload();
+      }
+
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       final errorMessage = _getErrorMessage(e);
       developer.log('User creation failed: $errorMessage');
       throw errorMessage;
     } catch (e) {
-      // * Catching any other generic exceptions
+      // Catching any other generic exceptions
       final errorMessage = _handleGenericError(e);
       developer.log('An unexpected error occurred: $errorMessage');
       throw errorMessage;

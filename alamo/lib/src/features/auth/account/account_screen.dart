@@ -72,7 +72,8 @@ class ProfileScreen extends ConsumerWidget {
           // User photo section
           Center(
             child: ProfilePhoto(
-              userProfileUrl: user.profileUrl ?? 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+              userProfileUrl:
+                  user.profileUrl != "" ? user.profileUrl : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
               onImageUploaded: handleImageUpload,
             ),
           ),
@@ -124,7 +125,7 @@ class ProfileScreen extends ConsumerWidget {
 
           TextButton(
             onPressed: () {
-              showNotImplementedAlertDialog(context: context);
+              context.goNamed(AppRoute.forgotPassword.name);
             },
             child: const Text('Cambiar contraseña'),
           ),
@@ -138,12 +139,12 @@ class ProfileScreen extends ConsumerWidget {
           ElevatedButton(
             onPressed: () {
               controller.updateProfile(
+                uid: user.uid,
                 name: nameController.text,
                 phoneNumber: phoneController.text,
                 department: departmentController.text,
                 email: emailController.text,
               );
-              showNotImplementedAlertDialog(context: context);
             },
             child: const Text('Guardar cambios'),
           ),

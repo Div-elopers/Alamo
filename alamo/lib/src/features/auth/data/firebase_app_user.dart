@@ -40,7 +40,7 @@ class FirebaseAppUser implements AppUser {
 
   @override
   // TODO: implement profileUrl
-  String? get profileUrl => throw UnimplementedError();
+  String get profileUrl => throw UnimplementedError();
 
   @override
   set emailVerified(bool emailVerified) {
