@@ -106,6 +106,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
+          GoRoute(
+            path: 'library',
+            name: AppRoute.library.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: LibraryScreen(),
+            ),
+          )
         ],
       ),
       GoRoute(
