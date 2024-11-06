@@ -3,13 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:alamo/src/features/auth/domain/app_user.dart';
 
-/*enum PopupMenuOption {
-  // signIn,
-  map,
-  //account,
-  chatBot,
-}*/
-
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -87,7 +80,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       case 2:
         context.goNamed(AppRoute.chatbot.name, pathParameters: {'userId': user!.uid});
       case 3:
-        context.goNamed(AppRoute.home.name); // Pendiente de definir
+        context.goNamed(AppRoute.library.name);
         break;
     }
   }

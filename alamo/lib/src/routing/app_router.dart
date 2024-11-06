@@ -6,6 +6,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.da
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
+import 'package:alamo/src/features/library/presentation/library_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
 import 'package:alamo/src/routing/go_router_refresh_stream.dart';
 import 'package:alamo/src/routing/not_found_screen.dart';
@@ -23,6 +24,7 @@ enum AppRoute {
   verifyPhone,
   forgotPassword,
   register,
+  library,
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -88,6 +90,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
+          GoRoute(
+            path: 'library',
+            name: AppRoute.library.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: LibraryScreen(),
+            ),
+          )
         ],
       ),
       GoRoute(
