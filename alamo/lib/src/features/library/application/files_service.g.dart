@@ -1,24 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_service.dart';
+part of 'files_service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userServiceHash() => r'626001ad7dba2e359a52b8f129430cc33a3ea28d';
+String _$filesServiceHash() => r'c86a443349a575ca285113982ededc51a46fdcc3';
 
-/// See also [userService].
-@ProviderFor(userService)
-final userServiceProvider = Provider<UserService>.internal(
-  userService,
-  name: r'userServiceProvider',
+/// See also [filesService].
+@ProviderFor(filesService)
+final filesServiceProvider = Provider<FilesService>.internal(
+  filesService,
+  name: r'filesServiceProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$userServiceHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$filesServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef UserServiceRef = ProviderRef<UserService>;
+typedef FilesServiceRef = ProviderRef<FilesService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

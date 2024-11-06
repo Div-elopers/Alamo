@@ -4,7 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'profile_photo_repository.g.dart'; // Replace with your file name
+part 'profile_photo_repository.g.dart';
 
 class ProfileImageRepository {
   ProfileImageRepository();
