@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
