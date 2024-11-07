@@ -1,9 +1,12 @@
 import 'package:alamo/src/features/backoffice/user_management_screen.dart';
+import 'package:alamo/src/features/library/presentation/library_screen.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:alamo/src/widgets/custom_button.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:go_router/go_router.dart';
 
 final currentIndexProvider = StateProvider<int>((ref) => 0);
 
@@ -53,10 +56,7 @@ class BackOfficeHomeScreen extends ConsumerWidget {
                   'Manage files and documents',
                   'assets/images/files_management.png',
                   () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const LibraryScreen()),
-                    // );
+                    context.goNamed(AppRoute.library.name);
                   },
                 ),
               ],

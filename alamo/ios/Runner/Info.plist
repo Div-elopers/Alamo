@@ -72,5 +72,13 @@
 	<string>We need access to your camera to take profile pictures.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need access to your microphone for audio recording.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires access to your location.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app requires access to your location.</string>
+
+	<key>GMSApiKey</key>
+	<string>AIzaSyDx6v_8va-bPPsm5R8HGNrDAFJ8SU_t9Z4</string>  
+
 </dict>
 </plist>
