@@ -10,22 +10,16 @@ workflows:
         ANDROID_KEYSTORE_PASSWORD: $ANDROID_KEYSTORE_PASSWORD
         ANDROID_KEY_ALIAS: $ANDROID_KEY_ALIAS
         ANDROID_KEY_ALIAS_PASSWORD: $ANDROID_KEY_ALIAS_PASSWORD
-        ENV_BASE64: $ENV_BASE64
-        FIREBASE_OPTIONS_BASE64: $FIREBASE_OPTIONS_BASE64
-        GOOGLE_SERVICES_JSON_BASE64: $GOOGLE_SERVICES_JSON_BASE64
     scripts:
-      - name: Decode .env file
+      - name: Decode and create .env file
         script: |
           echo $ENV_BASE64 | base64 --decode > .env
-
-      - name: Decode firebase_options.dart
+      - name: Decode and create firebase_options.dart file
         script: |
           echo $FIREBASE_OPTIONS_BASE64 | base64 --decode > lib/firebase_options.dart
-
-      - name: Decode google-services.json
+      - name: Decode and create google-services.json
         script: |
           echo $GOOGLE_SERVICES_JSON_BASE64 | base64 --decode > android/app/google-services.json
-
       - name: Generate keystore file
         script: |
           echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > /tmp/my-release-key.keystore
