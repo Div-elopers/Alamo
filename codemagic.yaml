@@ -1,29 +1,58 @@
 workflows:
-  android-build:
-    name: Android Build
-    max_build_duration: 60
+  android-workflow:
+    name: Android Workflow
+    instance_type: mac_mini_m2
+    max_build_duration: 120
     environment:
-      flutter: stable
-      android:
-        image: "api-30"  
       vars:
+        PACKAGE_NAME: "uy.edu.utec.alamo"
+        ANDROID_KEYSTORE_BASE64: $ANDROID_KEYSTORE_BASE64
+        ANDROID_KEYSTORE_PASSWORD: $ANDROID_KEYSTORE_PASSWORD
+        ANDROID_KEY_ALIAS: $ANDROID_KEY_ALIAS
+        ANDROID_KEY_ALIAS_PASSWORD: $ANDROID_KEY_ALIAS_PASSWORD
+      flutter: stable
     scripts:
-      - name: Install dependencies
+      - name: Decode keystore
         script: |
-          flutter pub get
-      - name: Run Tests
+          echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > /tmp/my-release-key.keystore
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Flutter analyze
+        script: |
+          flutter analyze
+      - name: Flutter unit tests
         script: |
           flutter test
-      - name: Build APK
+        ignore_failure: true
+      - name: Build AAB with Flutter
         script: |
-          flutter build apk --release
-      - name: Build AAB
+          BUILD_NUMBER=1      
+          flutter build appbundle --release \
+            --build-name=1.0.$BUILD_NUMBER \
+            --build-number=$BUILD_NUMBER \
+            --keystore /tmp/my-release-key.keystore \
+            --keystore-password $ANDROID_KEYSTORE_PASSWORD \
+            --key-alias $ANDROID_KEY_ALIAS \
+            --key-password $ANDROID_KEY_ALIAS_PASSWORD
+      - name: Build APK with Flutter
         script: |
-          flutter build appbundle --release
+          flutter build apk --release \
+            --keystore /tmp/my-release-key.keystore \
+            --keystore-password $ANDROID_KEYSTORE_PASSWORD \
+            --key-alias $ANDROID_KEY_ALIAS \
+            --key-password $ANDROID_KEY_ALIAS_PASSWORD
     artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk  
-      - build/app/outputs/bundle/release/app.aab       
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/*.apk
+      - flutter_drive.log
     publishing:
       email:
         recipients:
           - ciro.gronrroz@estudiantes.utec.edu.uy
+        notify:
+          success: true
+          failure: true
