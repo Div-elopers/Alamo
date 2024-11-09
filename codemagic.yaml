@@ -13,7 +13,6 @@ workflows:
         ENV_BASE64: $ENV_BASE64
         FIREBASE_OPTIONS_BASE64: $FIREBASE_OPTIONS_BASE64
         GOOGLE_SERVICES_JSON_BASE64: $GOOGLE_SERVICES_JSON_BASE64
-    flutter: stable
     scripts:
       - name: Decode .env file
         script: |
