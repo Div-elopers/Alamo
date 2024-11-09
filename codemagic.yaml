@@ -51,6 +51,17 @@ workflows:
           -k "system-images;android-30;google_apis;x86_64" \
           -d "pixel_3a"
 
+      - name: Install Android System Image
+        script: |
+          sdkmanager "system-images;android-30;google_apis;x86_64"
+
+      - name: Create Pixel 3a AVD
+        script: |
+          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+            -n Pixel_3a_API_30 \
+            -k "system-images;android-30;google_apis;x86_64" \
+            -d "pixel_3a"
+
       - name: Start Android Emulator
         script: |
           # Accept all SDK licenses
@@ -79,8 +90,8 @@ workflows:
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/*.apk
-      
+
     publishing:
-      email:
-        recipients:
-          - ciro.gronrroz@estudiantes.utec.edu.uy
+      # email:
+      #   recipients:
+      #     - ciro.gronrroz@estudiantes.utec.edu.uy
