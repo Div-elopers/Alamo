@@ -92,6 +92,9 @@ workflows:
       - build/**/outputs/**/*.apk
 
     publishing:
-      # email:
-      #   recipients:
-      #     - ciro.gronrroz@estudiantes.utec.edu.uy
+      email:
+        recipients:
+          - ciro.gronrroz@estudiantes.utec.edu.uy
+        notify:
+          success: true
+          failure: false
