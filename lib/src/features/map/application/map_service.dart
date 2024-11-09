@@ -22,6 +22,6 @@ class MapService {
 }
 
 @riverpod
-MapService mapService(MapServiceRef ref) {
+MapService mapService(Ref ref) {
   return MapService(ref);
 }

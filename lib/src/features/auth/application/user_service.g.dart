@@ -6,7 +6,7 @@ part of 'user_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userServiceHash() => r'626001ad7dba2e359a52b8f129430cc33a3ea28d';
+String _$userServiceHash() => r'f9bc385e2ef231c08c03dcdfb2dcd2ba104965a1';
 
 /// See also [userService].
 @ProviderFor(userService)

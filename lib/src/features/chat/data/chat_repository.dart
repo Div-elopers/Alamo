@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_repository.g.dart';
@@ -91,20 +92,20 @@ class ChatRepository {
 }
 
 @Riverpod(keepAlive: true)
-ChatRepository chatRepository(ChatRepositoryRef ref) {
+ChatRepository chatRepository(Ref ref) {
   return ChatRepository(FirebaseFirestore.instance);
 }
 
 // A provider for watching a specific chat chat by chatId
 @riverpod
-Stream<Chat?> chatStream(ChatStreamRef ref, String chatId) {
+Stream<Chat?> chatStream(Ref ref, String chatId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.watchChat(chatId);
 }
 
 // A provider for fetching a specific chat chat by chatId
 @riverpod
-Future<Chat?> chatFuture(ChatFutureRef ref, String chatId) {
+Future<Chat?> chatFuture(Ref ref, String chatId) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   return chatRepository.fetchChat(chatId);
 }

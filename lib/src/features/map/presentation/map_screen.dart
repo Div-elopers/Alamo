@@ -13,7 +13,7 @@ class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  _MapScreenState createState() => _MapScreenState();
+  createState() => _MapScreenState();
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {

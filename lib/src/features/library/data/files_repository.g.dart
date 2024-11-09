@@ -6,7 +6,7 @@ part of 'files_repository.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$filesRepositoryHash() => r'b19498c327be0a4498ecd082df8fd4681d87e65f';
+String _$filesRepositoryHash() => r'5bd0a30e10b054ea6ea66ef7b621cd3dc09c3e0b';
 
 /// See also [filesRepository].
 @ProviderFor(filesRepository)
@@ -21,7 +21,7 @@ final filesRepositoryProvider = Provider<FilesRepository>.internal(
 );
 
 typedef FilesRepositoryRef = ProviderRef<FilesRepository>;
-String _$filesListStreamHash() => r'e30ec27d14a787cb19a582ec3fd558e97dee56a6';
+String _$filesListStreamHash() => r'0211a3016152c265ace27f4f5e5494c8301bb150';
 
 /// See also [filesListStream].
 @ProviderFor(filesListStream)
@@ -37,7 +37,7 @@ final filesListStreamProvider =
 );
 
 typedef FilesListStreamRef = AutoDisposeStreamProviderRef<List<AppFile>>;
-String _$filesListFutureHash() => r'2d6fd0f1e22c4df390a41c0057adb98f49a79de9';
+String _$filesListFutureHash() => r'9d03f8093a17c48e3da1275d52108905c15b6f7e';
 
 /// See also [filesListFuture].
 @ProviderFor(filesListFuture)
@@ -53,7 +53,7 @@ final filesListFutureProvider =
 );
 
 typedef FilesListFutureRef = AutoDisposeFutureProviderRef<List<AppFile>>;
-String _$fileStreamHash() => r'fbf2c5f32ea50e0f5e571216108c3e811a1db101';
+String _$fileStreamHash() => r'5573bd71f281f85ec31cb71cf129dc7e11b25777';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -202,7 +202,7 @@ class _FileStreamProviderElement
   String get id => (origin as FileStreamProvider).id;
 }
 
-String _$fileFutureHash() => r'8a7ac710e8079763e52418773480be995502961d';
+String _$fileFutureHash() => r'1a33d5db448590c22b79f8c7431006b06fd008da';
 
 /// See also [fileFuture].
 @ProviderFor(fileFuture)

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:alamo/src/features/library/domain/app_file.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'files_repository.g.dart';
@@ -68,32 +69,32 @@ class FilesRepository {
 }
 
 @Riverpod(keepAlive: true)
-FilesRepository filesRepository(FilesRepositoryRef ref) {
+FilesRepository filesRepository(Ref ref) {
   return FilesRepository(FirebaseFirestore.instance);
 }
 
 // Providers for file operations
 
 @riverpod
-Stream<List<AppFile>> filesListStream(FilesListStreamRef ref) {
+Stream<List<AppFile>> filesListStream(Ref ref) {
   final filesRepository = ref.watch(filesRepositoryProvider);
   return filesRepository.watchFilesList();
 }
 
 @riverpod
-Future<List<AppFile>> filesListFuture(FilesListFutureRef ref) {
+Future<List<AppFile>> filesListFuture(Ref ref) {
   final filesRepository = ref.watch(filesRepositoryProvider);
   return filesRepository.fetchFilesList();
 }
 
 @riverpod
-Stream<AppFile?> fileStream(FileStreamRef ref, String id) {
+Stream<AppFile?> fileStream(Ref ref, String id) {
   final filesRepository = ref.watch(filesRepositoryProvider);
   return filesRepository.watchFile(id);
 }
 
 @riverpod
-Future<AppFile?> fileFuture(FileFutureRef ref, String id) {
+Future<AppFile?> fileFuture(Ref ref, String id) {
   final filesRepository = ref.watch(filesRepositoryProvider);
   return filesRepository.fetchFile(id);
 }

@@ -4,6 +4,7 @@ import 'package:alamo/src/features/chat/data/chat_repository.dart';
 import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_service.g.dart';
@@ -90,7 +91,7 @@ class ChatService {
 }
 
 @Riverpod(keepAlive: true)
-ChatService chatService(ChatServiceRef ref) {
+ChatService chatService(Ref ref) {
   final chatRepository = ref.watch(chatRepositoryProvider);
   final cloudFunctions = FirebaseFunctions.instance;
 

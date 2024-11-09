@@ -5,6 +5,7 @@ import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/data/profile_photo_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:alamo/src/features/chat/data/chat_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../domain/app_user.dart';
 
@@ -208,7 +209,7 @@ class UserService {
 }
 
 @Riverpod(keepAlive: true)
-UserService userService(UserServiceRef ref) {
+UserService userService(Ref ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final userRepository = ref.watch(userRepositoryProvider);
   final chatRepository = ref.watch(chatRepositoryProvider);

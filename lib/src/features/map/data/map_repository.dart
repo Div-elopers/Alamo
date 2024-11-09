@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,6 +19,6 @@ class MapRepository {
 }
 
 @Riverpod(keepAlive: true)
-MapRepository mapRepository(MapRepositoryRef ref) {
+MapRepository mapRepository(Ref ref) {
   return MapRepository();
 }

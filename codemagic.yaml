@@ -10,8 +10,36 @@ workflows:
         ANDROID_KEYSTORE_PASSWORD: $ANDROID_KEYSTORE_PASSWORD
         ANDROID_KEY_ALIAS: $ANDROID_KEY_ALIAS
         ANDROID_KEY_ALIAS_PASSWORD: $ANDROID_KEY_ALIAS_PASSWORD
+        FIREBASE_API_KEY_ANDROID: $FIREBASE_API_KEY_ANDROID
+        FIREBASE_APP_ID_ANDROID: $FIREBASE_APP_ID_ANDROID
+        FIREBASE_MESSAGING_SENDER_ID_ANDROID: $FIREBASE_MESSAGING_SENDER_ID_ANDROID
+        FIREBASE_PROJECT_ID: $FIREBASE_PROJECT_ID
+        FIREBASE_STORAGE_BUCKET: $FIREBASE_STORAGE_BUCKET
+        MAPS_ANDROID_API_KEY: $MAPS_ANDROID_API_KEY
+        MAPS_ANDROID_ID: $MAPS_ANDROID_ID
       flutter: stable
     scripts:
+      - name: Generate firebase_options.dart for Android
+        script: |
+          echo "
+          import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+
+          class DefaultFirebaseOptions {
+            static const FirebaseOptions android = FirebaseOptions(
+              apiKey: '${FIREBASE_API_KEY_ANDROID}',
+              appId: '${FIREBASE_APP_ID_ANDROID}',
+              messagingSenderId: '${FIREBASE_MESSAGING_SENDER_ID_ANDROID}',
+              projectId: '${FIREBASE_PROJECT_ID}',
+              storageBucket: '${FIREBASE_STORAGE_BUCKET}',
+            );
+          }
+          " > lib/firebase_options.dart
+
+      - name: Create .env file for Android
+        script: |
+          echo "MAPS_ANDROID_API_KEY=$MAPS_ANDROID_API_KEY" > .env
+          echo "MAPS_ANDROID_ID=$MAPS_ANDROID_ID" >> .env
+
       - name: Generate keystore file
         script: |
           echo "Generating keystore file from environment variable..."
@@ -29,16 +57,20 @@ workflows:
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+
       - name: Get Flutter packages
         script: |
           flutter packages pub get
+
       - name: Flutter analyze
         script: |
           flutter analyze
+
       - name: Flutter unit tests
         script: |
           flutter test
         ignore_failure: true
+
       - name: Build AAB with Flutter
         script: |
           BUILD_NUMBER=1      
@@ -49,6 +81,7 @@ workflows:
             --keystore-password $ANDROID_KEYSTORE_PASSWORD \
             --key-alias $ANDROID_KEY_ALIAS \
             --key-password $ANDROID_KEY_ALIAS_PASSWORD
+
       - name: Build APK with Flutter
         script: |
           flutter build apk --release \
@@ -56,10 +89,12 @@ workflows:
             --keystore-password $ANDROID_KEYSTORE_PASSWORD \
             --key-alias $ANDROID_KEY_ALIAS \
             --key-password $ANDROID_KEY_ALIAS_PASSWORD
+
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/*.apk
       - flutter_drive.log
+
     publishing:
       email:
         recipients:

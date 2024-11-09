@@ -7,7 +7,7 @@ part of 'files_upload_repository.dart';
 // **************************************************************************
 
 String _$filesUploadRepositoryHash() =>
-    r'1310bdc6ed7f3b48fc350832889142ca8c2bd566';
+    r'3405014cf4ff3591b00dd37e4d97c6879647b686';
 
 /// See also [filesUploadRepository].
 @ProviderFor(filesUploadRepository)
