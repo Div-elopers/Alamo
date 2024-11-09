@@ -25,11 +25,11 @@ workflows:
 
           class DefaultFirebaseOptions {
             static const FirebaseOptions android = FirebaseOptions(
-              apiKey: '$FIREBASE_API_KEY_ANDROID',
-              appId: '$FIREBASE_APP_ID_ANDROID',
-              messagingSenderId: '$FIREBASE_MESSAGING_SENDER_ID_ANDROID',
-              projectId: '$FIREBASE_PROJECT_ID',
-              storageBucket: '$FIREBASE_STORAGE_BUCKET',
+              apiKey: 'FIREBASE_API_KEY_ANDROID',
+              appId: 'FIREBASE_APP_ID_ANDROID',
+              messagingSenderId: 'FIREBASE_MESSAGING_SENDER_ID_ANDROID',
+              projectId: 'FIREBASE_PROJECT_ID',
+              storageBucket: 'FIREBASE_STORAGE_BUCKET',
             );
 
             static FirebaseOptions get currentPlatform {
