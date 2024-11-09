@@ -30,41 +30,46 @@ workflows:
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
+
       - name: Get Flutter packages
         script: |
           flutter packages pub get
+
       - name: Flutter analyze
         script: |
           flutter analyze
+
       - name: Flutter unit tests
         script: |
           flutter test
         ignore_failure: true
+
+       - name: Start Android Emulator
+        script: |
+          # Accept all SDK licenses
+          yes | sdkmanager --licenses
+          # Start the emulator
+          $ANDROID_HOME/emulator/emulator -avd Pixel_3a_API_30 -no-window -no-audio &
+
+      - name: Wait for emulator to start
+        script: |
+          adb wait-for-device
+          adb shell input keyevent 82
+
+      # - name: Run Flutter integration tests
+      #   script: |
+      #     flutter drive --target=test_driver/app.dart
+
       - name: Build AAB with Flutter
         script: |
-          BUILD_NUMBER=1      
-          flutter build appbundle --release \
-            --build-name=1.0.$BUILD_NUMBER \
-            --build-number=$BUILD_NUMBER \
-            --keystore /tmp/my-release-key.keystore \
-            --keystore-password $ANDROID_KEYSTORE_PASSWORD \
-            --key-alias $ANDROID_KEY_ALIAS \
-            --key-password $ANDROID_KEY_ALIAS_PASSWORD
+          flutter build appbundle --release --build-number=1 --build-name=1.0.1
       - name: Build APK with Flutter
         script: |
-          flutter build apk --release \
-            --keystore /tmp/my-release-key.keystore \
-            --keystore-password $ANDROID_KEYSTORE_PASSWORD \
-            --key-alias $ANDROID_KEY_ALIAS \
-            --key-password $ANDROID_KEY_ALIAS_PASSWORD
+          flutter build apk --release
     artifacts:
       - build/**/outputs/**/*.aab
       - build/**/outputs/**/*.apk
-      - flutter_drive.log
     publishing:
       email:
         recipients:
           - ciro.gronrroz@estudiantes.utec.edu.uy
-        notify:
-          success: true
-          failure: true
