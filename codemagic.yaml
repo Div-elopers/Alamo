@@ -44,16 +44,14 @@ workflows:
           flutter test
         ignore_failure: true
 
-      - name: Create Pixel 3a AVD
-        script: |
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
-          -n Pixel_3a_API_30 \
-          -k "system-images;android-30;google_apis;x86_64" \
-          -d "pixel_3a"
-
       - name: Install Android System Image
         script: |
-          sdkmanager "system-images;android-30;google_apis;x86_64"
+          sdkmanager --install "system-images;android-30;google_apis;x86_64" --channel=0
+          sdkmanager --update
+
+      - name: List Installed System Images
+        script: |
+          sdkmanager --list | grep "system-images;android-30;google_apis;x86_64"
 
       - name: Create Pixel 3a AVD
         script: |
@@ -64,9 +62,7 @@ workflows:
 
       - name: Start Android Emulator
         script: |
-          # Accept all SDK licenses
           yes | sdkmanager --licenses
-          # Start the emulator in headless mode
           $ANDROID_HOME/emulator/emulator -avd Pixel_3a_API_30 -no-window -no-audio &
 
       - name: Wait for emulator to start
@@ -74,7 +70,7 @@ workflows:
           adb wait-for-device
           adb shell input keyevent 82
 
-      # Uncomment and configure the integration tests if needed
+      # Optional: Flutter integration tests
       # - name: Run Flutter integration tests
       #   script: |
       #     flutter drive --target=test_driver/app.dart
@@ -87,9 +83,9 @@ workflows:
         script: |
           flutter build apk --release
 
-    artifacts:
-      - build/**/outputs/**/*.aab
-      - build/**/outputs/**/*.apk
+      artifacts:
+        - build/**/outputs/**/*.aab
+        - build/**/outputs/**/*.apk
 
     publishing:
       email:
