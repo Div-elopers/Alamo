@@ -76,11 +76,11 @@ workflows:
         script: |
           flutter build apk --release
 
-      artifacts:
-        - build/**/outputs/**/*.aab
-        - build/**/outputs/**/*.apk
-
-      publishing:
-        email:
-          recipients:
-            - ciro.gronrroz@estudiantes.utec.edu.uy
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/*.apk
+      
+    publishing:
+      email:
+        recipients:
+          - ciro.gronrroz@estudiantes.utec.edu.uy
