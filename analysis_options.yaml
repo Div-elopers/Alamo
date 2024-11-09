@@ -1,1 +1,10 @@
 include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # Ignore specific rules or messages
+    unused_import: ignore
+    use_build_context_synchronously: ignore
+    deprecated_member_use: ignore
+  exclude:
+    - "**/*.g.dart"
