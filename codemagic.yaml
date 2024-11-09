@@ -44,7 +44,7 @@ workflows:
           flutter test
         ignore_failure: true
 
-       - name: Start Android Emulator
+      - name: Start Android Emulator
         script: |
           # Accept all SDK licenses
           yes | sdkmanager --licenses
