@@ -44,9 +44,10 @@ workflows:
           flutter test
         ignore_failure: true
 
-      - name: Install Android System Image
+      - name: Install Android System Image and Emulator
         script: |
           $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-30;google_apis;x86_64" --channel=0
+          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --install "emulator" --channel=0
           $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --update
 
       - name: List Installed System Images
