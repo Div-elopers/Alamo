@@ -83,9 +83,9 @@ workflows:
         script: |
           flutter build apk --release
 
-      artifacts:
-        - build/**/outputs/**/*.aab
-        - build/**/outputs/**/*.apk
+    artifacts:
+      - build/**/outputs/**/*.aab
+      - build/**/outputs/**/*.apk
 
     publishing:
       email:
