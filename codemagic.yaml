@@ -63,7 +63,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - tu_email@example.com  # Reemplaza con tu email para recibir notificaciones de compilación
+          - ciro.gronrroz@estudiantes.utec.edu.uy
         notify:
           success: true
           failure: true
