@@ -46,24 +46,24 @@ workflows:
 
       - name: Install Android System Image
         script: |
-          sdkmanager --install "system-images;android-30;google_apis;x86_64" --channel=0
-          sdkmanager --update
+          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --install "system-images;android-30;google_apis;x86_64" --channel=0
+          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --update
 
       - name: List Installed System Images
         script: |
-          sdkmanager --list | grep "system-images;android-30;google_apis;x86_64"
+          $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --list | grep "system-images;android-30;google_apis;x86_64"
 
       - name: Create Pixel 3a AVD
         script: |
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd \
+          echo "no" | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager create avd \
             -n Pixel_3a_API_30 \
             -k "system-images;android-30;google_apis;x86_64" \
             -d "pixel_3a"
 
       - name: Start Android Emulator
         script: |
-          yes | sdkmanager --licenses
-          $ANDROID_HOME/emulator/emulator -avd Pixel_3a_API_30 -no-window -no-audio &
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_SDK_ROOT/emulator/emulator -avd Pixel_3a_API_30 -no-window -no-audio &
 
       - name: Wait for emulator to start
         script: |
