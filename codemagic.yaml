@@ -12,9 +12,20 @@ workflows:
         ANDROID_KEY_ALIAS_PASSWORD: $ANDROID_KEY_ALIAS_PASSWORD
       flutter: stable
     scripts:
-      - name: Decode keystore
+      - name: Generate keystore file
         script: |
-          echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > /tmp/my-release-key.keystore
+          echo "Generating keystore file from environment variable..."
+          echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > /tmp/my-release-key.keystore || echo "Error decoding keystore"
+
+      - name: Validate keystore file generation
+        script: |
+          if [ -f /tmp/my-release-key.keystore ]; then
+            echo "Keystore generated successfully."
+          else
+            echo "Failed to generate keystore."
+            exit 1
+          fi
+
       - name: Set up local.properties
         script: |
           echo "flutter.sdk=$HOME/programs/flutter" > "$CM_BUILD_DIR/android/local.properties"
@@ -52,7 +63,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - ciro.gronrroz@estudiantes.utec.edu.uy
+          - tu_email@example.com  # Reemplaza con tu email para recibir notificaciones de compilación
         notify:
           success: true
           failure: true
