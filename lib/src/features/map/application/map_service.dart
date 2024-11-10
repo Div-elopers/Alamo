@@ -12,8 +12,8 @@ class MapService {
   MapService(this.ref);
 
   // Get the initial camera position and bounds for Municipio B
-  LatLngBounds getMunicipioBBounds() {
-    return ref.read(mapRepositoryProvider).municipioBBounds;
+  LatLngBounds bounds() {
+    return ref.read(mapRepositoryProvider).bounds;
   }
 
   LatLng getInitialPosition() {

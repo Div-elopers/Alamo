@@ -17,7 +17,7 @@ class MapController extends _$MapController with NotifierMounted {
   }
 
   LatLngBounds get bounds {
-    return ref.read(mapServiceProvider).getMunicipioBBounds();
+    return ref.read(mapServiceProvider).bounds();
   }
 
   LatLng get initialPosition {

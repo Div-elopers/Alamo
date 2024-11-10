@@ -65,18 +65,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ),
               onMapCreated: (GoogleMapController googleMapController) {
                 _googleMapController = googleMapController;
-                _googleMapController!.animateCamera(
-                  CameraUpdate.newLatLngBounds(mapController.bounds, 10),
-                );
+                _googleMapController!.animateCamera(CameraUpdate.newCameraPosition(const CameraPosition(target: LatLng(-34.904111, -56.174083))));
               },
               minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
               onCameraMove: (CameraPosition position) {
                 if (!mapController.bounds.contains(position.target)) {
-                  _googleMapController!.animateCamera(
-                    CameraUpdate.newLatLngBounds(mapController.bounds, 10),
-                  );
+                  _googleMapController!.animateCamera(CameraUpdate.newCameraPosition(const CameraPosition(target: LatLng(-34.904111, -56.174083))));
                 }
               },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
             ),
             Positioned(
               bottom: 0,
