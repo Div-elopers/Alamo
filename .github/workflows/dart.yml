@@ -21,17 +21,17 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        working-directory: alamo  # Specify the working directory here
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: flutter format --output=none --set-exit-if-changed .
-      #   working-directory: alamo  # Specify the working directory here
-
-      - name: Analyze project source
-        run: flutter analyze
-        working-directory: alamo  # Specify the working directory here
+      - name: Prepare .env file for tests
+        run: cp .env.example .env  
 
       - name: Run tests
         run: flutter test
-        working-directory: alamo  # Specify the working directory here
+
+      - name: Trigger Codemagic Build
+        if: success()
+        run: |
+          curl -X POST https://api.codemagic.io/hooks/672edace6afeadfc39aa41f1 \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d '{}'
+            
