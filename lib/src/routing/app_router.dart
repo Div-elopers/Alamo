@@ -6,7 +6,7 @@ import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
-import 'package:alamo/src/features/backoffice/bo_home_screen.dart';
+import 'package:alamo/src/features/backOffice/bo_home_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/library/presentation/library_screen.dart';
