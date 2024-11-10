@@ -43,16 +43,16 @@ app.*.map.json
 /android/app/release
 
 */node_modules/*
-alamo/lib/firebase_options.dart
-alamo/ios/Runner/GoogleService-Info.plist
-alamo/functions/package-lock.json
-alamo/package-lock.json
-alamo/pubspec.lock
-alamo/firebase.json
-alamo/android/app/google-services.json
-alamo/.env
+lib/firebase_options.dart
+ios/Runner/GoogleService-Info.plist
+functions/package-lock.json
+package-lock.json
+pubspec.lock
+firebase.json
+android/app/google-services.json
+.env
 
-alamo/functions/venv/*
+functions/venv/*
 # Ignore Python virtual environment
 functions/venv/
 
@@ -95,4 +95,4 @@ functions/pip-delete-this-directory.txt
 functions/.pytest_cache/
 functions/*.bak
 functions/*.swp
-alamo/functions/.env
+functions/.env
