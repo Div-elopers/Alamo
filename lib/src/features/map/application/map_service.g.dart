@@ -13,12 +13,12 @@ String _$mapServiceHash() => r'17eb9dc9db817efb170188d5b1d8919c56b726e6';
 final mapServiceProvider = AutoDisposeProvider<MapService>.internal(
   mapService,
   name: r'mapServiceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$mapServiceHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$mapServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-// ignore: deprecated_member_use
 typedef MapServiceRef = AutoDisposeProviderRef<MapService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
