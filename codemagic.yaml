@@ -3,12 +3,6 @@ workflows:
     name: Android Workflow
     instance_type: mac_mini_m2
     max_build_duration: 120
-    trigger:
-      events:
-        - push
-      branch_patterns:
-        - pattern: "main"
-          include: true
     environment:
       groups:
         - alamo
