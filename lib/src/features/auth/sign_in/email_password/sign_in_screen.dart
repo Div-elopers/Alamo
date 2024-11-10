@@ -3,6 +3,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/email_password_va
 import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_screen.dart';
 import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/widgets/custom_text_button.dart';
@@ -37,118 +38,126 @@ class SignInScreen extends ConsumerWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Imágenes decorativas de fondo
+          // Background decorative images
           _buildDecorativeImages(),
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  gapH64,
-                  gapH64,
-                  const Text(
-                    'Inicia sesión',
-                    style: TextStyle(
-                      fontFamily: 'SofiaSans',
-                      fontSize: 24,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  gapH24,
-                  _buildTextField(
-                    controller: controller.emailController,
-                    focusNode: emailFocusNode,
-                    labelText: 'Email',
-                    errorText: emailTouched ? validators.emailErrorText(controller.emailController.text) : null,
-                    onChanged: (text) => emailTouched = text.isNotEmpty,
-                  ),
-                  gapH16,
-                  _buildTextField(
-                    controller: controller.passwordController,
-                    focusNode: FocusNode(),
-                    labelText: 'Contraseña',
-                    errorText: passwordTouched ? validators.passwordSignInErrorText(controller.passwordController.text) : null,
-                    obscureText: obscurePassword,
-                    onChanged: (text) {},
-                    suffixIcon: IconButton(
-                      icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off),
-                      onPressed: () {
-                        ref.read(obscurePasswordProvider.notifier).state = !obscurePassword;
-                      },
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: controller.isLoading
-                          ? null
-                          : () {
-                              context.pushNamed(AppRoute.forgotPassword.name);
-                            },
-                      child: const Text(
-                        'Olvidé mi contraseña',
-                        style: TextStyle(fontFamily: 'Roboto'),
+              child: Container(
+                constraints: const BoxConstraints(
+                  maxWidth: kIsWeb ? 600 : double.infinity, // Limit width for web
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    gapH64,
+                    gapH64,
+                    const Text(
+                      'Inicia sesión',
+                      style: TextStyle(
+                        fontFamily: 'SofiaSans',
+                        fontSize: 24,
+                        color: Colors.black87,
                       ),
                     ),
-                  ),
-                  gapH16,
-                  const Row(
-                    children: [
-                      Expanded(child: Divider(thickness: 1, color: Colors.black, indent: 10)),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text('o inicia con'),
-                      ),
-                      Expanded(child: Divider(thickness: 1, color: Colors.black, endIndent: 10)),
-                    ],
-                  ),
-                  gapH16,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const GoogleSignInScreen(),
-                      gapW16,
-                      IconButton(
-                        icon: const Icon(Icons.apple, size: 48),
+                    gapH24,
+                    _buildTextField(
+                      controller: controller.emailController,
+                      focusNode: emailFocusNode,
+                      labelText: 'Email',
+                      errorText: emailTouched ? validators.emailErrorText(controller.emailController.text) : null,
+                      onChanged: (text) => emailTouched = text.isNotEmpty,
+                    ),
+                    gapH16,
+                    _buildTextField(
+                      controller: controller.passwordController,
+                      focusNode: passwordFocusNode,
+                      labelText: 'Contraseña',
+                      errorText: passwordTouched ? validators.passwordSignInErrorText(controller.passwordController.text) : null,
+                      obscureText: obscurePassword,
+                      onChanged: (text) {},
+                      suffixIcon: IconButton(
+                        icon: Icon(obscurePassword ? Icons.visibility : Icons.visibility_off),
                         onPressed: () {
-                          _showErrorDialog(context, 'Error', 'No implementado :) ');
+                          ref.read(obscurePasswordProvider.notifier).state = !obscurePassword;
                         },
                       ),
-                    ],
-                  ),
-                  gapH16,
-                  CustomTextButton(
-                    text: 'Crear nueva cuenta',
-                    onPressed: () {
-                      context.goNamed(AppRoute.signUp.name);
-                    },
-                  ),
-                  gapH16,
-                  ElevatedButton(
-                    onPressed: controller.isLoading
-                        ? null
-                        : () async {
-                            if (validators.canSubmitEmail(controller.emailController.text) &&
-                                validators.passwordSignInSubmit(controller.passwordController.text)) {
-                              final success = await controller.signIn(
-                                email: controller.emailController.text,
-                                password: controller.passwordController.text,
-                              );
-                              if (!success && context.mounted) {
-                                _showErrorDialog(context, 'Error', 'Error al iniciar sesión. Verifique sus credenciales.');
-                              }
-                            } else if (context.mounted) {
-                              _showErrorDialog(context, 'Datos inválidos', 'Ingrese un correo y una contraseña válidos.');
-                            }
-                          },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                      textStyle: const TextStyle(fontFamily: 'Roboto', fontSize: 18),
                     ),
-                    child: const Text('Iniciar sesión'),
-                  ),
-                ],
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: controller.isLoading
+                            ? null
+                            : () {
+                                context.pushNamed(AppRoute.forgotPassword.name);
+                              },
+                        child: const Text(
+                          'Olvidé mi contraseña',
+                          style: TextStyle(fontFamily: 'Roboto'),
+                        ),
+                      ),
+                    ),
+                    gapH16,
+                    if (!kIsWeb)
+                      const Row(
+                        children: [
+                          Expanded(child: Divider(thickness: 1, color: Colors.black, indent: 10)),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text('o inicia con'),
+                          ),
+                          Expanded(child: Divider(thickness: 1, color: Colors.black, endIndent: 10)),
+                        ],
+                      ),
+                    gapH16,
+                    if (!kIsWeb)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const GoogleSignInScreen(),
+                          gapW16,
+                          IconButton(
+                            icon: const Icon(Icons.apple, size: 48),
+                            onPressed: () {
+                              _showErrorDialog(context, 'Error', 'No implementado :) ');
+                            },
+                          ),
+                        ],
+                      ),
+                    gapH16,
+                    if (!kIsWeb)
+                      CustomTextButton(
+                        text: 'Crear nueva cuenta',
+                        onPressed: () {
+                          context.goNamed(AppRoute.signUp.name);
+                        },
+                      ),
+                    gapH16,
+                    ElevatedButton(
+                      onPressed: controller.isLoading
+                          ? null
+                          : () async {
+                              if (validators.canSubmitEmail(controller.emailController.text) &&
+                                  validators.passwordSignInSubmit(controller.passwordController.text)) {
+                                final success = await controller.signIn(
+                                  email: controller.emailController.text,
+                                  password: controller.passwordController.text,
+                                );
+                                if (!success && context.mounted) {
+                                  _showErrorDialog(context, 'Error', 'Error al iniciar sesión. Verifique sus credenciales.');
+                                }
+                              } else if (context.mounted) {
+                                _showErrorDialog(context, 'Datos inválidos', 'Ingrese un correo y una contraseña válidos.');
+                              }
+                            },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        textStyle: const TextStyle(fontFamily: 'Roboto', fontSize: 18),
+                      ),
+                      child: const Text('Iniciar sesión'),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -157,7 +166,7 @@ class SignInScreen extends ConsumerWidget {
     );
   }
 
-  // Método auxiliar para mostrar el diálogo de error
+  // Method to show error dialog
   void _showErrorDialog(BuildContext context, String title, String content) {
     showAlertDialog(
       context: context,
@@ -167,7 +176,7 @@ class SignInScreen extends ConsumerWidget {
     );
   }
 
-  // Método auxiliar para el campo de texto reutilizable
+  // Method to create reusable text field
   Widget _buildTextField({
     required TextEditingController controller,
     required FocusNode focusNode,
@@ -191,24 +200,31 @@ class SignInScreen extends ConsumerWidget {
     );
   }
 
-  // Método para las imágenes decorativas de fondo
+  // Method for background decorative images
   Widget _buildDecorativeImages() {
     return Stack(
       children: [
         Positioned(
           top: 0,
           right: 0,
-          child: Image.asset('assets/images/top_leaf.png'),
+          child: Image.asset(
+            'assets/images/top_leaf.png',
+          ),
         ),
         Positioned(
-          top: 120,
-          left: 50,
-          child: Image.asset('assets/images/alamo_logo.png'),
+          top: kIsWeb ? 200 : 120, // Adjust position for web
+          left: kIsWeb ? 800 : 50,
+          child: Image.asset(
+            'assets/images/alamo_logo.png',
+            width: kIsWeb ? 300 : null, // Set a width for web if desired
+          ),
         ),
         Positioned(
           bottom: 0,
           left: 0,
-          child: Image.asset('assets/images/bottom_leaf.png'),
+          child: Image.asset(
+            'assets/images/bottom_leaf.png',
+          ),
         ),
       ],
     );

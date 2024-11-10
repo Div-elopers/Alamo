@@ -1,16 +1,21 @@
+import 'dart:developer';
+
 import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/account/phone_number_verification.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
+import 'package:alamo/src/features/backOffice/bo_home_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/library/presentation/library_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
 import 'package:alamo/src/routing/go_router_refresh_stream.dart';
 import 'package:alamo/src/routing/not_found_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -25,35 +30,58 @@ enum AppRoute {
   forgotPassword,
   register,
   library,
+  backOffice,
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/appHome',
     debugLogDiagnostics: true,
     redirect: (context, state) async {
       final user = authRepository.currentUser;
       final isLoggedIn = user != null;
       final path = state.uri.path;
+      log("kIsWeb: $kIsWeb  isLogged: $isLoggedIn    path:  $path");
 
-      if (isLoggedIn) {
-        if (path == '/signIn' || path == '/signIn/signUp') {
-          return '/';
+      if (kIsWeb) {
+        if (isLoggedIn) {
+          if (path != '/forgotPassword' && path != '/library') {
+            return '/backOffice';
+          }
+
+          if (path == '/signIn' || path == '/signIn/signUp') {
+            return '/backOffice';
+          }
+
+          if (path == '/library') {
+            authRepository.signOut();
+          }
+        } else {
+          if (path == '/forgotPassword') {
+            return null;
+          }
+          return '/signIn';
         }
       } else {
-        // Allow access to `/forgotPassword` without redirection to `/signIn`
-        if (path == '/forgotPassword' || path == '/signIn/signUp') {
-          return null;
+        // Mobile logic
+        if (isLoggedIn) {
+          if (path == '/signIn' || path == '/signIn/signUp' || path == '/backOffice') {
+            return '/appHome';
+          }
+        } else {
+          if (path == '/forgotPassword' || path == '/signIn/signUp') {
+            return null; // Allow access
+          }
+          return '/signIn';
         }
-        return '/signIn';
       }
       return null;
     },
     refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
       GoRoute(
-        path: '/',
+        path: '/appHome',
         name: AppRoute.home.name,
         builder: (context, state) => const HomeScreen(),
         routes: [
@@ -88,13 +116,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
-          GoRoute(
-            path: 'library',
-            name: AppRoute.library.name,
-            pageBuilder: (context, state) => const MaterialPage(
-              child: LibraryScreen(),
-            ),
-          )
         ],
       ),
       GoRoute(
@@ -117,6 +138,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           child: ForgotPasswordScreen(),
         ),
       ),
+      GoRoute(
+        path: '/backOffice',
+        name: AppRoute.backOffice.name,
+        builder: (context, state) => const BackOfficeHomeScreen(),
+      ),
+      GoRoute(
+        path: '/library',
+        name: AppRoute.library.name,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: Scaffold(),
+        ),
+      )
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),
   );

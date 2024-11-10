@@ -1,5 +1,6 @@
 import 'package:alamo/src/features/auth/account/account_screen.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
+import 'package:alamo/src/widgets/alert_dialogs.dart';
 
 import 'package:flutter/material.dart';
 import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
@@ -94,10 +95,7 @@ class HomeScreen extends ConsumerWidget {
               child: CustomButton(
                 text: title, // Usa el título directamente
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AccountScreen()),
-                  );
+                  showNotImplementedAlertDialog(context: context);
                 },
               ),
             ),
