@@ -8,7 +8,7 @@ workflows:
         - alamo
       vars:
         PACKAGE_NAME: "uy.edu.utec.alamo"
-        EW_API_TOKEN: $EW_API_TOKEN
+
     scripts:
       - name: Decode and create .env file
         script: |
@@ -50,12 +50,6 @@ workflows:
       - name: Build APK with Flutter
         script: |
           flutter build apk --release
-
-      - name: Upload to emulator.wtf for testing
-        script: |
-          curl -X POST -F "api_key=$EW_API_TOKEN" \
-               -F "app=@build/app/outputs/flutter-apk/app-release.apk" \
-               https://api.emulator.wtf/v1/run
 
     artifacts:
       - build/**/outputs/**/*.aab
