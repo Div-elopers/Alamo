@@ -8,7 +8,13 @@ workflows:
         - alamo
       vars:
         PACKAGE_NAME: "uy.edu.utec.alamo"
-
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "main"
+          include: true
+          source: true
     scripts:
       - name: Decode and create .env file
         script: |
