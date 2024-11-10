@@ -31,4 +31,6 @@ jobs:
       - name: Trigger Codemagic Build
         if: success()
         run: |
-          curl -X POST https://api.codemagic.io/hooks/672edace6afeadfc39aa41f1
+          curl -X POST https://api.codemagic.io/hooks/672edace6afeadfc39aa41f1 \
+            -H "Content-Type: application/json" \
+            -d '{}'
