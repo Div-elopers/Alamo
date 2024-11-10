@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:alamo/src/utils/notifier_mounted.dart';
@@ -10,11 +11,9 @@ import '../application/map_service.dart';
 part 'map_controller.g.dart';
 
 @riverpod
-class MapController extends _$MapController with NotifierMounted {
+class MapController extends _$MapController {
   @override
-  FutureOr<void> build() {
-    ref.onDispose(setUnmounted);
-  }
+  FutureOr<void> build() {}
 
   LatLngBounds get bounds {
     return ref.read(mapServiceProvider).bounds();
@@ -34,5 +33,10 @@ class MapController extends _$MapController with NotifierMounted {
     } else {
       throw UnsupportedError('Unsupported platform');
     }
+  }
+
+  // Stream of markers from the MapService
+  Stream<Set<Marker>> get markersStream {
+    return ref.read(mapServiceProvider).getHelpCentersMarkersStream();
   }
 }

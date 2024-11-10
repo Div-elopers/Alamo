@@ -46,7 +46,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     final state = ref.watch(mapControllerProvider);
     final mapController = ref.read(mapControllerProvider.notifier);
-    final currentIndex = ref.watch(currentIndexProvider);
+    final markersStream = mapController.markersStream;
 
     if (state.isLoading) {
       return const Center(
@@ -54,40 +54,49 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     } else {
       return Scaffold(
-        appBar: const CustomAppBar(title: 'Mapa'), // Usar CustomAppBar aquí
-        body: Stack(
-          children: [
-            GoogleMap(
-              cloudMapId: mapId,
-              initialCameraPosition: CameraPosition(
-                target: mapController.initialPosition,
-                zoom: 14,
-              ),
-              onMapCreated: (GoogleMapController googleMapController) {
-                _googleMapController = googleMapController;
-                _googleMapController!.animateCamera(CameraUpdate.newCameraPosition(const CameraPosition(target: LatLng(-34.904111, -56.174083))));
-              },
-              minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
-              onCameraMove: (CameraPosition position) {
-                if (!mapController.bounds.contains(position.target)) {
-                  _googleMapController!.animateCamera(CameraUpdate.newCameraPosition(const CameraPosition(target: LatLng(-34.904111, -56.174083))));
-                }
-              },
-              myLocationEnabled: true,
-              myLocationButtonEnabled: true,
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: CustomBottomNavigationBar(
-                currentIndex: currentIndex,
-                onTap: (index) {
-                  ref.read(currentIndexProvider.notifier).state = index;
+        appBar: const CustomAppBar(title: 'Mapa'),
+        body: StreamBuilder<Set<Marker>>(
+          stream: markersStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No markers available'));
+            }
+
+            // Get the markers from the stream data
+            final markers = snapshot.data!;
+
+            return SafeArea(
+              child: GoogleMap(
+                markers: markers,
+                cloudMapId: mapId,
+                initialCameraPosition: CameraPosition(
+                  target: mapController.initialPosition,
+                  zoom: 14,
+                ),
+                onMapCreated: (GoogleMapController googleMapController) {
+                  _googleMapController = googleMapController;
                 },
+                minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
+                onCameraMove: (CameraPosition position) {
+                  if (!mapController.bounds.contains(position.target)) {
+                    _googleMapController!.animateCamera(CameraUpdate.newCameraPosition(
+                      const CameraPosition(target: LatLng(-34.904111, -56.174083)),
+                    ));
+                  }
+                },
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
               ),
-            ),
-          ],
+            );
+          },
         ),
       );
     }

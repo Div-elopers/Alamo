@@ -76,9 +76,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'map',
             name: AppRoute.map.name,
-            pageBuilder: (context, state) => const MaterialPage(
-              child: MapScreen(),
-            ),
+            builder: (context, state) => const MapScreen(),
           ),
           GoRoute(
             path: 'chat/:userId',
