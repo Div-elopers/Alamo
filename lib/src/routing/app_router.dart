@@ -19,19 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-enum AppRoute {
-  home,
-  map,
-  chatbot,
-  account,
-  signIn,
-  signUp,
-  verifyPhone,
-  forgotPassword,
-  register,
-  library,
-  backOffice,
-}
+enum AppRoute { home, map, chatbot, account, signIn, signUp, verifyPhone, forgotPassword, register, library, backOffice, mapManagement }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
@@ -46,7 +34,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       if (kIsWeb) {
         if (isLoggedIn) {
-          if (path != '/forgotPassword' && path != '/library') {
+          if (path != '/forgotPassword' && path != '/library' && path != 'mapManagement') {
             return '/backOffice';
           }
 
@@ -66,7 +54,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       } else {
         // Mobile logic
         if (isLoggedIn) {
-          if (path == '/signIn' || path == '/signIn/signUp' || path == '/backOffice') {
+          if (path == '/signIn' || path == '/signIn/signUp' || path == '/backOffice' || path == '/library' || path == '/mapManagement') {
             return '/appHome';
           }
         } else {

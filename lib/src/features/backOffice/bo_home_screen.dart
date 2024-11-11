@@ -1,3 +1,4 @@
+import 'package:alamo/src/features/backOffice/centers_management_screen.dart';
 import 'package:alamo/src/features/backoffice/user_management_screen.dart';
 import 'package:alamo/src/features/library/presentation/library_screen.dart';
 import 'package:alamo/src/routing/app_router.dart';
@@ -15,8 +16,6 @@ class BackOfficeHomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authStateChangesProvider).value;
-
     return Scaffold(
       appBar: AppBar(
         title: const Padding(
@@ -57,6 +56,18 @@ class BackOfficeHomeScreen extends ConsumerWidget {
                   'assets/images/files_management.png',
                   () {
                     context.goNamed(AppRoute.library.name);
+                  },
+                ),
+                _buildCard(
+                  context,
+                  'Centros de ayuda',
+                  'Crea y administra centros de ayuda',
+                  'assets/images/centers_image.png',
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HelpCenterCreationScreen()),
+                    );
                   },
                 ),
               ],

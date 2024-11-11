@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:alamo/src/features/map/domain/help_center.dart';
 import 'package:alamo/src/utils/notifier_mounted.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -23,20 +24,35 @@ class MapController extends _$MapController {
     return ref.read(mapServiceProvider).getInitialPosition();
   }
 
-  String getApiKey() {
-    if (kIsWeb) {
-      return dotenv.env['MAPS_WEB_API_KEY'] ?? '';
-    } else if (Platform.isAndroid) {
-      return dotenv.env['MAPS_ANDROID_API_KEY'] ?? '';
-    } else if (Platform.isIOS) {
-      return dotenv.env['MAPS_IOS_API_KEY'] ?? '';
-    } else {
-      throw UnsupportedError('Unsupported platform');
-    }
-  }
-
   // Stream of markers from the MapService
   Stream<Set<Marker>> get markersStream {
     return ref.read(mapServiceProvider).getHelpCentersMarkersStream();
+  }
+
+  Future<void> createHelpCenter(Map<String, dynamic> json) async {
+    final address = json['address'];
+
+    final coordinates = await getCoordinatesFromAddress(address);
+
+    if (coordinates != null) {
+      json['location'] = {
+        'coordinates': {
+          'latitude': coordinates['lat'],
+          'longitude': coordinates['lng'],
+        },
+        'address': address
+      };
+
+      final helpCenter = HelpCenter.fromJson(json);
+
+      await ref.read(mapServiceProvider).createHelpCenter(helpCenter);
+    } else {
+      // Handle the error if coordinates were not found
+      throw Exception('Failed to get coordinates for the address');
+    }
+  }
+
+  Future<Map<String, double>?> getCoordinatesFromAddress(String address) async {
+    return ref.read(mapServiceProvider).getCoordinatesFromAddress(address);
   }
 }

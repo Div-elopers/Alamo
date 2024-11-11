@@ -46,13 +46,13 @@ class HelpCenter {
     }
 
     return HelpCenter(
-      uid: json['uid'],
+      uid: json.containsKey('uid') ? json['uid'] : "",
       name: json['name'],
       category: json['category'],
       contactNumber: json['contact_number'],
       address: json['location']['address'],
-      coordinates: coordinates, // Now properly parsed
-      createdBy: json['created_by'],
+      coordinates: coordinates,
+      createdBy: json.containsKey('created_by') ? json['created_by'] : "",
       openingHours: openingHoursData,
     );
   }
