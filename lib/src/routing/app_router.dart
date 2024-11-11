@@ -7,6 +7,8 @@ import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_s
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/backOffice/bo_home_screen.dart';
+import 'package:alamo/src/features/backOffice/centers_management_screen.dart';
+import 'package:alamo/src/features/backOffice/user_management_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/library/presentation/library_screen.dart';
@@ -31,6 +33,8 @@ enum AppRoute {
   register,
   library,
   backOffice,
+  mapManagement,
+  userManagement,
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -42,20 +46,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final user = authRepository.currentUser;
       final isLoggedIn = user != null;
       final path = state.uri.path;
-      log("kIsWeb: $kIsWeb  isLogged: $isLoggedIn    path:  $path");
 
       if (kIsWeb) {
         if (isLoggedIn) {
-          if (path != '/forgotPassword' && path != '/library') {
+          if (path != '/forgotPassword' && path != '/backOffice/mapManagement' && path != '/backOffice/userManagement') {
             return '/backOffice';
           }
 
           if (path == '/signIn' || path == '/signIn/signUp') {
             return '/backOffice';
-          }
-
-          if (path == '/library') {
-            authRepository.signOut();
           }
         } else {
           if (path == '/forgotPassword') {
@@ -66,7 +65,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       } else {
         // Mobile logic
         if (isLoggedIn) {
-          if (path == '/signIn' || path == '/signIn/signUp' || path == '/backOffice') {
+          if (path == '/signIn' || path == '/signIn/signUp' || path.contains("/backOffice")) {
             return '/appHome';
           }
         } else {
@@ -80,6 +79,27 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     },
     refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
+      GoRoute(
+        path: '/signIn',
+        name: AppRoute.signIn.name,
+        builder: (context, state) => const SignInScreen(),
+        routes: [
+          GoRoute(
+            path: 'signUp',
+            name: AppRoute.signUp.name,
+            pageBuilder: (context, state) => MaterialPage(child: SignUpScreen()),
+          ),
+        ],
+      ),
+      // Define `forgotPassword` as a top-level route
+      GoRoute(
+        path: '/forgotPassword',
+        name: AppRoute.forgotPassword.name,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: ForgotPasswordScreen(),
+        ),
+      ),
+
       GoRoute(
         path: '/appHome',
         name: AppRoute.home.name,
@@ -104,9 +124,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'map',
             name: AppRoute.map.name,
-            pageBuilder: (context, state) => const MaterialPage(
-              child: MapScreen(),
-            ),
+            builder: (context, state) => const MapScreen(),
           ),
           GoRoute(
             path: 'chat/:userId',
@@ -118,40 +136,36 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
-        ],
-      ),
-      GoRoute(
-        path: '/signIn',
-        name: AppRoute.signIn.name,
-        builder: (context, state) => const SignInScreen(),
-        routes: [
           GoRoute(
-            path: 'signUp',
-            name: AppRoute.signUp.name,
-            pageBuilder: (context, state) => MaterialPage(child: SignUpScreen()),
+            path: '/library',
+            name: AppRoute.library.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: LibraryScreen(),
+            ),
           ),
         ],
-      ),
-      // Define `forgotPassword` as a top-level route
-      GoRoute(
-        path: '/forgotPassword',
-        name: AppRoute.forgotPassword.name,
-        pageBuilder: (context, state) => const MaterialPage(
-          child: ForgotPasswordScreen(),
-        ),
       ),
       GoRoute(
         path: '/backOffice',
         name: AppRoute.backOffice.name,
         builder: (context, state) => const BackOfficeHomeScreen(),
+        routes: [
+          GoRoute(
+            path: '/mapManagement',
+            name: AppRoute.mapManagement.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: HelpCenterCreationScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/userManagement',
+            name: AppRoute.userManagement.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: UserManagementScreen(),
+            ),
+          )
+        ],
       ),
-      GoRoute(
-        path: '/library',
-        name: AppRoute.library.name,
-        pageBuilder: (context, state) => const MaterialPage(
-          child: Scaffold(),
-        ),
-      )
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),
   );

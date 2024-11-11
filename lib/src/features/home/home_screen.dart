@@ -5,8 +5,8 @@ import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:alamo/src/widgets/responsive_scrollable_card.dart';
 import 'package:alamo/src/widgets/custom_button.dart';
-import 'package:alamo/src/features/home/home_app_bar/bottom_navigation_bar.dart';
-import 'package:alamo/src/features/auth/account/cutom_drawer_screen.dart';
+import 'package:alamo/src/features/home/bottom_navigation_bar.dart';
+import 'package:alamo/src/features/home/cutom_drawer_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final currentIndexProvider = StateProvider<int>((ref) => 1);

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/utils/async_value_ui.dart';
@@ -7,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'map_controller.dart';
+import 'package:alamo/src/features/home/bottom_navigation_bar.dart';
 import 'package:alamo/src/widgets/custom_app_bar.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -27,7 +27,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       if (Platform.isAndroid) {
         mapId = dotenv.env['MAPS_ANDROID_ID'];
       } else if (Platform.isIOS) {
-        mapId = dotenv.env['MAPS_IOS_ID']; // logs: [log] ffcadf8c1dc239cc
+        mapId = dotenv.env['MAPS_IOS_ID'];
       } else {
         throw UnsupportedError('Plataforma no soportada');
       }
@@ -46,8 +46,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     final state = ref.watch(mapControllerProvider);
     final mapController = ref.read(mapControllerProvider.notifier);
-    final currentIndex = ref.watch(currentIndexProvider);
-    log(mapController.initialPosition.toString()); //[log] LatLng(-34.8971, -56.1724)
+    final markersStream = mapController.markersStream;
 
     if (state.isLoading) {
       return const Center(
@@ -55,42 +54,51 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       );
     } else {
       return Scaffold(
-        appBar: AppBar(title: const Text('Mapa')),
-        body: const GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: LatLng(-34.8971, -56.1724), // A known location
-            zoom: 14,
-          ),
+        appBar: const CustomAppBar(title: 'Mapa'),
+        body: StreamBuilder<Set<Marker>>(
+          stream: markersStream,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
+
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No markers available'));
+            }
+
+            // Get the markers from the stream data
+            final markers = snapshot.data!;
+
+            return SafeArea(
+              child: GoogleMap(
+                markers: markers,
+                cloudMapId: mapId,
+                initialCameraPosition: CameraPosition(
+                  target: mapController.initialPosition,
+                  zoom: 14,
+                ),
+                onMapCreated: (GoogleMapController googleMapController) {
+                  _googleMapController = googleMapController;
+                },
+                minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
+                onCameraMove: (CameraPosition position) {
+                  if (!mapController.bounds.contains(position.target)) {
+                    _googleMapController!.animateCamera(CameraUpdate.newCameraPosition(
+                      const CameraPosition(target: LatLng(-34.904111, -56.174083)),
+                    ));
+                  }
+                },
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
+              ),
+            );
+          },
         ),
       );
-      //   return Scaffold(
-      //     appBar: const CustomAppBar(title: 'Mapa'),
-      //     body: Container(
-      //       margin: const EdgeInsets.all(20),
-      //       child: GoogleMap(
-      //         cloudMapId: mapId,
-      //         initialCameraPosition: CameraPosition(
-      //           target: mapController.initialPosition,
-      //           zoom: 14,
-      //         ),
-      //         onMapCreated: (GoogleMapController googleMapController) {
-      //           _googleMapController = googleMapController;
-      //           _googleMapController!.animateCamera(
-      //             CameraUpdate.newLatLngBounds(mapController.bounds, 10),
-      //           );
-      //         },
-      //         minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
-      //         onCameraMove: (CameraPosition position) {
-      //           if (!mapController.bounds.contains(position.target)) {
-      //             _googleMapController!.animateCamera(
-      //               CameraUpdate.newLatLngBounds(mapController.bounds, 10),
-      //             );
-      //           }
-      //         },
-      //       ),
-      //     ),
-      //   );
-      // }
     }
   }
 }
