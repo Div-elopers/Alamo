@@ -58,6 +58,7 @@ workflows:
       email:
         recipients:
           - ciro.gronrroz@estudiantes.utec.edu.uy
+          - yesica.vitale@estudiantes.utec.edu.uy
         notify:
           success: true
           failure: false

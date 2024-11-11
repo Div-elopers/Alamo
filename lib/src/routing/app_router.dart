@@ -49,10 +49,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       if (kIsWeb) {
         if (isLoggedIn) {
-          if (path != '/forgotPassword' &&
-              path != '/backOffice/library' &&
-              path != '/backOffice/mapManagement' &&
-              path != '/backOffice/userManagement') {
+          if (path != '/forgotPassword' && path != '/backOffice/mapManagement' && path != '/backOffice/userManagement') {
             return '/backOffice';
           }
 
@@ -82,6 +79,27 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     },
     refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
     routes: [
+      GoRoute(
+        path: '/signIn',
+        name: AppRoute.signIn.name,
+        builder: (context, state) => const SignInScreen(),
+        routes: [
+          GoRoute(
+            path: 'signUp',
+            name: AppRoute.signUp.name,
+            pageBuilder: (context, state) => MaterialPage(child: SignUpScreen()),
+          ),
+        ],
+      ),
+      // Define `forgotPassword` as a top-level route
+      GoRoute(
+        path: '/forgotPassword',
+        name: AppRoute.forgotPassword.name,
+        pageBuilder: (context, state) => const MaterialPage(
+          child: ForgotPasswordScreen(),
+        ),
+      ),
+
       GoRoute(
         path: '/appHome',
         name: AppRoute.home.name,
@@ -118,40 +136,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
-        ],
-      ),
-      GoRoute(
-        path: '/signIn',
-        name: AppRoute.signIn.name,
-        builder: (context, state) => const SignInScreen(),
-        routes: [
           GoRoute(
-            path: 'signUp',
-            name: AppRoute.signUp.name,
-            pageBuilder: (context, state) => MaterialPage(child: SignUpScreen()),
+            path: '/library',
+            name: AppRoute.library.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: LibraryScreen(),
+            ),
           ),
         ],
-      ),
-      // Define `forgotPassword` as a top-level route
-      GoRoute(
-        path: '/forgotPassword',
-        name: AppRoute.forgotPassword.name,
-        pageBuilder: (context, state) => const MaterialPage(
-          child: ForgotPasswordScreen(),
-        ),
       ),
       GoRoute(
         path: '/backOffice',
         name: AppRoute.backOffice.name,
         builder: (context, state) => const BackOfficeHomeScreen(),
         routes: [
-          GoRoute(
-            path: '/library',
-            name: AppRoute.library.name,
-            pageBuilder: (context, state) => const MaterialPage(
-              child: Scaffold(),
-            ),
-          ),
           GoRoute(
             path: '/mapManagement',
             name: AppRoute.mapManagement.name,
