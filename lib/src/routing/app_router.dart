@@ -7,6 +7,8 @@ import 'package:alamo/src/features/auth/sign_in/email_password/forgot_password_s
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/backOffice/bo_home_screen.dart';
+import 'package:alamo/src/features/backOffice/centers_management_screen.dart';
+import 'package:alamo/src/features/backOffice/user_management_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/library/presentation/library_screen.dart';
@@ -19,7 +21,21 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-enum AppRoute { home, map, chatbot, account, signIn, signUp, verifyPhone, forgotPassword, register, library, backOffice, mapManagement }
+enum AppRoute {
+  home,
+  map,
+  chatbot,
+  account,
+  signIn,
+  signUp,
+  verifyPhone,
+  forgotPassword,
+  register,
+  library,
+  backOffice,
+  mapManagement,
+  userManagement,
+}
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
@@ -30,20 +46,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       final user = authRepository.currentUser;
       final isLoggedIn = user != null;
       final path = state.uri.path;
-      log("kIsWeb: $kIsWeb  isLogged: $isLoggedIn    path:  $path");
 
       if (kIsWeb) {
         if (isLoggedIn) {
-          if (path != '/forgotPassword' && path != '/library' && path != 'mapManagement') {
+          if (path != '/forgotPassword' &&
+              path != '/backOffice/library' &&
+              path != '/backOffice/mapManagement' &&
+              path != '/backOffice/userManagement') {
             return '/backOffice';
           }
 
           if (path == '/signIn' || path == '/signIn/signUp') {
             return '/backOffice';
-          }
-
-          if (path == '/library') {
-            authRepository.signOut();
           }
         } else {
           if (path == '/forgotPassword') {
@@ -54,7 +68,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       } else {
         // Mobile logic
         if (isLoggedIn) {
-          if (path == '/signIn' || path == '/signIn/signUp' || path == '/backOffice' || path == '/library' || path == '/mapManagement') {
+          if (path == '/signIn' || path == '/signIn/signUp' || path.contains("/backOffice")) {
             return '/appHome';
           }
         } else {
@@ -130,14 +144,30 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/backOffice',
         name: AppRoute.backOffice.name,
         builder: (context, state) => const BackOfficeHomeScreen(),
+        routes: [
+          GoRoute(
+            path: '/library',
+            name: AppRoute.library.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: Scaffold(),
+            ),
+          ),
+          GoRoute(
+            path: '/mapManagement',
+            name: AppRoute.mapManagement.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: HelpCenterCreationScreen(),
+            ),
+          ),
+          GoRoute(
+            path: '/userManagement',
+            name: AppRoute.userManagement.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: UserManagementScreen(),
+            ),
+          )
+        ],
       ),
-      GoRoute(
-        path: '/library',
-        name: AppRoute.library.name,
-        pageBuilder: (context, state) => const MaterialPage(
-          child: Scaffold(),
-        ),
-      )
     ],
     errorBuilder: (context, state) => const NotFoundScreen(),
   );

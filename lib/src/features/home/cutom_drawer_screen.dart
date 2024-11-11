@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:alamo/src/features/auth/account/terms_screen.dart';
+import 'package:alamo/src/features/home/terms_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomDrawer extends ConsumerWidget {
@@ -85,7 +85,7 @@ class CustomDrawer extends ConsumerWidget {
                 onTap: () async {
                   final delete = await showAlertDialog(
                     context: context,
-                    title: 'Estás seguro?',
+                    title: '¿Estás seguro?',
                     cancelActionText: 'Cancelar',
                     defaultActionText: 'Eliminar',
                   );
@@ -103,7 +103,7 @@ class CustomDrawer extends ConsumerWidget {
                 onTap: () async {
                   final logout = await showAlertDialog(
                     context: context,
-                    title: 'Estás seguro?',
+                    title: '¿Estás seguro?',
                     cancelActionText: 'Cancelar',
                     defaultActionText: 'Cerrar sesión',
                   );
