@@ -90,7 +90,7 @@ class CustomDrawer extends ConsumerWidget {
                     defaultActionText: 'Eliminar',
                   );
                   if (delete == true) {
-                    ref.read(accountScreenControllerProvider.notifier).deleteAccount();
+                    ref.read(accountScreenControllerProvider.notifier).deleteAccount(null);
                   }
                 },
               ),

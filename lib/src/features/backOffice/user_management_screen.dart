@@ -1,49 +1,141 @@
+import 'dart:developer';
+
+import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
+import 'package:alamo/src/features/auth/data/users_repository.dart';
 import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:universal_html/html.dart' as html;
 
-class UserManagementScreen extends ConsumerWidget {
+class UserManagementScreen extends ConsumerStatefulWidget {
   const UserManagementScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final users = _generateDummyUsers();
-    final selectedIndex = ref.watch(selectedIndexProvider);
+  createState() => _UserManagementScreenState();
+}
+
+class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
+  // Initialize selectedUser as null
+  AppUser? selectedUser;
+
+  @override
+  Widget build(BuildContext context) {
+    final usersStream = ref.watch(usersListStreamProvider);
+    double width = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Management'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: width / 5),
         child: Column(
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: users.length + (selectedIndex != -1 ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (selectedIndex != -1 && index == selectedIndex + 1) {
-                    // Return the edit section if this is the row right after the selected user
-                    return _buildEditUserRow(context, users[selectedIndex]);
-                  }
+            usersStream.when(
+              data: (users) {
+                return StreamBuilder<List<AppUser>>(
+                  stream: Stream.value(users),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  // Adjust the index for the DataTable to skip the edit row
-                  final userIndex = selectedIndex != -1 && index > selectedIndex ? index - 1 : index;
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
 
-                  final user = users[userIndex];
+                    if (!snapshot.hasData || snapshot.data == null) {
+                      return const Center(child: Text('No hay usuarios disponibles.'));
+                    }
 
-                  return UserRowWidget(
-                    user: user,
-                    onTap: () {
-                      final currentIndex = ref.read(selectedIndexProvider);
-                      ref.read(selectedIndexProvider.notifier).state = (currentIndex == userIndex)
-                          ? -1 // Deselect if the same row is tapped
-                          : userIndex;
-                    },
-                  );
-                },
-              ),
+                    final users = snapshot.data as List<AppUser>;
+                    return DataTable(
+                      columnSpacing: 12,
+                      columns: const [
+                        DataColumn(label: Text('Nombre')),
+                        DataColumn(label: Text('Correo')),
+                        DataColumn(label: Text('Correo verificado')),
+                        DataColumn(label: Text('Número verificado')),
+                        DataColumn(label: Text('Departamento')),
+                        DataColumn(label: Text('Foto de perfil')),
+                        DataColumn(label: Text('Acciones')),
+                      ],
+                      rows: users.map((user) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Text(user.name),
+                            ),
+                            DataCell(Text(user.email!)),
+                            DataCell(
+                              Icon(
+                                user.emailVerified ? Icons.check_circle : Icons.cancel,
+                                color: user.emailVerified ? Colors.green : Colors.red,
+                              ),
+                            ),
+                            DataCell(
+                              Icon(
+                                user.phoneVerified ? Icons.check_circle : Icons.cancel,
+                                color: user.phoneVerified ? Colors.green : Colors.red,
+                              ),
+                            ),
+                            DataCell(
+                              Text(user.department ?? 'N/A'),
+                            ),
+                            DataCell(
+                              GestureDetector(
+                                onTap: () {
+                                  if (user.profileUrl.isNotEmpty) {
+                                    html.window.open(user.profileUrl, '_blank');
+                                  }
+                                },
+                                child: user.profileUrl != ''
+                                    ? MouseRegion(
+                                        cursor: SystemMouseCursors.click,
+                                        child: Icon(
+                                          Icons.photo,
+                                          color: Colors.blue[300],
+                                        ))
+                                    : const Text(
+                                        'N/A',
+                                      ),
+                              ),
+                            ),
+                            DataCell(
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.blue),
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedUser = user;
+                                      });
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () {
+                                      // Add delete logic
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    );
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stackTrace) {
+                log(error.toString());
+                return Center(child: Text('Error: $error'));
+              },
             ),
+            // Only show the edit form if there's a selected user
+            if (selectedUser != null) _buildEditUserRow(context, selectedUser!),
           ],
         ),
       ),
@@ -51,6 +143,10 @@ class UserManagementScreen extends ConsumerWidget {
   }
 
   Widget _buildEditUserRow(BuildContext context, AppUser user) {
+    final departmentController = TextEditingController(text: user.department);
+    final phoneController = TextEditingController(text: user.phoneNumber);
+    final controller = ref.watch(accountScreenControllerProvider.notifier);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Card(
@@ -61,11 +157,12 @@ class UserManagementScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Edit User: ${user.name}',
+                'Editando a: ${user.name}',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: departmentController,
                 decoration: InputDecoration(
                   labelText: 'Department',
                   hintText: user.department ?? 'Enter department',
@@ -74,6 +171,7 @@ class UserManagementScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: phoneController,
                 decoration: InputDecoration(
                   labelText: 'Phone Number',
                   hintText: user.phoneNumber ?? 'Enter phone number',
@@ -86,7 +184,12 @@ class UserManagementScreen extends ConsumerWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Add update functionality
+                      controller.updateProfile(
+                          name: user.name ?? "",
+                          phoneNumber: phoneController.text,
+                          department: departmentController.text,
+                          email: user.email!,
+                          uid: user.uid);
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -96,66 +199,12 @@ class UserManagementScreen extends ConsumerWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      // Add delete functionality
-                      Navigator.pop(context);
+                      // Delete user logic here
+                      controller.deleteAccount(user.uid);
                     },
                     child: const Text('Delete', style: TextStyle(color: Colors.red)),
                   ),
                 ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<AppUser> _generateDummyUsers() {
-    return List.generate(6, (index) {
-      return AppUser(
-        uid: 'user_$index',
-        email: 'user$index@email.com',
-        name: 'User ${index + 1}',
-        phoneNumber: '123-456-789$index',
-        department: 'Department ${index % 2 == 0 ? 'A' : 'B'}',
-        createdAt: DateTime.now(),
-        profileUrl: '', // Add a default profile image URL if needed
-      );
-    });
-  }
-}
-
-// Provider for selected index
-final selectedIndexProvider = StateProvider<int>((ref) => -1);
-
-class UserRowWidget extends StatelessWidget {
-  final AppUser user;
-  final VoidCallback onTap;
-
-  const UserRowWidget({
-    super.key,
-    required this.user,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(user.name),
-              const Text('User'),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  // Add delete functionality
-                },
               ),
             ],
           ),

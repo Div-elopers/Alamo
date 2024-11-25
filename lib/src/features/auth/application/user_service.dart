@@ -110,22 +110,35 @@ class UserService {
   }
 
   // Delete user account
-  Future<void> deleteUserAccount() async {
+  Future<void> deleteUserAccount(String uid) async {
     final currentUser = _authRepository.currentUser;
     if (currentUser != null) {
-      final userId = currentUser.uid;
+      if (uid.isNotEmpty) {
+        final userId = uid;
 
-      // Delete user from Firestore
-      await _userRepository.deleteUser(userId);
+        // Delete user from Firestore
+        await _userRepository.deleteUser(userId);
 
-      final chatId = await _chatRepository.findChatByParticipant(userId);
+        final chatId = await _chatRepository.findChatByParticipant(userId);
 
-      if (chatId != null) {
-        await _chatRepository.deleteChat(chatId);
+        if (chatId != null) {
+          await _chatRepository.deleteChat(chatId);
+        }
+      } else {
+        final userId = currentUser.uid;
+
+        // Delete user from Firestore
+        await _userRepository.deleteUser(userId);
+
+        final chatId = await _chatRepository.findChatByParticipant(userId);
+
+        if (chatId != null) {
+          await _chatRepository.deleteChat(chatId);
+        }
+
+        // Sign out from authentication
+        await _authRepository.deleteUser();
       }
-
-      // Sign out from authentication
-      await _authRepository.deleteUser();
     }
   }
 

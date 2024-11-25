@@ -41,7 +41,6 @@ class FilesRepository {
     // You now have the generated document ID (uid) in docRef.id
     final fileId = docRef.id;
 
-    // Optionally, update the file with the generated ID
     // You can now call the set method to set the file with its auto-generated ID
     await docRef.update({'id': fileId});
   }
