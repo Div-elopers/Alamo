@@ -33,10 +33,11 @@ class AccountScreenController extends _$AccountScreenController {
     return state.hasError == false;
   }
 
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount(String? uid) async {
+    final userId = (uid != null && uid.isNotEmpty) ? uid : "";
     final userService = ref.read(userServiceProvider);
 
-    state = await AsyncValue.guard(() => userService.deleteUserAccount());
+    state = await AsyncValue.guard(() => userService.deleteUserAccount(userId));
     ref.read(goRouterProvider).goNamed(AppRoute.signIn.name);
   }
 

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 import 'package:alamo/src/features/library/application/files_service.dart';
 import 'package:alamo/src/features/library/domain/app_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -59,7 +61,7 @@ class LibraryScreenController extends _$LibraryScreenController {
   Future<void> uploadFile({
     required String name,
     required String type,
-    required File file,
+    required dynamic file,
     required String createdBy,
   }) async {
     final filesService = ref.read(filesServiceProvider);
@@ -69,6 +71,19 @@ class LibraryScreenController extends _$LibraryScreenController {
       file: file,
       createdBy: createdBy,
     );
+
+    final fileSizeInBytes = file.size;
+
+    log('File Controller size: $fileSizeInBytes bytes');
+  }
+
+  Future<void> deleteFile({
+    required String fileId,
+    required String type,
+    required String name,
+  }) async {
+    final filesService = ref.read(filesServiceProvider);
+    await filesService.deleteFile(fileId, name, type);
   }
 
   // Filter files based on current state

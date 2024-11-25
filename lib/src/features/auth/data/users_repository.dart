@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:alamo/src/features/auth/domain/app_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'users_repository.g.dart';
@@ -83,7 +84,7 @@ UsersRepository userRepository(UserRepositoryRef ref) {
 
 // A provider for fetching the list of users as a stream
 @riverpod
-Stream<List<AppUser>> usersListStream(UsersListStreamRef ref) {
+Stream<List<AppUser>> usersListStream(Ref ref) {
   final userRepository = ref.watch(userRepositoryProvider);
   return userRepository.watchUsersList();
 }

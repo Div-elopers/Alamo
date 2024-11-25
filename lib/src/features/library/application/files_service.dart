@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:alamo/src/features/library/data/files_repository.dart';
 import 'package:alamo/src/features/library/data/files_upload_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,27 +19,28 @@ class FilesService {
   Future<void> uploadFile({
     required String name,
     required String type,
-    required File file,
+    required dynamic file,
     required String createdBy,
   }) async {
     final contentType = _getContentType(type);
     final folder = _getFolder(type);
-    final filename = '${DateTime.now().millisecondsSinceEpoch}_${file.path.split('/').last}';
 
+    final fileSizeInBytes = file.size;
+
+    log('File service size: $fileSizeInBytes bytes');
     // Upload file to Firebase Storage
-    final uploadTaskSnapshot = await _filesUploadRepository.uploadFileFromFile(
+    final downloadUrl = await _filesUploadRepository.uploadFileFromFile(
       folder: folder,
       file: file,
-      filename: filename,
+      filename: name,
       contentType: contentType,
     );
 
     // Get download URL
-    final downloadUrl = await uploadTaskSnapshot.ref.getDownloadURL();
 
     // Create AppFile and save metadata to Firestore
     final appFile = AppFile(
-      id: uploadTaskSnapshot.ref.name,
+      id: '',
       name: name,
       type: type,
       createdAt: DateTime.now(),
@@ -61,11 +62,12 @@ class FilesService {
   }
 
   /// Deletes a file from Firebase Storage and its metadata from Firestore.
-  Future<void> deleteFile(String fileId, String type) async {
+  Future<void> deleteFile(String fileId, String name, String type) async {
     final folder = _getFolder(type);
 
+    log("name is $name");
     // Delete file from Firebase Storage
-    await _filesUploadRepository.deleteFile('$folder/$fileId');
+    await _filesUploadRepository.deleteFile('$folder/$name');
 
     // Delete file metadata from Firestore
     await _filesRepository.deleteFile(fileId);

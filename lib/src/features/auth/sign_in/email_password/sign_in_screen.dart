@@ -50,6 +50,11 @@ class SignInScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Image(
+                      image: AssetImage(
+                        'assets/images/alamo_logo.png',
+                      ),
+                    ),
                     gapH64,
                     gapH64,
                     const Text(
@@ -209,14 +214,6 @@ class SignInScreen extends ConsumerWidget {
           right: 0,
           child: Image.asset(
             'assets/images/top_leaf.png',
-          ),
-        ),
-        Positioned(
-          top: kIsWeb ? 200 : 120, // Adjust position for web
-          left: kIsWeb ? 800 : 50,
-          child: Image.asset(
-            'assets/images/alamo_logo.png',
-            width: kIsWeb ? 300 : null, // Set a width for web if desired
           ),
         ),
         Positioned(

@@ -1,8 +1,14 @@
+import 'dart:developer';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:firebase_storage_web/firebase_storage_web.dart' as web_storage;
+
+import 'package:universal_html/html.dart' as html;
 
 part 'files_upload_repository.g.dart';
 
@@ -21,9 +27,9 @@ class FilesUploadRepository {
   }
 
   /// Uploads a file from a local [File] object to Firebase Storage in the specified [folder].
-  Future<TaskSnapshot> uploadFileFromFile({
+  Future<String> uploadFileFromFile({
     required String folder,
-    required File file,
+    required dynamic file,
     required String filename,
     required String contentType,
   }) async {
@@ -44,14 +50,32 @@ class FilesUploadRepository {
   }
 
   /// Helper method to upload a [File] to Firebase Storage.
-  Future<TaskSnapshot> _uploadFile(String path, File file, String contentType) {
-    final ref = _storage.ref(path);
-    final uploadTask = ref.putFile(
-      file,
-      SettableMetadata(contentType: contentType),
-    );
 
-    return uploadTask.whenComplete(() => uploadTask.snapshot);
+  Future<String> _uploadFile(String path, dynamic file, String contentType) async {
+    try {
+      if (kIsWeb) {
+        final blob = html.Blob([file.bytes!], contentType);
+
+        TaskSnapshot uploadTask = await FirebaseStorage.instance.ref(path).putBlob(blob, SettableMetadata(contentType: contentType));
+
+        // Upload the byte data to Firebase Storage
+
+        return await uploadTask.ref.getDownloadURL();
+      } else {
+        // For non-web platforms (Android, iOS, etc.), use Firebase's regular storage
+
+        if (file is File) {
+          final uploadTask = await FirebaseStorage.instance.ref(path).putFile(file);
+
+          return await uploadTask.ref.getDownloadURL();
+        } else {
+          throw Exception("File is not of type File (dart:io.File)");
+        }
+      }
+    } catch (e) {
+      log('File upload failed: $e');
+      rethrow;
+    }
   }
 
   Future<void> deleteFile(String path) async {

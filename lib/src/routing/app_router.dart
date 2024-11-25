@@ -8,6 +8,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/sign_up_screen.da
 import 'package:alamo/src/features/auth/sign_in/email_password/sign_in_screen.dart';
 import 'package:alamo/src/features/backOffice/bo_home_screen.dart';
 import 'package:alamo/src/features/backOffice/centers_management_screen.dart';
+import 'package:alamo/src/features/backOffice/library_management_screen.dart';
 import 'package:alamo/src/features/backOffice/user_management_screen.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
@@ -35,6 +36,7 @@ enum AppRoute {
   backOffice,
   mapManagement,
   userManagement,
+  libraryManagement
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -49,7 +51,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       if (kIsWeb) {
         if (isLoggedIn) {
-          if (path != '/forgotPassword' && path != '/backOffice/mapManagement' && path != '/backOffice/userManagement') {
+          if (path != '/forgotPassword' && !path.startsWith('/backOffice')) {
             return '/backOffice';
           }
 
@@ -163,7 +165,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             pageBuilder: (context, state) => const MaterialPage(
               child: UserManagementScreen(),
             ),
-          )
+          ),
+          GoRoute(
+            path: '/libraryManagement',
+            name: AppRoute.libraryManagement.name,
+            pageBuilder: (context, state) => const MaterialPage(
+              child: LibraryManagementScreen(),
+            ),
+          ),
         ],
       ),
     ],
