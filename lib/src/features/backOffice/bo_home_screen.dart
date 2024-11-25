@@ -17,18 +17,10 @@ class BackOfficeHomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    double width = MediaQuery.sizeOf(context).width;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Back Office',
-            style: TextStyle(
-              color: Color(0xff1B1C41),
-              fontSize: 20,
-              fontFamily: 'Sofia Sans',
-            ),
-          ),
-        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -54,69 +46,86 @@ class BackOfficeHomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                _buildCard(
-                  context,
-                  'User Management',
-                  'Manage application users',
-                  'assets/images/user_management.png',
-                  () {
-                    context.goNamed(AppRoute.userManagement.name);
-                  },
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: width / 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Center(
+              child: Text(
+                'Back Office',
+                style: TextStyle(
+                  color: Color(0xff1B1C41),
+                  fontSize: 20,
+                  fontFamily: 'Sofia Sans',
                 ),
-                _buildCard(
-                  context,
-                  'Library',
-                  'Manage files and documents',
-                  'assets/images/files_management.png',
-                  () {
-                    showNotImplementedAlertDialog(context: context);
-                  },
-                ),
-                _buildCard(
-                  context,
-                  'Centros de ayuda',
-                  'Crea y administra centros de ayuda',
-                  'assets/images/centers_image.png',
-                  () {
-                    context.goNamed(AppRoute.mapManagement.name);
-                  },
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            _buildCard(
+              context,
+              'Administra aquí los usuarios de Alamo',
+              'assets/images/user_management.png',
+              () {
+                context.goNamed(AppRoute.userManagement.name);
+              },
+            ),
+            _buildCard(
+              context,
+              'Agrega archivos a la biblioteca',
+              'assets/images/files_management.png',
+              () {
+                context.goNamed(AppRoute.libraryManagement.name);
+              },
+            ),
+            _buildCard(
+              context,
+              'Crea centros de ayuda',
+              'assets/images/centers_image.png',
+              () {
+                context.goNamed(AppRoute.mapManagement.name);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCard(BuildContext context, String title, String description, String imagePath, VoidCallback onTap) {
+  Widget _buildCard(BuildContext context, String title, String imagePath, VoidCallback onTap) {
     return ResponsiveScrollableCard(
       child: Card(
         margin: EdgeInsets.zero,
         clipBehavior: Clip.antiAlias,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox(
-              height: 190,
-              width: double.infinity,
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
+        elevation: 4,
+        shadowColor: Theme.of(context).colorScheme.primary,
+        color: const Color.fromARGB(255, 221, 221, 236),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  imagePath,
+                  height: 190,
+                  width: double.infinity,
+                  fit: BoxFit.fitHeight,
+                ),
               ),
-            ),
-            Center(
-              child: CustomButton(
-                text: title,
-                onPressed: onTap,
+              // Text button inside the card
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: CustomButton(
+                  text: title,
+                  onPressed: onTap,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

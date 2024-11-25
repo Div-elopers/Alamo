@@ -8,6 +8,10 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // Load .env file only in non-production environments
@@ -15,10 +19,6 @@ void main() async {
   if (!isProduction) {
     await dotenv.load(fileName: ".env");
   }
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   usePathUrlStrategy();
 

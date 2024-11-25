@@ -24,8 +24,12 @@ class _HelpCenterCreationScreenState extends ConsumerState<HelpCenterCreationScr
   final validators = HelpCenterValidators();
 
   List<String> categories = ['alimentacion', 'refugio', 'salud', 'vestimenta'];
-  List<String> daysOfWeek = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
+  List<String> daysOfWeek = [
+    'Lunes',
+    'Martes',
+    'Miércoles',
+  ];
+  List<String> daysOfWeek2 = ['Jueves', 'Viernes', 'Sábado', 'Domingo'];
   final nameController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final adressController = TextEditingController();
@@ -45,7 +49,7 @@ class _HelpCenterCreationScreenState extends ConsumerState<HelpCenterCreationScr
     return Scaffold(
       appBar: AppBar(title: const Text('Crear Centro de Ayuda')),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: width / 3),
+        padding: EdgeInsets.symmetric(horizontal: width / 5),
         child: Form(
           key: _formKey,
           child: Column(
@@ -90,7 +94,30 @@ class _HelpCenterCreationScreenState extends ConsumerState<HelpCenterCreationScr
               // Opening hours picker for each day
               const Text('Selecciona las horas de apertura para cada día:'),
               gapH8,
-              for (var day in daysOfWeek) _buildDayPicker(day),
+              if (width >= 1259)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        for (var day in daysOfWeek) _buildDayPicker(day),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        for (var day in daysOfWeek2) _buildDayPicker(day),
+                      ],
+                    ),
+                  ],
+                ),
+              if (width < 1259)
+                Column(
+                  children: [
+                    for (var day in daysOfWeek) _buildDayPicker(day),
+                    for (var day in daysOfWeek2) _buildDayPicker(day),
+                  ],
+                ),
               gapH16,
               // Submit Button
               Center(
@@ -156,7 +183,8 @@ class _HelpCenterCreationScreenState extends ConsumerState<HelpCenterCreationScr
 // Helper function to build the time picker for each day with the "Closed" option
   Widget _buildDayPicker(String day) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Day label
