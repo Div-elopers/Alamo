@@ -35,9 +35,15 @@ class FilesRepository {
   }
 
   // Create or update a file
-  Future<void> createFile(AppFile file) {
-    final ref = _fileRef(file.id);
-    return ref.set(file);
+  Future<void> createFile(AppFile file) async {
+    final docRef = await _firestore.collection(filesPath()).add(file.toJson());
+
+    // You now have the generated document ID (uid) in docRef.id
+    final fileId = docRef.id;
+
+    // Optionally, update the file with the generated ID
+    // You can now call the set method to set the file with its auto-generated ID
+    await docRef.update({'id': fileId});
   }
 
   // Update a file
