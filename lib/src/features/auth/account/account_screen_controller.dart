@@ -100,7 +100,7 @@ class AccountScreenController extends _$AccountScreenController {
     });
   }
 
-  Future<void> updateProfile({
+  Future<bool> updateProfile({
     required String name,
     required String phoneNumber,
     required String department,
@@ -118,8 +118,9 @@ class AccountScreenController extends _$AccountScreenController {
 
     final userService = ref.read(userServiceProvider);
 
-    await AsyncValue.guard(() async {
-      await userService.updateUser(updatedUser);
-    });
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() => userService.updateUser(updatedUser));
+
+    return state.hasError == false;
   }
 }
