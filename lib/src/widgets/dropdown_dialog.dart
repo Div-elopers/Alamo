@@ -54,6 +54,7 @@ class _AdaptiveDropdownState extends State<AdaptiveDropdown> {
 
   Widget _buildMaterialDropdown() {
     return DropdownButtonFormField<String>(
+      style: const TextStyle(fontSize: 16),
       value: _selectedValue,
       items: widget.items.map((String item) {
         return DropdownMenuItem<String>(
@@ -91,7 +92,10 @@ class _AdaptiveDropdownState extends State<AdaptiveDropdown> {
           filled: true,
           fillColor: Colors.white,
         ),
-        child: Text(_selectedValue ?? widget.items.first),
+        child: Text(
+          _selectedValue ?? widget.items.first,
+          style: const TextStyle(fontSize: 16),
+        ),
       ),
     );
   }

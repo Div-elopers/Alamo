@@ -76,7 +76,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                 await showAlertDialog(
                                   context: context,
                                   title: 'Correo enviado',
-                                  content: 'Te hemos enviado un correo para restablecer tu contraseña.',
+                                  content: const Text('Te hemos enviado un correo para restablecer tu contraseña.'),
                                   defaultActionText: 'Aceptar',
                                 );
 

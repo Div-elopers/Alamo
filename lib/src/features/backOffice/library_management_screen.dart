@@ -85,7 +85,7 @@ class _LibraryManagementState extends ConsumerState<LibraryManagementScreen> {
                   );
                 } else {
                   // Show error message
-                  showAlertDialog(context: context, title: 'Error', content: 'Por favor completa los campos y selecciona un archivo.');
+                  showAlertDialog(context: context, title: 'Error', content: const Text('Por favor completa los campos y selecciona un archivo.'));
                 }
               },
               child: const Text('Subir archivo'),
