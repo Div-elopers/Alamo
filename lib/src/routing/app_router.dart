@@ -95,12 +95,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       // Define `forgotPassword` as a top-level route
       GoRoute(
-        path: '/forgotPassword',
-        name: AppRoute.forgotPassword.name,
-        pageBuilder: (context, state) => const MaterialPage(
-          child: ForgotPasswordScreen(),
-        ),
-      ),
+          path: '/forgotPassword',
+          name: AppRoute.forgotPassword.name,
+          pageBuilder: (context, state) {
+            final String email = state.extra != null ? state.extra.toString() : "";
+            return MaterialPage(
+              child: ForgotPasswordScreen(
+                userEmail: email,
+              ),
+            );
+          }),
 
       GoRoute(
         path: '/appHome',

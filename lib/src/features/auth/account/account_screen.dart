@@ -163,7 +163,10 @@ class ProfileScreen extends ConsumerWidget {
 
           TextButton(
             onPressed: () {
-              context.pushNamed(AppRoute.forgotPassword.name);
+              context.pushNamed(
+                AppRoute.forgotPassword.name,
+                extra: emailController.text.isNotEmpty ? emailController.text : "",
+              );
             },
             child: const Text('Cambiar contraseña'),
           ),
@@ -324,7 +327,7 @@ class VerifyPhoneWidget extends StatelessWidget {
         icon: const Icon(Icons.verified),
         color: Colors.grey,
         onPressed: () {
-          context.goNamed(
+          context.pushNamed(
             AppRoute.verifyPhone.name,
             extra: phoneNumber.isNotEmpty ? phoneNumber : "",
           );
