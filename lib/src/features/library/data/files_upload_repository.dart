@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:firebase_storage_web/firebase_storage_web.dart' as web_storage;
 
 import 'package:universal_html/html.dart' as html;
 

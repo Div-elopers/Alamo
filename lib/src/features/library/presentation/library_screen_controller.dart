@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
 import 'package:alamo/src/features/library/application/files_service.dart';
 import 'package:alamo/src/features/library/domain/app_file.dart';
 import 'package:path_provider/path_provider.dart';
