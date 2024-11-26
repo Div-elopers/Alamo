@@ -35,6 +35,7 @@ class SignInScreen extends ConsumerWidget {
     });
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Stack(
         children: [
@@ -176,7 +177,7 @@ class SignInScreen extends ConsumerWidget {
     showAlertDialog(
       context: context,
       title: title,
-      content: content,
+      content: Text(content),
       defaultActionText: 'Aceptar',
     );
   }

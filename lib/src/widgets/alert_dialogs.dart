@@ -11,7 +11,7 @@ const kDialogDefaultKey = Key('dialog-default-key');
 Future<bool?> showAlertDialog({
   required BuildContext context,
   required String title,
-  String? content,
+  Widget? content,
   String? cancelActionText,
   String defaultActionText = 'OK',
 }) async {
@@ -22,7 +22,7 @@ Future<bool?> showAlertDialog({
     // * AlertDialog.adaptive was added in Flutter 3.13
     builder: (context) => AlertDialog.adaptive(
       title: Text(title),
-      content: content != null ? Text(content) : null,
+      content: content,
       // * Use [TextButton] or [CupertinoDialogAction] depending on the platform
       actions: kIsWeb || !Platform.isIOS
           ? <Widget>[
@@ -62,7 +62,7 @@ Future<void> showExceptionAlertDialog({
     showAlertDialog(
       context: context,
       title: title,
-      content: exception.toString(),
+      content: Text(exception.toString()),
       defaultActionText: 'OK'.hardcoded,
     );
 

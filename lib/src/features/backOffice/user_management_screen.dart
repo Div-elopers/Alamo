@@ -185,7 +185,7 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                   ElevatedButton(
                     onPressed: () {
                       controller.updateProfile(
-                          name: user.name ?? "",
+                          name: user.name,
                           phoneNumber: phoneController.text,
                           department: departmentController.text,
                           email: user.email!,

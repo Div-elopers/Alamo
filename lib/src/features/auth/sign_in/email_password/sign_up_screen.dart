@@ -135,7 +135,7 @@ class SignUpScreen extends ConsumerWidget {
                                     showAlertDialog(
                                       context: context,
                                       title: 'Fallo la creación de usuario',
-                                      content: 'Por favor, revisa la información.',
+                                      content: const Text('Por favor, revisa la información.'),
                                       defaultActionText: 'OK',
                                     );
                                   }

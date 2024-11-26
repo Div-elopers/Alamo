@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 /// Simple account screen showing some user info and a logout button.
 class AccountScreen extends ConsumerWidget {
@@ -29,21 +30,43 @@ class AccountScreen extends ConsumerWidget {
       (_, state) => state.showAlertDialogOnError(context),
     );
     final state = ref.watch(accountScreenControllerProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: state.isLoading ? const CircularProgressIndicator() : Text('Cuenta'.hardcoded),
-      ),
-      body: ResponsiveCenter(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.p8),
-        child: ProfileScreen(),
+
+    GlobalKey emailShowcaseKey = GlobalKey();
+    GlobalKey phoneShowcaseKey = GlobalKey();
+
+    return ShowCaseWidget(
+      builder: (context) => Scaffold(
+        appBar: AppBar(
+          title: state.isLoading ? const CircularProgressIndicator() : Text('Cuenta'.hardcoded),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        floatingActionButton: FloatingActionButton(
+          mini: true,
+          onPressed: () {
+            ShowCaseWidget.of(context).startShowCase([
+              emailShowcaseKey,
+              phoneShowcaseKey,
+            ]);
+          },
+          child: const Icon(Icons.info),
+        ),
+        resizeToAvoidBottomInset: false,
+        body: ProfileScreen(
+          emailShowcaseKey: emailShowcaseKey,
+          phoneShowcaseKey: phoneShowcaseKey,
+        ),
       ),
     );
   }
 }
 
 class ProfileScreen extends ConsumerWidget {
-  ProfileScreen({super.key});
-  final validators = EmailAndPasswordValidators(); // Add validators instance
+  ProfileScreen({super.key, required this.emailShowcaseKey, required this.phoneShowcaseKey});
+  final validators = EmailAndPasswordValidators();
+
+  final GlobalKey emailShowcaseKey;
+
+  final GlobalKey phoneShowcaseKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,8 +87,8 @@ class ProfileScreen extends ConsumerWidget {
     final emailController = controller.emailController..text = user.email ?? "";
     final departmentController = controller.departmentController..text = user.department ?? "";
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -97,7 +120,7 @@ class ProfileScreen extends ConsumerWidget {
                   },
                 ),
               ),
-              user.phoneVerified ? const VerifiedWidget() : VerifyPhoneWidget(phoneNumber: phoneController.text),
+              user.phoneVerified ? const VerifiedWidget() : VerifyPhoneWidget(phoneController: phoneController, phoneShowcaseKey: phoneShowcaseKey),
             ],
           ),
           const Text(
@@ -130,13 +153,20 @@ class ProfileScreen extends ConsumerWidget {
               ),
               gapW8,
               // Verification Widget
-              user.emailVerified ? const VerifiedWidget() : const VerifyEmailWidget(),
+              user.emailVerified
+                  ? const VerifiedWidget()
+                  : VerifyEmailWidget(
+                      emailShowcaseKey: emailShowcaseKey,
+                    ),
             ],
           ),
 
           TextButton(
             onPressed: () {
-              context.pushNamed(AppRoute.forgotPassword.name);
+              context.pushNamed(
+                AppRoute.forgotPassword.name,
+                extra: emailController.text.isNotEmpty ? emailController.text : "",
+              );
             },
             child: const Text('Cambiar contraseña'),
           ),
@@ -148,14 +178,22 @@ class ProfileScreen extends ConsumerWidget {
           ),
 
           ElevatedButton(
-            onPressed: () {
-              controller.updateProfile(
+            onPressed: () async {
+              final success = await controller.updateProfile(
                 uid: user.uid,
                 name: nameController.text,
                 phoneNumber: phoneController.text,
                 department: departmentController.text,
                 email: emailController.text,
               );
+
+              if (context.mounted && success) {
+                showAlertDialog(
+                  context: context,
+                  title: 'Perfil Actualizado',
+                  defaultActionText: 'OK',
+                );
+              }
             },
             child: const Text('Guardar cambios'),
           ),
@@ -181,8 +219,9 @@ class ProfileScreen extends ConsumerWidget {
         TextFormField(
           controller: controller,
           decoration: InputDecoration(
+            fillColor: readOnly ? Colors.grey.shade200 : Colors.white, // Gray background for readOnly
+
             filled: true,
-            fillColor: Colors.white,
             enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(width: 0.1, color: Colors.black),
             ),
@@ -213,7 +252,9 @@ class ProfileScreen extends ConsumerWidget {
 }
 
 class VerifyEmailWidget extends ConsumerWidget {
-  const VerifyEmailWidget({super.key});
+  const VerifyEmailWidget({super.key, required this.emailShowcaseKey});
+
+  final GlobalKey emailShowcaseKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -223,19 +264,38 @@ class VerifyEmailWidget extends ConsumerWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(
-          onPressed: state.isLoading
-              ? null
-              : () async {
-                  final success = await accountScreenController.sendEmailVerification();
-                  if (context.mounted && success) {
-                    showAlertDialog(
-                      context: context,
-                      title: "Enviado - revisa tu casilla de correo".hardcoded,
-                    );
-                  }
-                },
-          icon: state.isLoading ? const CircularProgressIndicator() : const Icon(Icons.verified, color: Colors.grey),
+        Showcase(
+          key: emailShowcaseKey,
+          title: "Tip! ",
+          description: 'Haz click aquí para verificar tu correo.',
+          child: IconButton(
+            onPressed: state.isLoading
+                ? null
+                : () async {
+                    final success = await accountScreenController.sendEmailVerification();
+                    if (context.mounted && success) {
+                      showAlertDialog(
+                        context: context,
+                        title: 'Revisa tu casilla',
+                        content: RichText(
+                          text: const TextSpan(children: [
+                            TextSpan(
+                              text: "Te hemos enviado un correo! Después de verificarte, recarga tu usuario en esta pantalla con: ",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            WidgetSpan(
+                              child: Icon(Icons.refresh, size: 14),
+                            ),
+                          ]),
+                        ),
+                        defaultActionText: 'OK',
+                      );
+                    }
+                  },
+            icon: const Icon(Icons.verified, color: Colors.grey),
+          ),
         ),
         IconButton(
           icon: const Icon(Icons.refresh),
@@ -248,28 +308,30 @@ class VerifyEmailWidget extends ConsumerWidget {
   }
 }
 
-class VerifyPhoneWidget extends ConsumerWidget {
-  const VerifyPhoneWidget({required this.phoneNumber, super.key});
+class VerifyPhoneWidget extends StatelessWidget {
+  const VerifyPhoneWidget({required this.phoneController, super.key, required this.phoneShowcaseKey});
 
-  final String phoneNumber;
+  final TextEditingController phoneController;
+
+  final GlobalKey phoneShowcaseKey;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(accountScreenControllerProvider);
+  Widget build(BuildContext context) {
+    final phoneNumber = phoneController.text;
 
-    return Tooltip(
-      message: "Verify Phone Number",
+    return Showcase(
+      key: phoneShowcaseKey,
+      title: "Tip! ",
+      description: 'Haz click aquí para verificar tu celular.',
       child: IconButton(
         icon: const Icon(Icons.verified),
         color: Colors.grey,
-        onPressed: !state.isLoading
-            ? () {
-                context.goNamed(
-                  AppRoute.verifyPhone.name,
-                  extra: phoneNumber,
-                );
-              }
-            : null,
+        onPressed: () {
+          context.pushNamed(
+            AppRoute.verifyPhone.name,
+            extra: phoneNumber.isNotEmpty ? phoneNumber : "",
+          );
+        },
       ),
     );
   }
