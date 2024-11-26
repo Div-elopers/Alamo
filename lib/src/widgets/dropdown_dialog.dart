@@ -54,7 +54,6 @@ class _AdaptiveDropdownState extends State<AdaptiveDropdown> {
 
   Widget _buildMaterialDropdown() {
     return DropdownButtonFormField<String>(
-      style: const TextStyle(fontSize: 16),
       value: _selectedValue,
       items: widget.items.map((String item) {
         return DropdownMenuItem<String>(
