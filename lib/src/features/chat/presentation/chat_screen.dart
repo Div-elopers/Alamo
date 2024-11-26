@@ -1,10 +1,12 @@
 import 'package:alamo/src/features/auth/data/users_repository.dart';
+import 'package:alamo/src/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/features/chat/domain/app_chat.dart';
 import 'package:alamo/src/widgets/message_bubble.dart';
 import 'package:alamo/src/features/chat/presentation/chat_screen_controller.dart';
 import 'package:alamo/src/widgets/custom_app_bar.dart';
+import 'package:go_router/go_router.dart';
 
 class ChatScreen extends ConsumerWidget {
   final String userId;
@@ -24,7 +26,10 @@ class ChatScreen extends ConsumerWidget {
         final senderName = user?.name ?? 'usuario';
 
         return Scaffold(
-          appBar: const CustomAppBar(title: 'Asistente virtual'), // Usar CustomAppBar aquí
+          appBar: AppBar(
+            title: const Text('Asistente virtual'),
+            leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
+          ), // Usar CustomAppBar aquí
           body: FutureBuilder<String>(
             future: chatController.getOrCreateChatId(userId),
             builder: (context, snapshot) {

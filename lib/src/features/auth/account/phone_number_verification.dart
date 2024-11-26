@@ -1,3 +1,4 @@
+import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/features/auth/sign_in/string_validators.dart';
 import 'package:alamo/src/routing/app_router.dart';
@@ -66,8 +67,7 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text('Por favor, verifica tu número de teléfono:'),
-              const SizedBox(height: 16),
-              // Phone Number Input Field
+              gapH16, // Phone Number Input Field
               TextFormField(
                 controller: _phoneController,
                 decoration: const InputDecoration(
@@ -85,8 +85,7 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
-              // Button to send verification code
+              gapH16, // Button to send verification code
               ElevatedButton(
                 onPressed: state.isLoading
                     ? null
@@ -121,15 +120,13 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                       },
                 child: state.isLoading ? const CircularProgressIndicator() : const Text('Enviar código de verificación'),
               ),
-              const SizedBox(height: 16),
-              // Conditionally show verification code input field
+              gapH16, // Conditionally show verification code input field
               if (codeSent)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Ingrese el código que recibió:'),
-                    const SizedBox(height: 16),
-                    // Verification Code Input Field using PinFieldAutoFill for autofill support
+                    gapH16, // Verification Code Input Field using PinFieldAutoFill for autofill support
                     PinFieldAutoFill(
                       controller: _codeController,
                       codeLength: 6,
@@ -143,8 +140,7 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
                         colorBuilder: const FixedColorBuilder(Colors.black),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    // Button to submit verification code
+                    gapH16, // Button to submit verification code
                     ElevatedButton(
                       onPressed: state.isLoading
                           ? null
