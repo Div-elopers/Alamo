@@ -115,12 +115,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             ),
             routes: [
               GoRoute(
-                path: 'verify-code',
-                name: AppRoute.verifyPhone.name,
-                pageBuilder: (context, state) => const MaterialPage(
-                  child: VerifyPhoneNumberScreen(),
-                ),
-              ),
+                  path: 'verify-code',
+                  name: AppRoute.verifyPhone.name,
+                  pageBuilder: (context, state) {
+                    final String phone = state.extra.toString();
+                    log(phone);
+                    return MaterialPage(
+                      child: VerifyPhoneNumberScreen(
+                        phone: phone,
+                      ),
+                    );
+                  }),
             ],
           ),
           GoRoute(

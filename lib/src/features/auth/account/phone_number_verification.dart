@@ -7,15 +7,16 @@ import 'package:go_router/go_router.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 class VerifyPhoneNumberScreen extends ConsumerStatefulWidget {
-  const VerifyPhoneNumberScreen({super.key});
+  final String? phone;
 
+  const VerifyPhoneNumberScreen({required this.phone, super.key});
   @override
   ConsumerState<VerifyPhoneNumberScreen> createState() => _VerifyPhoneNumberScreenState();
 }
 
 class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScreen> with CodeAutoFill {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _phoneController = TextEditingController();
+  late final TextEditingController _phoneController;
   final TextEditingController _codeController = TextEditingController();
   final PhoneNumberRegexValidator phoneValidator = PhoneNumberRegexValidator();
 
@@ -35,6 +36,8 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
   @override
   void initState() {
     super.initState();
+    // Initialize _phoneController with the passed phone value
+    _phoneController = TextEditingController(text: widget.phone!.isNotEmpty ? "+598${widget.phone!.substring(1)}" : "");
     // Start listening for SMS autofill
     listenForCode();
   }
@@ -62,7 +65,7 @@ class _VerifyPhoneNumberScreenState extends ConsumerState<VerifyPhoneNumberScree
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Por favor, ingresa tu número de teléfono:'),
+              const Text('Por favor, verifica tu número de teléfono:'),
               const SizedBox(height: 16),
               // Phone Number Input Field
               TextFormField(
