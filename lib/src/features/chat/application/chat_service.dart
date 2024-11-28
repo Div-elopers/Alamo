@@ -88,6 +88,57 @@ class ChatService {
       log('Error in sending message to assistant: $error', name: '_sendMessageToAssistant');
     }
   }
+
+  /*Future<void> _sendMessageToAssistantFlask(String chatId, String threadId, String messageContent) async {
+    try {
+      final flaskApp = dotenv.env['FLASK_ENDPOINT'];
+      final sendMessageToAssistant = Uri.parse('http://$flaskApp/send_message_to_assistant');
+
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        log("User is not authenticated");
+        return;
+      }
+
+      bool firstMessage = threadId.isEmpty;
+
+      final payload = {
+        'openai_thread_id': threadId,
+        'message_content': messageContent,
+      };
+
+      // Call the Firebase function
+      final response = await http.post(
+        sendMessageToAssistant,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(payload),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        String newThreadId = data['openai_thread_id'];
+        String assistantMessage = data['response'];
+
+        // If this is the first message, update the chat with the new threadId
+        if (firstMessage && newThreadId.isNotEmpty) {
+          await _chatRepository.addThreadId(newThreadId, chatId);
+          threadId = newThreadId;
+        }
+
+        final messageData = {
+          'userIsSender': false,
+          'content': assistantMessage,
+          'timestamp': DateTime.now(),
+          'type': 'text',
+        };
+        await _chatRepository.addMessage(chatId, messageData);
+      } else {
+        log('Unexpected response format from Firebase function: ${response.body}', name: '_sendMessageToAssistant');
+      }
+    } catch (error) {
+      log('Error in sending message to assistant: $error', name: '_sendMessageToAssistant');
+    }
+  }*/
 }
 
 @Riverpod(keepAlive: true)
