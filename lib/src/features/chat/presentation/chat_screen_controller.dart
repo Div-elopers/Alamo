@@ -41,22 +41,20 @@ class ChatScreenController extends _$ChatScreenController {
     state = await AsyncValue.guard(() => chatService.addMessage(chatId, messageContent, threadId));
   }
 
-  Future<String> getOrCreateChatId(String userId) async {
-    // Retrieve both chatId and threadId
-    final chatData = await _generateOrFetchChatId(userId);
-    return chatData;
+  Future<List<Chat>> getChats(String userId) async {
+    final chatRepository = ref.read(chatRepositoryProvider);
+    return await chatRepository.findChats(userId);
   }
 
-  Future<String> _generateOrFetchChatId(String userId) async {
+  Future<String> createChat(String userId) async {
     final chatRepository = ref.read(chatRepositoryProvider);
+    final chat = await chatRepository.createChat(userId);
 
-    final existingChatId = await chatRepository.findChatByParticipant(userId);
+    return chat.chatId;
+  }
 
-    if (existingChatId != null) {
-      return existingChatId;
-    } else {
-      final newChatId = await chatRepository.createChat(userId);
-      return newChatId;
-    }
+  Future<void> deleteChat(String chatId) async {
+    final chatRepository = ref.read(chatRepositoryProvider);
+    return chatRepository.deleteChat(chatId);
   }
 }
