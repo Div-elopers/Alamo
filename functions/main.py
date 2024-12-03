@@ -2,6 +2,7 @@ import os
 import json
 import openai
 import logging
+import requests
 from dotenv import load_dotenv
 from firebase_functions import https_fn
 from firebase_admin import initialize_app, firestore, credentials
@@ -12,7 +13,6 @@ load_dotenv()
 
 # Debugging: Check if the environment variable is loaded
 credentials_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
-
 credentials_info = json.loads(credentials_json)
 
 # Create credentials from the JSON key
@@ -26,6 +26,7 @@ db = firestore.client()
 # Initialize OpenAI API client
 openai_api_key = os.getenv("OPENAI_API_KEY")
 client = openai.OpenAI(api_key=openai_api_key)
+centersByCategoryAPI = os.getenv("CENTERS_API")
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -74,14 +75,46 @@ def process_message_to_assistant(data: dict) -> dict:
         # Wait for the run to complete
         while run.status != "completed":
             run = client.beta.threads.runs.retrieve(thread_id=openai_thread_id, run_id=run.id)
-        
-        
+
+            if run.status == "requires_action":
+                # Handle tool calls
+                tool_calls = run.required_action.submit_tool_outputs.tool_calls
+                tool_outputs = []
+
+                for tool in tool_calls:
+                    if tool.function.name == "get_help_centers_by_category":
+                        tool_args = json.loads(tool.function.arguments)
+                        category = tool_args.get("category")
+
+                        # Call your Firebase function to fetch help centers
+                        response = requests.post(
+                            centersByCategoryAPI,
+                            json={"category": category}
+                        )
+
+                        if response.status_code == 200:
+                            tool_output = {"tool_call_id": tool.id, "output": response.text}
+                        else:
+                            tool_output = {
+                                "tool_call_id": tool.id,
+                                "output": json.dumps({"error": "Failed to fetch help centers"})
+                            }
+
+                        tool_outputs.append(tool_output)
+
+                # Submit tool outputs back to the assistant
+                client.beta.threads.runs.submit_tool_outputs(
+                    thread_id=openai_thread_id,
+                    run_id=run.id,
+                    tool_outputs=tool_outputs
+                )
+
+
         # Step 3: Retrieve only the latest assistant message after the run completes
-        # Retrieve messages from the thread after the run completes
         messages = sorted(
             client.beta.threads.messages.list(thread_id=openai_thread_id).data,
             key=lambda x: x.created_at
-        )
+        )   
 
         # Get the last message, which should be the assistant's response
         latest_assistant_message = messages[-1] if messages else None
@@ -94,7 +127,6 @@ def process_message_to_assistant(data: dict) -> dict:
             )
         else:
             assistant_response = "No assistant response found."
-
 
         # Return thread ID if newly created, otherwise just the response
         if 'openai_thread_id' not in data or not data['openai_thread_id']:
