@@ -10,7 +10,8 @@ import 'package:alamo/src/features/backOffice/bo_home_screen.dart';
 import 'package:alamo/src/features/backOffice/centers_management_screen.dart';
 import 'package:alamo/src/features/backOffice/library_management_screen.dart';
 import 'package:alamo/src/features/backOffice/user_management_screen.dart';
-import 'package:alamo/src/features/chat/presentation/chat_screen.dart';
+import 'package:alamo/src/features/chat/presentation/assistant_screen.dart';
+import 'package:alamo/src/features/chat/presentation/chats_screen.dart';
 import 'package:alamo/src/features/home/home_screen.dart';
 import 'package:alamo/src/features/library/presentation/library_screen.dart';
 import 'package:alamo/src/features/map/presentation/map_screen.dart';
@@ -25,7 +26,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 enum AppRoute {
   home,
   map,
-  chatbot,
+  chats,
+  assistant,
   account,
   signIn,
   signUp,
@@ -139,13 +141,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: 'chat/:userId',
-            name: AppRoute.chatbot.name,
+            name: AppRoute.chats.name,
             pageBuilder: (context, state) {
               final userId = state.pathParameters['userId']!;
               return MaterialPage(
                 child: ChatScreen(userId: userId),
               );
             },
+            routes: [
+              GoRoute(
+                path: '/assistant/:chatId',
+                name: AppRoute.assistant.name,
+                pageBuilder: (context, state) {
+                  final chatId = state.pathParameters['chatId']!;
+                  return MaterialPage(
+                    child: AssistantScreen(chatId: chatId),
+                  );
+                },
+              ),
+            ],
           ),
           GoRoute(
             path: '/library',
