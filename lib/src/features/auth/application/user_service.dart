@@ -119,10 +119,12 @@ class UserService {
         // Delete user from Firestore
         await _userRepository.deleteUser(userId);
 
-        final chatId = await _chatRepository.findChatByParticipant(userId);
+        final chats = await _chatRepository.findChatsByParticipant(userId);
 
-        if (chatId != null) {
-          await _chatRepository.deleteChat(chatId);
+        if (chats.isNotEmpty) {
+          for (var chat in chats) {
+            await _chatRepository.deleteChat(chat.chatId);
+          }
         }
       } else {
         final userId = currentUser.uid;
@@ -130,10 +132,12 @@ class UserService {
         // Delete user from Firestore
         await _userRepository.deleteUser(userId);
 
-        final chatId = await _chatRepository.findChatByParticipant(userId);
+        final chats = await _chatRepository.findChatsByParticipant(userId);
 
-        if (chatId != null) {
-          await _chatRepository.deleteChat(chatId);
+        if (chats.isNotEmpty) {
+          for (var chat in chats) {
+            await _chatRepository.deleteChat(chat.chatId);
+          }
         }
 
         // Sign out from authentication

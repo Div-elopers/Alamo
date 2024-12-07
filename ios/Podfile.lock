@@ -1161,7 +1161,7 @@ PODS:
     - Firebase/Firestore (= 11.4.0)
     - firebase_core
     - Flutter
-  - cloud_functions (5.1.4):
+  - cloud_functions (5.1.5):
     - Firebase/Functions (= 11.4.0)
     - firebase_core
     - Flutter
@@ -1540,7 +1540,7 @@ SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   BoringSSL-GRPC: ca6a8e5d04812fce8ffd6437810c2d46f925eaeb
   cloud_firestore: 6bae2db322e02f737234a0ce847ddaf18d5012b6
-  cloud_functions: 15f3ddefaef6b5ba8a455cc95401c42a831aa10c
+  cloud_functions: d1dc9179c2db1729cb9bd0c9683909216a0f2230
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60

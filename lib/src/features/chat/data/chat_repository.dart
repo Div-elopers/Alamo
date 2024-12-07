@@ -27,19 +27,6 @@ class ChatRepository {
     return ref.snapshots().map((snapshot) => _getChatFromDocumentSnapshot(snapshot));
   }
 
-  Future<String> createChat(String userId) async {
-    final docRef = _firestore.collection(chatsPath()).doc();
-    final chatData = {
-      'participants': [userId],
-      'messages': [],
-      'lastUpdated': FieldValue.serverTimestamp(),
-      'threadId': ""
-    };
-
-    await docRef.set(chatData);
-    return docRef.id;
-  }
-
   Future<void> addThreadId(String threadId, String chatId) async {
     try {
       await _firestore.collection(chatsPath()).doc(chatId).update({
@@ -50,17 +37,35 @@ class ChatRepository {
     }
   }
 
-  Future<String?> findChatByParticipant(String userId) async {
-    final querySnapshot = await _firestore
-        .collection(chatsPath())
-        .where('participants', arrayContains: userId)
-        .limit(1) // Assuming one chat per user
-        .get();
+  Future<List<Chat>> findChatsByParticipant(String userId) async {
+    final querySnapshot = await _firestore.collection(chatsPath()).where('participants', arrayContains: userId).get();
 
-    if (querySnapshot.docs.isNotEmpty) {
-      return querySnapshot.docs.first.id;
+    return querySnapshot.docs.map((doc) {
+      return Chat.fromDocument(doc.id, doc.data());
+    }).toList();
+  }
+
+  Future<Chat> createChat(String userId) async {
+    final docRef = _firestore.collection(chatsPath()).doc();
+    final chatData = {
+      'participants': [userId],
+      'messages': [],
+      'lastUpdated': FieldValue.serverTimestamp(),
+      'threadId': ""
+    };
+
+    await docRef.set(chatData);
+
+    return Chat.fromDocument(docRef.id, chatData);
+  }
+
+  Future<List<Chat>> findChats(String userId) async {
+    final chats = await findChatsByParticipant(userId);
+
+    if (chats.isNotEmpty) {
+      return chats;
     } else {
-      return null;
+      return [];
     }
   }
 

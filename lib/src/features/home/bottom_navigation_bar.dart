@@ -78,7 +78,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         context.goNamed(AppRoute.home.name);
         break;
       case 2:
-        context.pushNamed(AppRoute.chatbot.name, pathParameters: {'userId': user!.uid});
+        context.pushNamed(AppRoute.chats.name, pathParameters: {'userId': user!.uid});
       case 3:
         context.goNamed(AppRoute.library.name);
         break;

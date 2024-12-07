@@ -17,11 +17,15 @@ class Chat {
         : <Message>[]);
 
     messages.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    final lastUpdatedField = data['lastUpdated'];
+    final lastUpdated = (lastUpdatedField is Timestamp) ? lastUpdatedField.toDate() : DateTime.now();
+
     return Chat(
         chatId: chatId,
         participants: List<String>.from(data['participants'] as List<dynamic>),
         messages: messages,
-        lastUpdated: (data['lastUpdated'] != null ? (data['lastUpdated'] as Timestamp).toDate() : DateTime.now()),
+        lastUpdated: lastUpdated,
         threadId: data['threadId'] ?? "");
   }
 
