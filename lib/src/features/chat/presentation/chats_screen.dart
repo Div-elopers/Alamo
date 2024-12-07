@@ -73,6 +73,7 @@ class ChatScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         margin: const EdgeInsets.all(16),
+                        duration: Durations.extralong3,
                       ),
                     );
                   },

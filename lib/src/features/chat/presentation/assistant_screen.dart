@@ -13,89 +13,80 @@ class AssistantScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatController = ref.watch(chatScreenControllerProvider.notifier);
+    final TextEditingController messageController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Assistant'),
+        title: const Text('Asistente de Alamo'),
         leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.pop()),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildChatMessages(context, chatId, chatController),
-          ),
-          _buildMessageInput(context, chatController, chatId),
-        ],
+      body: StreamBuilder<Chat?>(
+        stream: chatController.watchChat(chatId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData && snapshot.data != null) {
+            final chat = snapshot.data!;
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    reverse: true,
+                    itemCount: chat.messages.length,
+                    itemBuilder: (context, index) {
+                      final message = chat.messages[index];
+                      return MessageBubble(
+                        senderName: message.userIsSender ? "Tú" : "Chatbot",
+                        text: message.content,
+                        date: message.formattedTime,
+                        userIsSender: message.userIsSender,
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: messageController,
+                          decoration: const InputDecoration(
+                            labelText: 'Escriba su mensaje',
+                            labelStyle: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          onSubmitted: (text) {
+                            if (text.isNotEmpty) {
+                              chatController.sendMessage(chatId, text, chat.threadId.isNotEmpty ? chat.threadId : "");
+                              messageController.clear();
+                            }
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () {
+                          final text = messageController.text;
+                          if (text.isNotEmpty) {
+                            chatController.sendMessage(chatId, text, chat.threadId.isNotEmpty ? chat.threadId : "");
+                            messageController.clear();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(child: Text('No hay mensajes en este chat.'));
+          }
+        },
       ),
     );
   }
-}
-
-Widget _buildChatMessages(BuildContext context, String chatId, ChatScreenController chatController) {
-  return StreamBuilder<Chat?>(
-    stream: chatController.watchChat(chatId),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else if (snapshot.hasData && snapshot.data != null) {
-        final chat = snapshot.data!;
-        return ListView.builder(
-          reverse: true,
-          itemCount: chat.messages.length,
-          itemBuilder: (context, index) {
-            final message = chat.messages[index];
-            return MessageBubble(
-              senderName: message.userIsSender ? "Tú" : "Chatbot",
-              text: message.content,
-              date: message.formattedTime,
-              userIsSender: message.userIsSender,
-            );
-          },
-        );
-      } else {
-        return const Center(child: Text('No hay mensajes en este chat.'));
-      }
-    },
-  );
-}
-
-Widget _buildMessageInput(BuildContext context, ChatScreenController chatController, String chatId) {
-  final TextEditingController messageController = TextEditingController();
-
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-    child: Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: messageController,
-            decoration: const InputDecoration(
-              labelText: 'Escriba su mensaje',
-              labelStyle: TextStyle(
-                fontSize: 14,
-              ),
-            ),
-            onSubmitted: (text) {
-              if (text.isNotEmpty) {
-                chatController.sendMessage(chatId, text, "");
-                messageController.clear();
-              }
-            },
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.send),
-          onPressed: () {
-            final text = messageController.text;
-            if (text.isNotEmpty) {
-              chatController.sendMessage(chatId, text, "");
-              messageController.clear();
-            }
-          },
-        ),
-      ],
-    ),
-  );
 }
