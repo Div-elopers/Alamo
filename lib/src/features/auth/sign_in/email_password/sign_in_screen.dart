@@ -3,6 +3,7 @@ import 'package:alamo/src/features/auth/sign_in/email_password/email_password_va
 import 'package:alamo/src/features/auth/sign_in/google/google_sign_in_screen.dart';
 import 'package:alamo/src/routing/app_router.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
+import 'package:alamo/src/widgets/custom_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +41,7 @@ class SignInScreen extends ConsumerWidget {
       body: Stack(
         children: [
           // Background decorative images
-          _buildDecorativeImages(),
+          buildDecorativeImages(),
           Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -203,28 +204,6 @@ class SignInScreen extends ConsumerWidget {
       ),
       obscureText: obscureText,
       onChanged: onChanged,
-    );
-  }
-
-  // Method for background decorative images
-  Widget _buildDecorativeImages() {
-    return Stack(
-      children: [
-        Positioned(
-          top: 0,
-          right: 0,
-          child: Image.asset(
-            'assets/images/top_leaf.png',
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          child: Image.asset(
-            'assets/images/bottom_leaf.png',
-          ),
-        ),
-      ],
     );
   }
 }

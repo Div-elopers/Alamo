@@ -135,3 +135,22 @@ class _AdaptiveDropdownState extends State<AdaptiveDropdown> {
     );
   }
 }
+
+Widget buildDropdownField({
+  required String label,
+  required TextEditingController controller,
+  required List<String> items,
+  required FormFieldValidator<String> validator,
+}) {
+  return DropdownButtonFormField<String>(
+    decoration: InputDecoration(labelText: label),
+    validator: validator,
+    items: items.map((item) {
+      return DropdownMenuItem<String>(
+        value: item,
+        child: Text(item.toUpperCase()),
+      );
+    }).toList(),
+    onChanged: (value) => controller.text = value ?? '',
+  );
+}

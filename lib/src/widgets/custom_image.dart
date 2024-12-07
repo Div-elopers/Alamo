@@ -13,9 +13,29 @@ class CustomImage extends StatelessWidget {
     // * https://flutter.dev/docs/development/platform-integration/web-images
     return AspectRatio(
       aspectRatio: 1,
-      child: imageUrl.startsWith('http')
-          ? CachedNetworkImage(imageUrl: imageUrl)
-          : Image.asset(imageUrl),
+      child: imageUrl.startsWith('http') ? CachedNetworkImage(imageUrl: imageUrl) : Image.asset(imageUrl),
     );
   }
+}
+
+// Method for background decorative images
+Widget buildDecorativeImages() {
+  return Stack(
+    children: [
+      Positioned(
+        top: 0,
+        right: 0,
+        child: Image.asset(
+          'assets/images/top_leaf.png',
+        ),
+      ),
+      Positioned(
+        bottom: 0,
+        left: 0,
+        child: Image.asset(
+          'assets/images/bottom_leaf.png',
+        ),
+      ),
+    ],
+  );
 }

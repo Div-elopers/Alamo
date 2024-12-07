@@ -2,6 +2,7 @@ import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/backOffice/help_center_validators.dart';
 import 'package:alamo/src/features/map/domain/help_center.dart';
 import 'package:alamo/src/features/map/presentation/map_controller.dart';
+import 'package:alamo/src/widgets/custom_image.dart';
 import 'package:alamo/src/widgets/dropdown_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,87 +49,92 @@ class _HelpCenterCreationScreenState extends ConsumerState<HelpCenterCreationScr
 
     return Scaffold(
       appBar: AppBar(title: const Text('Crear Centro de Ayuda')),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: width / 5),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Name field
-              _buildTextFormField(
-                label: 'Nombre del Centro',
-                controller: nameController,
-                validator: (value) => validators.nameErrorText(value ?? ''),
-              ),
-              gapH16,
-              // Category Picker (dropdown)
-              _buildDropdownField(
-                label: 'Categoría',
-                controller: categoryController,
-                items: categories,
-                validator: (value) => validators.categoryErrorText(value!),
-              ),
-              gapH16,
-              // Address fields
-              _buildTextFormField(
-                label: 'Calle',
-                controller: adressController,
-                validator: (value) => validators.nameErrorText(value ?? ''),
-              ),
-              gapH16,
-              _buildTextFormField(
-                label: 'Número de puerta',
-                controller: streetNumberController,
-                validator: (value) => validators.nameErrorText(value ?? ''),
-              ),
-              gapH16,
-              // Contact number field (Uruguayan phone format)
-              _buildTextFormField(
-                label: 'Número de contacto',
-                controller: phoneNumberController,
-                validator: (value) => validators.phoneNumberErrorText(value ?? ''),
-                keyboardType: TextInputType.phone,
-              ),
-              gapH16,
-              // Opening hours picker for each day
-              const Text('Selecciona las horas de apertura para cada día:'),
-              gapH8,
-              if (width >= 1259)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+      body: Stack(
+        children: [
+          buildDecorativeImages(),
+          SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: width / 5),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Name field
+                  _buildTextFormField(
+                    label: 'Nombre del Centro',
+                    controller: nameController,
+                    validator: (value) => validators.nameErrorText(value ?? ''),
+                  ),
+                  gapH16,
+                  // Category Picker (dropdown)
+                  buildDropdownField(
+                    label: 'Categoría',
+                    controller: categoryController,
+                    items: categories,
+                    validator: (value) => validators.categoryErrorText(value!),
+                  ),
+                  gapH16,
+                  // Address fields
+                  _buildTextFormField(
+                    label: 'Calle',
+                    controller: adressController,
+                    validator: (value) => validators.nameErrorText(value ?? ''),
+                  ),
+                  gapH16,
+                  _buildTextFormField(
+                    label: 'Número de puerta',
+                    controller: streetNumberController,
+                    validator: (value) => validators.nameErrorText(value ?? ''),
+                  ),
+                  gapH16,
+                  // Contact number field (Uruguayan phone format)
+                  _buildTextFormField(
+                    label: 'Número de contacto',
+                    controller: phoneNumberController,
+                    validator: (value) => validators.phoneNumberErrorText(value ?? ''),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  gapH16,
+                  // Opening hours picker for each day
+                  const Text('Selecciona las horas de apertura para cada día:'),
+                  gapH8,
+                  if (width >= 1259)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            for (var day in daysOfWeek) _buildDayPicker(day),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            for (var day in daysOfWeek2) _buildDayPicker(day),
+                          ],
+                        ),
+                      ],
+                    ),
+                  if (width < 1259)
                     Column(
                       children: [
                         for (var day in daysOfWeek) _buildDayPicker(day),
-                      ],
-                    ),
-                    Column(
-                      children: [
                         for (var day in daysOfWeek2) _buildDayPicker(day),
                       ],
                     ),
-                  ],
-                ),
-              if (width < 1259)
-                Column(
-                  children: [
-                    for (var day in daysOfWeek) _buildDayPicker(day),
-                    for (var day in daysOfWeek2) _buildDayPicker(day),
-                  ],
-                ),
-              gapH16,
-              // Submit Button
-              Center(
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  child: const Text('Crear Centro de Ayuda'),
-                ),
+                  gapH16,
+                  // Submit Button
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submitForm,
+                      child: const Text('Crear Centro de Ayuda'),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -158,25 +164,6 @@ class _HelpCenterCreationScreenState extends ConsumerState<HelpCenterCreationScr
           autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
       ],
-    );
-  }
-
-  Widget _buildDropdownField({
-    required String label,
-    required TextEditingController controller,
-    required List<String> items,
-    required FormFieldValidator<String> validator,
-  }) {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(labelText: label),
-      validator: validator,
-      items: items.map((item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: Text(item.toUpperCase()),
-        );
-      }).toList(),
-      onChanged: (value) => controller.text = value ?? '',
     );
   }
 
