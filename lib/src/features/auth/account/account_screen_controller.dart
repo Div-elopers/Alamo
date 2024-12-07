@@ -118,8 +118,30 @@ class AccountScreenController extends _$AccountScreenController {
 
     final userService = ref.read(userServiceProvider);
 
-    state = const AsyncLoading();
     state = await AsyncValue.guard(() => userService.updateUser(updatedUser));
+
+    return state.hasError == false;
+  }
+
+  Future<bool> updateManagedUser({
+    required String name,
+    required String phoneNumber,
+    required String department,
+    required String email,
+    required String uid,
+  }) async {
+    // Create an AppUser instance with the updated data
+    final updatedUser = AppUser(
+      uid: uid,
+      name: name,
+      phoneNumber: phoneNumber,
+      department: department,
+      email: email,
+    );
+
+    final userService = ref.read(userServiceProvider);
+
+    state = await AsyncValue.guard(() => userService.updateManagedUser(updatedUser));
 
     return state.hasError == false;
   }

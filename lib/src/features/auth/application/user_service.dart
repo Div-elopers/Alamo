@@ -104,6 +104,11 @@ class UserService {
     }
   }
 
+  Future<void> updateManagedUser(AppUser updatedUser) async {
+    // Sync updates to Firestore
+    await _userRepository.updateUser(updatedUser);
+  }
+
   // Sign out the current user
   Future<void> signOut() async {
     await _authRepository.signOut();
