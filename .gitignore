@@ -96,3 +96,5 @@ functions/.pytest_cache/
 functions/*.bak
 functions/*.swp
 functions/.env
+
+.firebase/

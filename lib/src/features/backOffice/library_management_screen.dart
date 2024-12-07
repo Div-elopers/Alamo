@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/features/library/presentation/library_screen_controller.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
+import 'package:alamo/src/widgets/custom_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,132 +45,140 @@ class _LibraryManagementState extends ConsumerState<LibraryManagementScreen> {
       appBar: AppBar(
         title: const Text('Administración de biblioteca'),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: width / 5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            gapH32,
-            const Text("Aquí puedes subir los archivos que se verán desde la aplicación."),
-            gapH32,
-            Row(
+      body: Stack(
+        children: [
+          buildDecorativeImages(),
+          SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: width / 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: TextField(
-                    controller: fileNameController,
-                    decoration: const InputDecoration(labelText: 'Nombre'),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.attach_file),
-                  onPressed: () async {
-                    await _pickFile();
-                  },
-                ),
-              ],
-            ),
-            gapH32,
-            ElevatedButton(
-              onPressed: () async {
-                if (fileNameController.text.isNotEmpty) {
-                  final fileName = selectedFile.name;
-                  final fileExtension = fileName.split('.').last;
-                  await controller.uploadFile(
-                    name: fileNameController.text.isNotEmpty ? fileNameController.text : fileName,
-                    type: fileExtension,
-                    file: selectedFile,
-                    createdBy: 'Admin',
-                  );
-                } else {
-                  // Show error message
-                  showAlertDialog(context: context, title: 'Error', content: const Text('Por favor completa los campos y selecciona un archivo.'));
-                }
-              },
-              child: const Text('Subir archivo'),
-            ),
-            gapH64,
-            Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: const [
-                    DataColumn(
-                      label: Text(
-                        'Nombre',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
+                gapH32,
+                const Text("Aquí puedes subir los archivos que se verán desde la aplicación."),
+                gapH32,
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: TextField(
+                        controller: fileNameController,
+                        decoration: const InputDecoration(labelText: 'Nombre'),
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
-                        'Tipo',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Acción',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.attach_file),
+                      onPressed: () async {
+                        await _pickFile();
+                      },
                     ),
                   ],
-                  rows: files.map((file) {
-                    bool isEvenRow = files.indexOf(file) % 2 == 0;
+                ),
+                gapH32,
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (fileNameController.text.isNotEmpty) {
+                        final fileName = selectedFile.name;
+                        final fileExtension = fileName.split('.').last;
+                        await controller.uploadFile(
+                          name: fileNameController.text.isNotEmpty ? fileNameController.text : fileName,
+                          type: fileExtension,
+                          file: selectedFile,
+                          createdBy: 'Admin',
+                        );
+                      } else {
+                        // Show error message
+                        showAlertDialog(
+                            context: context, title: 'Error', content: const Text('Por favor completa los campos y selecciona un archivo.'));
+                      }
+                    },
+                    child: const Text('Subir archivo'),
+                  ),
+                ),
+                gapH64,
+                Center(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(
+                          label: Text(
+                            'Nombre',
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Tipo',
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Text(
+                            'Acción',
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black54),
+                          ),
+                        ),
+                      ],
+                      rows: files.map((file) {
+                        bool isEvenRow = files.indexOf(file) % 2 == 0;
 
-                    return DataRow(
-                      color: MaterialStateProperty.resolveWith<Color?>(
-                        (Set<MaterialState> states) {
-                          return isEvenRow ? Colors.grey.shade100 : Colors.white;
-                        },
-                      ),
-                      cells: [
-                        DataCell(
-                          GestureDetector(
-                            onTap: () {
-                              html.window.open(file.fileURL, '_blank');
+                        return DataRow(
+                          color: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                              return isEvenRow ? Colors.grey.shade100 : Colors.white;
                             },
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                                child: Text(
-                                  file.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.blue,
+                          ),
+                          cells: [
+                            DataCell(
+                              GestureDetector(
+                                onTap: () {
+                                  html.window.open(file.fileURL, '_blank');
+                                },
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                                    child: Text(
+                                      file.name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        DataCell(
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                            child: Text(
-                              file.type,
-                              style: const TextStyle(fontSize: 16, color: Colors.black54),
+                            DataCell(
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                                child: Text(
+                                  file.type,
+                                  style: const TextStyle(fontSize: 16, color: Colors.black54),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        DataCell(
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () async {
-                              controller.deleteFile(fileId: file.id, type: file.type, name: file.name);
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
-              ),
-            )
-          ],
-        ),
+                            DataCell(
+                              IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () async {
+                                  controller.deleteFile(fileId: file.id, type: file.type, name: file.name);
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
