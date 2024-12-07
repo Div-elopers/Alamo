@@ -45,10 +45,8 @@ flutter_launcher_icons:
   #  image_path: "assets/images/icon-128x128.png"
   image_path_android: "assets/images/alamo.png"
   image_path_ios: "assets/images/alamo.png"
-  android: true # can specify file name here e.g. "ic_launcher"
-  ios: true # can specify file name here e.g. "My-Launcher-Icon"
-  adaptive_icon_foreground_inset: 16 
-  min_sdk_android: 21 
+  android: true 
+  ios: true 
   remove_alpha_ios: true
   background_color_ios: "#ffffff"
   web:
