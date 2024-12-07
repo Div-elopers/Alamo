@@ -62,16 +62,44 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                           child: DataTable(
                             columnSpacing: 12,
                             columns: const [
-                              DataColumn(label: Text('Nombre')),
-                              DataColumn(label: Text('Correo')),
-                              DataColumn(label: Text('Correo verificado')),
-                              DataColumn(label: Text('Número verificado')),
-                              DataColumn(label: Text('Departamento')),
-                              DataColumn(label: Text('Foto de perfil')),
-                              DataColumn(label: Text('Acciones')),
+                              DataColumn(
+                                  headingRowAlignment: MainAxisAlignment.center,
+                                  label: Text(
+                                    'Nombre',
+                                    textAlign: TextAlign.center,
+                                  )),
+                              DataColumn(headingRowAlignment: MainAxisAlignment.center, label: Text('Correo')),
+                              DataColumn(headingRowAlignment: MainAxisAlignment.center, label: Text('Correo verificado')),
+                              DataColumn(headingRowAlignment: MainAxisAlignment.center, label: Text('Número verificado')),
+                              DataColumn(headingRowAlignment: MainAxisAlignment.center, label: Text('Departamento')),
+                              DataColumn(headingRowAlignment: MainAxisAlignment.center, label: Text('Foto de perfil')),
+                              DataColumn(headingRowAlignment: MainAxisAlignment.center, label: Text('Acciones')),
                             ],
+                            border: TableBorder.all(
+                              color: Colors.black87,
+                              width: 1,
+                            ),
+                            headingRowColor: MaterialStateProperty.all(
+                              Colors.indigo[100],
+                            ),
+                            headingTextStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                            dataTextStyle: const TextStyle(
+                              color: Colors.black87,
+                              fontSize: 14,
+                            ),
                             rows: users.map((user) {
+                              bool isEvenRow = users.indexOf(user) % 2 == 0;
+
                               return DataRow(
+                                color: MaterialStateProperty.resolveWith<Color?>(
+                                  (Set<MaterialState> states) {
+                                    return isEvenRow ? Colors.grey.shade200 : Colors.white;
+                                  },
+                                ),
                                 cells: [
                                   DataCell(
                                     Text(user.name),
