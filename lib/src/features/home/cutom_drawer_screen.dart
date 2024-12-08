@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:alamo/src/constants/app_sizes.dart';
+import 'package:alamo/src/constants/terms_path.dart';
 import 'package:alamo/src/features/auth/data/auth_repository.dart';
 import 'package:alamo/src/features/auth/data/users_repository.dart';
+import 'package:alamo/src/features/library/presentation/library_screen_controller.dart';
 import 'package:alamo/src/routing/app_router.dart';
+import 'package:alamo/src/widgets/pdf_viewer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:alamo/src/features/auth/account/account_screen_controller.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alamo/src/features/home/terms_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CustomDrawer extends ConsumerWidget {
   const CustomDrawer({super.key});
@@ -18,7 +24,6 @@ class CustomDrawer extends ConsumerWidget {
     if (user == null) {
       return const SizedBox.shrink();
     }
-
     final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
@@ -67,15 +72,16 @@ class CustomDrawer extends ConsumerWidget {
                 },
               ),
               _buildListTile(
-                icon: Icons.help,
+                icon: Icons.description,
                 title: 'Términos y condiciones',
-                color: colorScheme.primary,
+                color: Colors.blue,
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TermsScreen(),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsAndConditionsViewer(),
+                    ),
+                  );
                 },
               ),
               _buildListTile(
