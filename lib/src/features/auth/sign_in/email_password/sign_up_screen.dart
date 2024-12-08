@@ -1,10 +1,12 @@
 import 'package:alamo/src/constants/app_sizes.dart';
 import 'package:alamo/src/constants/departments.dart';
 import 'package:alamo/src/features/auth/sign_in/email_password/email_password_sign_in_controller.dart';
+import 'package:alamo/src/features/home/terms_screen.dart';
 import 'package:alamo/src/widgets/alert_dialogs.dart';
 import 'package:alamo/src/widgets/dropdown_dialog.dart';
 import 'package:alamo/src/widgets/primary_button.dart';
 import 'package:alamo/src/widgets/responsive_center.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -98,15 +100,15 @@ class SignUpScreen extends ConsumerWidget {
                       ),
                       suffixIcon: passwordSuffixIcon(obscureRepeatPassword, ref, obscureRepeatPasswordProvider),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        'Al registrarse está de acuerdo con los términos y condiciones',
-                        style: TextStyle(
-                          fontFamily: 'Sofia Sans',
-                          fontSize: 12,
-                        ),
-                      ),
+                    TermsAndConditionsLink(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TermsAndConditionsViewer(),
+                          ),
+                        );
+                      },
                     ),
                     gapH32,
                     PrimaryButton(
@@ -205,6 +207,42 @@ class SignUpScreen extends ConsumerWidget {
       onPressed: () {
         ref.read(provider.notifier).state = !obscurePassword;
       },
+    );
+  }
+}
+
+class TermsAndConditionsLink extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const TermsAndConditionsLink({required this.onTap, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: 'Al registrarse está de acuerdo con los ',
+          style: const TextStyle(
+            fontFamily: 'Sofia Sans',
+            fontSize: 12,
+            color: Colors.black,
+          ),
+          children: [
+            TextSpan(
+              text: 'términos y condiciones',
+              style: const TextStyle(
+                fontFamily: 'Sofia Sans',
+                fontSize: 12,
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()..onTap = onTap,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
